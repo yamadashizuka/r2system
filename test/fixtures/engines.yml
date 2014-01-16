@@ -1,0 +1,44 @@
+engine1:
+  engine_model_name: 1GPH00-KS
+  sales_model_name: YRZP000J-AA
+  serialno: 00000001
+  enginestatus_id: 1
+  company_id: 1
+  created_at: 2013-12-02 23:54:20.709017
+  updated_at: 2013-12-02 23:54:20.709017
+
+engine2:
+  engine_model_name: 1GPH00-KS
+  sales_model_name: YRZP000J-AA
+  serialno: 00000002
+  enginestatus_id: 1
+  company_id: 1
+  created_at: 2013-12-02 23:57:00.434153
+  updated_at: 2013-12-02 23:57:00.434153
+
+engine3:
+  engine_model_name: 8GZZ00-AZ
+  sales_model_name: YRZG000J-ZZ
+  serialno: 00000003
+  enginestatus_id: 1
+  company_id: 1
+  created_at: 2013-12-02 23:57:29.553818
+  updated_at: 2013-12-02 23:57:29.553818
+
+engine4:
+  engine_model_name: 5YES00-MS
+  sales_model_name: YRZA000J-QP
+  serialno: 00000004
+  enginestatus_id: 1
+  company_id: 1
+  created_at: 2013-12-02 23:58:40.085852
+  updated_at: 2013-12-02 23:58:40.085852
+
+engine5:
+  engine_model_name: 1GPH00-KS
+  sales_model_name: YRZP000J-AA
+  serialno: 00000005
+  enginestatus_id: 1
+  company_id: 1
+  created_at: 2013-12-02 23:59:08.438474
+  updated_at: 2013-12-03 00:07:16.258376

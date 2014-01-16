@@ -1,0 +1,33 @@
+<%= form_for(@company) do |f| %>
+
+  <%= render "errormsg" , modeldata: @company %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :category %><br>
+    <%= f.text_field :category %>
+  </div>
+
+  <div class="field">
+    <%= f.label :postcode %><br>
+    <%= f.text_field :postcode %>
+  </div>
+  <div class="field">
+    <%= f.label :address %><br>
+    <%= f.text_field :address %>
+  </div>
+  <div class="field">
+    <%= f.label :phone_no %><br>
+    <%= f.text_field :phone_no %>
+  </div>
+  <div class="field">
+    <%= f.label :destination_name %><br>
+    <%= f.text_field :destination_name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

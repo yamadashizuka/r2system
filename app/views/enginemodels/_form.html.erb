@@ -1,0 +1,16 @@
+<%= form_for(@enginemodel) do |f| %>
+
+  <%= render "errormsg" , modeldata: @enginemodel %>
+
+  <div class="field">
+    <%= f.label :modelcode %><br>
+    <%= f.text_field :modelcode %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

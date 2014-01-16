@@ -1,0 +1,111 @@
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('issue_no') %>：
+    <%= @engineorder.issue_no %>
+  </div>
+
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('inquiry_date') %>：
+  <%= @engineorder.inquiry_date %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('registered_user_id') %>：
+  <%= User.find(@engineorder.registered_user_id).name unless @engineorder.registered_user_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('updated_user_id') %>：
+  <%= User.find(@engineorder.updated_user_id).name unless @engineorder.updated_user_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('branch_id') %>：
+  <%= Company.find(@engineorder.branch_id).name unless @engineorder.branch_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('salesman_id') %>：
+  <%= User.find(@engineorder.salesman_id).name unless @engineorder.salesman_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('install_place_id') %>：
+  <%= Company.find(@engineorder.install_place_id).name unless @engineorder.install_place_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('orderer') %>：
+  <%= @engineorder.orderer %>
+</div>
+
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('time_of_running') %>：
+  <%= @engineorder.time_of_running %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('change_comment') %>：
+  <%= @engineorder.change_comment %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('order_date') %>：
+  <%= @engineorder.order_date %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('issue_no') %>：
+  <%= @engineorder.sending_place_id %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('sending_comment') %>：
+  <%= @engineorder.sending_comment %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('desirable_delivery_date') %>：
+  <%= @engineorder.desirable_delivery_date %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('businessstatus_id') %>：
+  <%= @engineorder.businessstatus_id %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('new_engine_id') %>：
+   <%= Engine.find(@engineorder.new_engine_id).engine_name unless @engineorder.new_engine_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('old_engine_id') %>：
+   <%= Engine.find(@engineorder.old_engine_id).engine_name unless @engineorder.old_engine_id.blank? %>
+</div>
+
+
+<% if current_user.yesOffice? %>
+  <%= link_to 'Edit', edit_engineorder_path(@engineorder) %> |
+  <%= link_to t('views.link_back'), engineorders_path %>
+<% else %>
+  <%= link_to t('views.link_back'), engines_path %>
+<% end %>

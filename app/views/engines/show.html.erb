@@ -1,0 +1,33 @@
+  <div class="field">
+      <% if @engine.suspended %>
+         ******サスペンド中******
+      <% end %>
+   </div>
+
+  <div class="field">
+  <%= Engine.human_attribute_name('engine_model_name') %>
+  <%= @engine.engine_model_name %>
+  </div>
+
+  <div class="field">
+    <%= Engine.human_attribute_name('serialno') %>
+  <%= @engine.serialno %>
+  </div>
+
+<% if current_user.yesOffice? %>
+  <div class="field">
+    <%= Engine.human_attribute_name('company') %>
+  <%= @engine.company.name %>
+</div>
+<% end %>
+
+  <div class="field">
+    <%= Engine.human_attribute_name('status') %>
+    <%= @engine.status.name %>
+  </div>
+
+
+<% if current_user.yesOffice? %>
+  <%= link_to t('views.link_edit'), edit_engine_path(@engine) %> |
+<% end %>
+<%= link_to t('views.link_back'), engines_path %>

@@ -1,0 +1,2 @@
+module BusinessstatusesHelper
+end

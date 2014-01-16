@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>R2</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <%= link_to "R2システム", '/', id: "logo", class: "navbar-brand" %>
+      </div>
+      <div class="collapse navbar-collapse">
+        <% if user_signed_in? %>
+          <ul class="nav navbar-nav navbar-right">
+          <% unless request.path_info=="/" %>
+            <li><%= link_to 'メインメニュー', root_path %></li>
+          <% end %>
+            <li><%= link_to "ログアウト", destroy_user_session_path, :method => :delete %></li>
+            <li><a href="/users/edit"><b>ログイン：<%= current_user.name %></b></a></li>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <% unless notice.blank? %>
+      <div class="alert alert-success"><%= notice %></div>
+    <% end %>
+    <% unless alert.blank? %>
+      <div class="alert alert-danger"><%= alert %></div>
+    <% end %>
+    <%= yield %>
+  </div>
+
+</body>
+</html>

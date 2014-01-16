@@ -1,0 +1,63 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ */
+
+@import "bootstrap";
+
+body {
+  padding-top: 60px;
+  padding-bottom: 20px;
+ }
+
+label.need-label:after {
+content: " *";
+}
+
+
+hr{
+  height: 1px;
+  border: none;
+  border-top: 1px #CCCCCC dashed;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+hr.header{
+  margin-top: 8px;
+  border-top: 1px #CCCCCC solid;
+}
+
+
+p{
+	margin-top: 6px;
+	margin-bottom: 6px
+}
+
+
+.vtop{
+  vertical-align: top;
+}
+
+h1{
+     border-left:3px solid #CCCCCC;
+     border-bottom:1px dashed #CCCCCC;
+     padding:0px 0px 0px 10px;
+}
+
+textarea {
+   width: 300px;
+   min-width: 300px;
+   min-height: 80px;
+   max-width:  350px;
+   max-height: 200px;
+}

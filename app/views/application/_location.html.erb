@@ -1,0 +1,33 @@
+  <table>
+    <tr><td rowspan="5" valign="top">
+      <%= f.label (attr_name + "_id").to_sym %>
+      <%= f.collection_select((attr_name + "_id").to_sym, Company.all, :id, :name, options = {:include_blank => true}, html_options = {:onchange => "selectionChanged(\"" + attr_name + "\")", :id => "select_" + attr_name }  ) %>
+    </td></tr>
+    <% if location.nil? %>
+    <tr>
+      <td><%= text_field_tag attr_name + "_postcode", "" ,{:size => 8, :id => (attr_name + "_postcode"), :disabled => true} %></td>
+    </tr>
+    <tr>
+      <td><%= text_field_tag attr_name + "_address", "", {:size => 40, :id => (attr_name + "_address"), :disabled => true}  %></td>
+    </tr>
+    <tr>
+      <td><%= text_field_tag attr_name + "_phone_no", "", {:size => 15, :id => (attr_name + "_phone_no"), :disabled => true}  %></td>
+    </tr>
+    <tr>
+      <td><%= text_field_tag attr_name + "_destination_name", "", {:size => 20, :id => (attr_name + "_destination_name"), :disabled => true}  %></td>
+    </tr>
+  <% else %>
+    <tr>
+      <td><%= text_field_tag attr_name + "_postcode", location.postcode ,{:size => 8, :id => (attr_name + "_postcode"), :disabled => true} %></td>
+    </tr>
+    <tr>
+      <td><%= text_field_tag attr_name + "_address", location.address, {:size => 40, :id => (attr_name + "_address"), :disabled => true}  %></td>
+    </tr>
+    <tr>
+      <td><%= text_field_tag attr_name + "_phone_no",location.phone_no, {:size => 15, :id => (attr_name + "_phone_no"), :disabled => true}  %></td>
+    </tr>
+    <tr>
+      <td><%= text_field_tag attr_name + "_destination_name", location.destination_name, {:size => 20, :id => (attr_name + "_destination_name"), :disabled => true}  %></td>
+    </tr>
+  <% end %>
+  </table>

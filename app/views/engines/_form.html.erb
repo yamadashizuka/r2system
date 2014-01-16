@@ -1,0 +1,36 @@
+<%= form_for(@engine) do |f| %>
+
+  <%= render "errormsg" , modeldata: @engine %>
+
+  <div class="field">
+    <%= f.label :engine_model_name %><br>
+    <%= autocomplete_field :engine, :engine_model_name, autocomplete_engine_engine_model_name_engines_path %>
+  </div>
+  <div class="field">
+    <%= f.label :serialno %><br>
+    <%= f.text_field :serialno %>
+  </div>
+
+  <% if current_user.yesOffice? %>
+    <div>
+      <%= f.label :company %><br>
+      <%= f.collection_select( :company_id, Company.all, :id, :name, :include_blank => false ) %><br>	<br>
+      <%= f.label :suspended %><br>
+      <%= f.check_box :suspended %><br>
+    </div>
+  <% else %>
+    <% if @engine.company_id.nil? %>
+      <% engine_company_id = current_user.company_id %>
+    <% else %> 
+      <% engine_company_id = @engine.company_id %>
+    <% end %>
+      <%= f.hidden_field(:company_id, :value => engine_company_id) %><br>
+  <% end %>
+
+  <div><%= f.label :status %><br>
+    <%= f.collection_select( :enginestatus_id, Enginestatus.all, :id, :name, :include_blank => false ) %><br><br>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

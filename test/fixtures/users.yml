@@ -1,0 +1,52 @@
+test_tarou:
+  email: tarou@test.org
+  encrypted_password: $2a$10$QkKPWeNX2Dep7eyyol2E9.TotcAo2/DmtOMlqXMaSi6ZUe1tR1uTG
+  reset_password_token:
+  reset_password_sent_at:
+  remember_created_at:
+  sign_in_count: 1
+  current_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  last_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1
+  userid: YA000001
+  name: てすと太郎
+  category:
+  company_id: 1
+
+AA000001:
+  email: aa000001@test.org
+  encrypted_password: $2a$10$Eqtt.BHWa6mKNRwBDihymOUP/7CbgpOpyYm1KbNJM4TAujoy2RYoq
+  sign_in_count: 1
+  current_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  last_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1
+  userid: AA000001
+  name: AA の人
+  company_id: 1
+
+
+KT000001:
+  email: kt000001@test.org
+  encrypted_password: $2a$10$YcMcZgyg3MD5oYOV5vkTv.peJ2wPkCyR3Ot5kMMSMelcli97ji0yO
+  sign_in_count: 1
+  current_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  last_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1
+  userid: KT000001
+  name: KT の人
+  company_id: 8
+
+SG000001:
+  email: sg000001@test.org
+  encrypted_password: $2a$10$8xzDAZkSwu9RtTckTiTseObRSM.g.bhQNorH8nGBkguQK2tuUQD/u
+  sign_in_count: 1
+  current_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  last_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1
+  userid: SG000001
+  name: SG の人
+  company_id: 2

@@ -1,0 +1,60 @@
+ <div class="field">
+  <%= Engine.human_attribute_name('engine_model_name') %>：
+    <%= @repair.engine.engine_model_name %>
+  </div>
+
+ <div class="field">
+    <%= Engine.human_attribute_name('serialno') %>
+    <%= @repair.engine.serialno %>
+</div>
+
+
+  <div class="field">
+    <%= Repair.human_attribute_name('order_no') %>
+    <%= @repair.order_no %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('order_date') %>
+    <%= @repair.order_date %>
+  </div>
+
+  <div class="field">
+    <%= Repair.human_attribute_name('arrive_date') %>
+    <%=  @repair.arrive_date %>
+  </div>
+
+
+  <div class="field">
+    <%= Repair.human_attribute_name('construction_no') %>
+    <%= @repair.construction_no %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('desirable_finish_date') %>
+    <%= @repair.desirable_finish_date %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('start_date') %>
+    <%= @repair.start_date %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('estimated_finish_date') %>
+    <%= @repair.estimated_finish_date %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('before_comment') %>
+    <%= @repair.before_comment %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('finish_date') %>
+    <%= @repair.finish_date %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('after_comment') %>
+    <%= @repair.after_comment %>
+  </div>
+
+<% if current_user.yesOffice? %>
+  <%= link_to t('views.link_edit'), edit_repair_path(@repair) %> |
+<% end %>
+
+<%= link_to t('views.link_back'), repairs_path %>

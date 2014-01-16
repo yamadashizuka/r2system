@@ -1,0 +1,152 @@
+
+<%= javascript_include_tag "location" %>
+
+<% if @engineorder.new_inquiry? %>
+  <h1>引合登録</h1>
+<% elsif %>
+<% @engineorder.shipped? %>
+  <h1>出荷登録</h1>
+<% elsif %>
+<% @engineorder.shipping_preparation? %>
+  <h1>引当登録</h1>
+<% elsif %>
+<% @engineorder.ordered? %>
+  <h1>受注登録</h1>
+<% elsif %>
+<% @engineorder.inquiry? %>
+  <h1>引合登録</h1>
+<% end %>
+
+<%= form_for(@engineorder) do |f| %>
+
+  <%= render "errormsg" , modeldata: @engineorder %>
+
+  <div class="field">
+    <%= f.label :registered_user_id %>：
+    <% if @engineorder.registered_user_id.nil? %>
+      <% @engineorder.registered_user_id = current_user.id  %>
+    <% end %>
+      <%=  User.find(@engineorder.registered_user_id).name  %>
+    <%= f.hidden_field :registered_user_id %>
+  </div>
+
+  <% #引合登録以外は、発注Noを表示する(引合登録時発注Noは、まだ未発番のため) %>
+  <div class="field">
+    <%= f.label :issue_no %><br>
+    <%=  @engineorder.issue_no %>
+  </div>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+
+
+  <% #出荷登録の場合のみ送り状Noを表示する %>
+  <div class="field">
+    <%= f.label :invoice_no_new %><br>
+    <%= f.text_field :invoice_no_new %>
+  </div>
+
+
+  <div class="field">
+    <%= f.label :inquiry_date %><br>
+    <%= f.date_select :inquiry_date %>
+  </div>
+
+  <% #引合登録以外の場合は、order_dateを表示 %>
+  <div class="field">
+    <%= f.label :order_date %><br>
+    <%= f.date_select :order_date %>
+  </div>
+  
+  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+  
+  <div class="field">
+    <%= f.label :salesman_id %><br>
+   <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
+  </div>
+
+  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+  
+  <div class="field">
+    <%= f.label :orderer %><br>
+    <%= f.text_field :orderer %>
+  </div>
+
+  <div class="field">
+    <%= f.label :old_engine_id %><br>
+    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+  </div>
+
+<% #引当登録以降の場合は、新エンジンを表示 %> 
+  <div class="field">
+    <%= f.label :new_engine_id %><br>
+    <%= f.collection_select( :new_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+  </div>
+
+<!--
+  <div class="field">
+    <%= f.label :machine_no %><br>
+    <%= f.text_field :machine_no %>
+  </div>
+-->
+  <div class="field">
+    <%= f.label :time_of_running %><br>
+    <%= f.number_field :time_of_running %>
+  </div>
+  <div class="field">
+    <%= f.label :day_of_test %><br>
+    <%= f.date_select :day_of_test %>
+  </div>
+
+  <div class="field">
+    <%= label_tag t('views.label_runningyear') %><br>
+    <%= @engineorder.calcRunningYear %>
+  </div>
+  
+  
+  <div class="field">
+    <%= f.label :change_comment %><br>
+    <%= f.text_area :change_comment %>
+  </div>
+
+<% #引当登録以降の場合は、受注日を表示 %> 
+  <div class="field">
+    <%= f.label :order_date %><br>
+    <%= f.date_select :order_date %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :sending_place_id %><br>
+    <%= f.collection_select( :sending_place_id, Company.all, :id, :name, :include_blank => true ) %>
+  </div>
+
+
+  <div class="field">
+    <%= f.label :sending_comment %><br>
+    <%= f.text_area :sending_comment %>
+  </div>
+  <div class="field">
+    <%= f.label :desirable_delivery_date %><br>
+    <%= f.date_select :desirable_delivery_date %>
+  </div>
+  
+<% #引当登録以降の場合は、返却コメントと出荷日を表示 %> 
+  <div class="field">
+    <%= f.label :returning_comment %><br>
+    <%= text_area_tag 'returning_comment' %>
+  </div>
+  <div class="field">
+    <%= f.label :shipped_date %><br>
+    <%= f.date_select :shipped_date %>
+  </div>
+  <div id="shipment location"></div>
+
+  <%= f.hidden_field :businessstatus_id %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+</body>

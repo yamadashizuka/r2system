@@ -1,0 +1,36 @@
+businessstatus1:
+  id: 1
+  name: 引合
+  created_at: 
+  updated_at: 
+
+businessstatus2:
+  id: 2
+  name: 受注
+  created_at: 
+  updated_at: 
+
+businessstatus3:
+  id: 3
+  name: 出荷準備中
+  created_at: 
+  updated_at: 
+
+businessstatus4:
+  id: 4
+  name: 出荷済
+  created_at: 
+  updated_at: 
+
+businessstatus5:
+  id: 5
+  name: 返却済
+  created_at: 
+  updated_at: 
+
+businessstatus9:
+  id: 9
+  name: キャンセル
+  created_at: 
+  updated_at: 
+
