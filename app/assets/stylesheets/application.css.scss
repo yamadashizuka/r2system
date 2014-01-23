@@ -61,3 +61,38 @@ textarea {
    max-width:  350px;
    max-height: 200px;
 }
+
+
+/** for link color **/
+@mixin link_format($linkcolor)
+{
+    &:link { color: $linkcolor; } 
+    &:visited { color: $linkcolor; }
+    &:hover { color: $linkcolor; }
+    &:active { color: $linkcolor; }
+}
+
+ a.link_blue {
+    @include link_format(#0000FF); 
+}
+
+a.link_red{
+    @include link_format(#FF0000); 
+}
+
+a.link_skyblue{
+    @include link_format(#0088FF); 
+}
+
+
+/** for pageIndex **/
+em.current{
+  color: red;
+  font-size: 120%;
+  &:before {
+    content: "[";
+  }
+  &:after {
+    content: "]";
+  }
+}

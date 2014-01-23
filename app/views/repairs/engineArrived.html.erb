@@ -4,7 +4,6 @@
 
   <%= render "errormsg" , modeldata: @repair %>
 
-
 <div class="row">
 <div class="col-md-5">
   <%= render 'engineInfo' %>
@@ -18,10 +17,12 @@
   <div>
     <%= f.hidden_field :engine_id %>
   </div>  
+  <br>
   <div class="actions">
     <%= f.submit  :value => t('views.buttun_arrived') %>
   </div>
-<%= link_to t('views.link_back'), repairs_path %>
+  <br>
+  <%= link_to t('views.link_back'), engines_path %>
 
 </div>
 <div class="well col-md-5">
