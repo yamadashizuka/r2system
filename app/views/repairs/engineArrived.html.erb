@@ -10,13 +10,11 @@
   <% disabled_data = getDisabled_EngineArrived %>
 
 <br>
+  <%= f.hidden_field :engine_id %>
   <div class="field">
     <%= f.label :arrive_date %><br>
     <%= f.date_select :arrive_date, :use_month_numbers => true %>
   </div>
-  <div>
-    <%= f.hidden_field :engine_id %>
-  </div>  
   <br>
   <div class="actions">
     <%= f.submit  :value => t('views.buttun_arrived') %>

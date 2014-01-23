@@ -25,9 +25,9 @@
         <td><%= company.phone_no %></td>
         <td><%= company.destination_name %></td>
         <td><%= company.updated_at %></td>        
-        <td><%= link_to '詳細', company, class: "link_blue"  %></td>
-        <td><%= link_to '修正', edit_company_path(company) , class: "link_blue" %></td>
-        <td><%= link_to '削除', company, method: :delete, data: { confirm: '本当に削除してもよろしいですか？'}, class: "link_red"  %></td>
+        <td><%= link_to '詳細', company, class: "workregist_show"  %></td>
+        <td><%= link_to '修正', edit_company_path(company) , class: "workregist_edit" %></td>
+        <td><%= link_to '削除', company, method: :delete, data: { confirm: '本当に削除してもよろしいですか？'}, class: "workregist_del"  %></td>
       </tr>
     <% end %>
   </tbody>
