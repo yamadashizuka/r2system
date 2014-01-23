@@ -12,18 +12,23 @@
  *= require_tree .
  */
 
+/** bootstrap import **/
 @import "bootstrap";
 
+
+/** for bootstrap (body padding)**/
 body {
   padding-top: 60px;
   padding-bottom: 20px;
  }
 
+/** for required item label **/
 label.need-label:after {
 content: " *";
 }
 
 
+/** for horizontal line **/
 hr{
   height: 1px;
   border: none;
@@ -63,8 +68,8 @@ textarea {
 }
 
 
-/** for link color **/
-@mixin link_format($linkcolor)
+/**** for workregist format(link color) ****/
+@mixin workregist_link_format($linkcolor)
 {
     &:link { color: $linkcolor; } 
     &:visited { color: $linkcolor; }
@@ -72,16 +77,31 @@ textarea {
     &:active { color: $linkcolor; }
 }
 
- a.link_blue {
-    @include link_format(#0000FF); 
+ a.workregist_show {
+    @include workregist_link_format(#0000FF); 
 }
 
-a.link_red{
-    @include link_format(#FF0000); 
+a.workregist_edit {
+    @include workregist_link_format(#0000FF); 
 }
 
-a.link_skyblue{
-    @include link_format(#0088FF); 
+a.workregist_del{
+    @include workregist_link_format(#FF0000); 
+}
+
+a.workregist_work{
+    @include workregist_link_format(#0088FF); 
+}
+
+
+/** for workregist format(td size) **/
+td.workregist{
+  width:40px;
+} 
+
+/** for table layout (status td size) **/
+td.status_col{
+  width:100px;
 }
 
 

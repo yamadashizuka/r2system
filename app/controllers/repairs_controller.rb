@@ -4,15 +4,15 @@ class RepairsController < ApplicationController
   # GET /repairs
   # GET /repairs.json
   def index
-    @repairs = Repair.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    #@repairs = Repair.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
     #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンの整備依頼に対してのみ表示する。
     #※管轄が変わると表示されなくなるので注意が必要…
-    #if current_user.yesOffice?
-    #  @repairs = Repair.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    #else
-    #  engines = Engine.where(company_id: current_user.company_id).pluck(:id)
-    #  @repairs = Repair.where(engine_id: engines).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    #end
+    if current_user.yesOffice?
+      @repairs = Repair.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    else
+      engines = Engine.where(company_id: current_user.company_id).pluck(:id)
+      @repairs = Repair.where(engine_id: engines).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    end
   end
 
   # GET /repairs/1

@@ -1,7 +1,7 @@
- <div class="field">
+<div class="field">
   <%= Engine.human_attribute_name('engine_model_name') %>：
     <%= @repair.engine.engine_model_name %>
-  </div>
+</div>
 
  <div class="field">
     <%= Engine.human_attribute_name('serialno') %>
@@ -53,10 +53,10 @@
     <%= @repair.after_comment %>
   </div>
 
+<br><br>
 <% if current_user.yesOffice? %>
   <%= link_to t('views.link_edit'), edit_repair_path(@repair) %> |
 <% end %>
-
 <% if notice == t("controller_msg.repair_created") %>
   <%= link_to t('views.link_back'), engines_path %>
 <% else %>

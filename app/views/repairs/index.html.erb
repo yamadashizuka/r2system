@@ -9,9 +9,6 @@
       <th>完成希望日</th>
       <th>整備開始日</th>
       <th>整備完了日</th>
-      <!--
-      <th>出荷日</th>
-      -->
       <th>エンジン型式</th>
       <th>エンジンNo.</th>
     </tr>
@@ -20,7 +17,7 @@
   <tbody>
     <% @repairs.each do |repair| %>
       <tr>
-        <td><%= repair.engine.status.name %></td>
+        <td class="status_col"><%= repair.engine.status.name %></td>
         <td><%= repair.order_no %></td>
         <td><%= repair.order_date %></td>
         <td><%= repair.desirable_finish_date %></td>
@@ -28,23 +25,36 @@
         <td><%= repair.finish_date %></td>
         <td><%= repair.engine.engine_model_name %></td>
         <td><%= repair.engine.serialno %></td>
+
         <% if current_user.yes? %>
-          <td>
-            <%= link_to '依頼', order_repair_path(repair) , class: "link_skyblue"%>
-          </td>
-        <% end %>
-        <td><%= link_to '開始', start_repair_path(repair) , class: "link_skyblue"%></td>
-        <td><%= link_to '完了', finish_repair_path(repair), class: "link_skyblue" %></td>
-     <% if repair.engine.before_shipping? %>
-          <td>
-            <%= link_to '出荷', shipped_path(repair.engine.current_order_as_new), class: "link_skyblue" %>
-          </td>
+          <td class="workregist"><%= link_to '依頼', order_repair_path(repair) , class: "workregist_work"%></td>
         <% end %>
 
+        <td class="workregist">
+          <% if repair.order_no.present? and (repair.engine.under_repair? or repair.engine.before_repair?)  %>
+            <%= link_to '開始', start_repair_path(repair) , class: "workregist_work"%></td>
+          <% end %>
+        </td>
+
+        <td class="workregist">
+          <% if repair.engine.under_repair? %>
+            <%= link_to '完了', finish_repair_path(repair), class: "workregist_work" %>
+          <% end %>
+        </td>
+
+        <td class="workregist">   
+          <% if repair.engine.before_shipping? %>
+            <%= link_to '出荷', shipped_path(repair.engine.current_order_as_new), class: "workregist_work" %>
+          <% end %>
+        </td>
+
         <% if current_user.yesOffice? %>
-          <td><%= link_to '詳細', repair, class: "link_blue"  %></td>
-          <td><%= link_to '訂正', edit_repair_path(repair), class: "link_blue"  %></td>
-          <td><%= link_to '削除', repair, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' }, class: "link_red"  %></td>
+          <td class="workregist"><%= link_to '詳細', repair, class: "workregist_show"  %></td>
+          <td class="workregist"><%= link_to '訂正', edit_repair_path(repair), class: "workregist_edit"  %></td>
+          <td class="workregist">
+            <% unless (repair.engine.finished_repair? or repair.engine.before_shipping? or repair.engine.before_shipping?) %>
+            <%= link_to '削除', repair, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } ,class: "workregist_del"  %></td>
+          <% end %>
         <% end %>
       </tr>
     <% end %>
