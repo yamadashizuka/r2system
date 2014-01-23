@@ -37,7 +37,7 @@ ja:
         shipped_date: 出荷日
         returning_date: 返却日
       user:
-        userid: 社員コード
+        userid: ログインＩＤ
         code: 社員コード
         name: 氏名
         password: パスワード

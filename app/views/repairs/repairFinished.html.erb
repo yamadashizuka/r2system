@@ -18,11 +18,16 @@
     <%= f.label :after_comment %><br>
     <%= f.text_area :after_comment %>
   </div>
+
+  <br>
   <div class="actions">
     <%= f.submit  :value => t('views.buttun_repairFinished') %>
   </div>
-<%= link_to t('views.link_back'), repairs_path %>
+  <br>
+  <%= link_to t('views.link_back'), repairs_path %>
 </div>
+
+
 <div class="well col-md-8">
  <div class="field">
     <%= f.label :order_no %><br>
