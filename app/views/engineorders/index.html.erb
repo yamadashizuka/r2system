@@ -40,14 +40,14 @@
         <td><%= engineorder.shipped_date %></td>
         <td><%= engineorder.returning_date %></td>
 
-        <td  rowspan="2"><%= link_to '引合', edit_inquery_path(engineorder) %></td>
-        <td  rowspan="2"><%= link_to '受注', ordered_path(engineorder) %></td>
-        <td  rowspan="2"><%= link_to '引当', allocated_path(engineorder) %></td>
-        <td  rowspan="2"><%= link_to '出荷', shipped_path(engineorder) %></td>
-        <td  rowspan="2"><%= link_to '返却', returning_path(engineorder) %></td>
-        <td  rowspan="2"><%= link_to '詳細', engineorder %></td>
-        <td  rowspan="2"><%= link_to '修正', edit_engineorder_path(engineorder) %></td>
-        <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' } %></td>
+        <td  rowspan="2"><%= link_to '引合', edit_inquery_path(engineorder) , class: "workregist_work" %></td>
+        <td  rowspan="2"><%= link_to '受注', ordered_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2"><%= link_to '引当', allocated_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2"><%= link_to '出荷', shipped_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2"><%= link_to '返却', returning_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2"><%= link_to '詳細', engineorder, class: "workregist_show"  %></td>
+        <td  rowspan="2"><%= link_to '修正', edit_engineorder_path(engineorder), class: "workregist_edit"  %></td>
+        <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
 </tr>
 <tr> 
         <td><%= Engine.find(engineorder.old_engine_id).engine_name unless engineorder.old_engine_id.nil?%></td>
@@ -62,7 +62,7 @@
 <%= will_paginate @engines, :previous_label=>'≪前', :next_label=>'次≫' %>
 <br>
 <br>
-<!--
-<%= link_to '新規登録', new_engineorder_path %>
--->
 <%= link_to '新規引合',  :controller => "engineorders", :action => "inquiry" %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>

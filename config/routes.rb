@@ -38,7 +38,7 @@ R2::Application.routes.draw do
 
   devise_for :users
   
-  resources :enginemodels
+  #resources :enginemodels
 
   resources :engines do
     get :autocomplete_engine_engine_model_name, :on => :collection
