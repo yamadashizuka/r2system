@@ -67,6 +67,11 @@
     <%= f.text_area :change_comment, :disabled=> true %>
   </div>
 
+  <div class="field">
+    <%= label_tag '整備依頼書' %><br>
+
+     <%= link_to URI.decode(@repair.requestpaper_url.to_s), action: 'download_requestpaper' %>
   </div>
+</div>
 </div>
 <% end %>

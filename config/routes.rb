@@ -10,6 +10,10 @@ R2::Application.routes.draw do
 
   get 'repairs/repairFinished/:id' => 'repairs#repairFinished'
 
+  get 'repairs/download_requestpaper/:id' => 'repairs#download_requestpaper'
+
+  get 'repairs/download_checkpaper/:id' => 'repairs#download_checkpaper'
+
   get 'engines/index' => 'engines#index'
 
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'

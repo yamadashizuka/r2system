@@ -18,7 +18,11 @@
     <%= f.label :after_comment %><br>
     <%= f.text_area :after_comment %>
   </div>
-
+  <div class="field">
+    <%= f.label :checkpaper %><br>    
+    <%= f.file_field :checkpaper %> 
+  </div>
+  <br>
   <br>
   <div class="actions">
     <%= f.submit  :value => t('views.buttun_repairFinished') %>
