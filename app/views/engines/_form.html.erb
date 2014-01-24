@@ -31,6 +31,6 @@
     <%= f.collection_select( :enginestatus_id, Enginestatus.all, :id, :name, :include_blank => false ) %><br><br>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit(:confirm => t('views.confirm_msg_cmn')) %>
   </div>
 <% end %>
