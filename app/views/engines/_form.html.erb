@@ -27,9 +27,16 @@
       <%= f.hidden_field(:company_id, :value => engine_company_id) %><br>
   <% end %>
 
+  <% if from_disp == "new" %>
+  <div><%= f.label :status %><br>
+    <%= f.collection_select( :enginestatus_id, Enginestatus.where(name: "受領前"), :id, :name ) %><br><br>
+  </div>
+  <% else %>
   <div><%= f.label :status %><br>
     <%= f.collection_select( :enginestatus_id, Enginestatus.all, :id, :name, :include_blank => false ) %><br><br>
   </div>
+  <% end %>
+
   <div class="actions">
     <%= f.submit %>
   </div>

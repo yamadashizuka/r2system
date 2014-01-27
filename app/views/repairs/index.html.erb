@@ -27,7 +27,11 @@
         <td><%= repair.engine.serialno %></td>
 
         <% if current_user.yes? %>
-          <td class="workregist"><%= link_to '依頼', order_repair_path(repair) , class: "workregist_work"%></td>
+          <td class="workregist">
+            <% unless (repair.engine.finished_repair? or repair.engine.before_shipping? or repair.engine.after_shipped?) %>
+            <%= link_to '依頼', order_repair_path(repair) , class: "workregist_work" %>
+            <% end %>
+          </td>
         <% end %>
 
         <td class="workregist">
