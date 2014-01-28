@@ -245,6 +245,16 @@ class RepairsController < ApplicationController
     filename = URI.decode(Repair.find(params[:id]).checkpaper_url.to_s)
     send_file("public/#{filename}")
   end
+  
+  #未請求のリストを表示する
+  def notbilling
+    @repairs = Repair.all.paginate(page: params[:page], per_page: 10)
+  end
+
+  #未支払いのリストを表示する
+  def notpayment
+    @repairs = Repair.all.paginate(page: params[:page], per_page: 10)
+  end
 
 
   private

@@ -16,6 +16,10 @@ R2::Application.routes.draw do
 
   get 'repairs/index' => 'repairs#index'
 
+  get 'repairs/notbilling' => 'repairs#notbilling'
+
+  get 'repairs/notpayment' => 'repairs#notpayment'
+
   get 'engines/index' => 'engines#index'
 
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
