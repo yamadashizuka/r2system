@@ -195,13 +195,13 @@ class RepairsController < ApplicationController
   #整備依頼書のダウンロードを行う
   def download_requestpaper
     filename = URI.decode(Repair.find(params[:id]).requestpaper_url.to_s)
-    send_file("..#{filename}")
+    send_file("public/#{filename}")
   end
 
   #組立チェックシートのダウンロードを行う
   def download_checkpaper
-    send_file("public/images/rails.png")
-  
+    filename = URI.decode(Repair.find(params[:id]).checkpaper_url.to_s)
+    send_file("public/#{filename}")
   end
 
 
