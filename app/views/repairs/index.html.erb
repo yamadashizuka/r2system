@@ -1,5 +1,19 @@
 <h1>整備会社作業一覧</h1>
 
+<h3>検索条件</h3>
+<%= form_tag  repairs_index_path , :method => :get do %>
+<div class="well">
+  <div class ="filed">
+    ステータス
+    <%= collection_select(:search, :enginestatus_id, Enginestatus.all, :id, :name, :include_blank => true, :selected => @searched[:enginestatus_id]) %>
+  </div>
+  <br>
+<%= submit_tag "検索" %>
+<% end %>
+</div>
+
+<br />
+
 <table class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>

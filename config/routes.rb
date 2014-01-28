@@ -14,6 +14,8 @@ R2::Application.routes.draw do
 
   get 'repairs/download_checkpaper/:id' => 'repairs#download_checkpaper', :as => :checkpaper
 
+  get 'repairs/index' => 'repairs#index'
+
   get 'engines/index' => 'engines#index'
 
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
