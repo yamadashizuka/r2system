@@ -24,7 +24,7 @@
   </div>
   <div class="actions">
     <br>
-    <%= f.submit  :value => t('views.buttun_repairStarted') %>
+    <%= f.submit :value => t('views.buttun_repairStarted'), :confirm => t('views.buttun_repairStarted')+t('views.confirm_msg') %>
   </div>
   <br>
   <%= link_to t('views.link_back'), repairs_path %>
