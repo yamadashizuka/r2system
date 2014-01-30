@@ -80,7 +80,7 @@ User.create([
     userid: "AA000001", email: "aa000001@test.org", password: "password"
   },
   {
-    name: "拠点担当者(ダミー)", company: kt,
+    name: "YES拠点担当者(ダミー)", company: kt,
     userid: "KT000001", email: "kt000001@test.org", password: "password"
   },
   {
