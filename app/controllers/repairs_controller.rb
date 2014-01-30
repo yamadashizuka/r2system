@@ -116,9 +116,9 @@ class RepairsController < ApplicationController
 		    
 		    # もし整備依頼の場合は、その整備会社のユーザに整備依頼メールを送信する。
 
-#		    if params[:commit] == t('views.buttun_repairOrdered')
-#           R2mailer.sendRepairOrderMail(User.collect_emails_by_company(@repair.engine.company)  , @repair).deliver
-#        end
+        if params[:commit] == t('views.buttun_repairOrdered')
+          R2mailer.sendRepairOrderMail(User.collect_emails_by_company(@repair.engine.company), @repair, current_user).deliver
+        end
 
 		    @repair.engine.save
 		    
