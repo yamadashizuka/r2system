@@ -26,26 +26,26 @@ class ScenarioTest < AcceptanceTest
     fill_in "エンジンNo.", with: "SN0001"
     save_screenshot "scenario1-1_4_1.png"
     click_button "登録"
+    page.driver.browser.switch_to.alert.accept
     save_screenshot "scenario1-1_4_2.png"
     # 1.5. エンジン一覧画面に戻る
     click_link "戻る"
     assert has_content? "ENG0002"
     save_screenshot "scenario1-1_5.png"
     # 1.6. 受領画面を開く
-    click_link "受領登録"
-    # 返却コメントは入力できなくなった？
-    #comment = "そろそろメンテナンスをお願いします。"
-    #fill_in "返却コメント", with: comment
+    click_link "受領"
+    # 受領時は受領日の登録のみ
+    # 受領日のデフォルトは当日日付なので通常はボタン押下のみ
     save_screenshot "scenario1-1_6_1.png"
     click_button "受領登録"
+    page.driver.browser.switch_to.alert.accept
     save_screenshot "scenario1-1_6_2.png"
     # 1.7. 整備作業一覧画面に移動する
     click_link "戻る"
     within "tbody > tr" do
-      #assert_equal comment, nth_tag(:td, 8).text    # 返却コメント
-      assert_equal "ENG0002", nth_tag(:td, 7).text # エンジン型式
-      assert_equal "SN0001", nth_tag(:td, 8).text  # エンジンNo.
-      assert_equal "整備前", nth_tag(:td, 1).text  # ステータス
+      assert_equal "整備前",  nth_tag(:td, 1).text # ステータス
+      assert_equal "ENG0002", nth_tag(:td, 2).text # エンジン型式
+      assert_equal "SN0001",  nth_tag(:td, 3).text # エンジンNo.
     end
     save_screenshot "scenario1-1_7.png"
     # 1.8. サインアウトする
@@ -70,6 +70,7 @@ class ScenarioTest < AcceptanceTest
     select "15",   from: "repair[desirable_finish_date(3i)]" # 希望完成日(日)
     save_screenshot "scenario1-2_3_1.png"
     click_button "依頼"
+    page.driver.browser.switch_to.alert.accept
     save_screenshot "scenario1-2_3_2.png"
     # 2.4. 整備作業一覧画面に移動する
     click_link "戻る"
