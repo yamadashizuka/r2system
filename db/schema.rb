@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20140131999999) do
     t.string   "userid"
     t.string   "name"
     t.string   "category"
+    t.integer  "company_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
