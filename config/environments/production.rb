@@ -79,7 +79,7 @@ R2::Application.configure do
   config.log_formatter = ::Logger::Formatter.new
   
   # for Devise
-  config.action_mailer.default_url_options = { :host => ENV['HOST_URL'] } # must be changed
+  config.action_mailer.default_url_options = { :host => 'r2system.com' } # must be changed
   # メール送信機能
   config.action_mailer.delivery_method = :smtp
 
