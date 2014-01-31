@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140130050552) do
+ActiveRecord::Schema.define(version: 20140131999999) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
@@ -105,10 +105,10 @@ ActiveRecord::Schema.define(version: 20140130050552) do
     t.date     "estimated_finish_date"
     t.integer  "engine_id"
     t.date     "shipped_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string   "requestpaper"
     t.string   "checkpaper"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|
@@ -127,7 +127,6 @@ ActiveRecord::Schema.define(version: 20140130050552) do
     t.string   "category"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "company_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

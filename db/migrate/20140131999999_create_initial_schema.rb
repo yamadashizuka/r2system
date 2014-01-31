@@ -102,6 +102,8 @@ class CreateInitialSchema < ActiveRecord::Migration
       t.date     :estimated_finish_date
       t.integer  :engine_id
       t.date     :shipped_date
+      t.string   :requestpaper
+      t.string   :checkpaper
       t.timestamps
     end
 
@@ -119,7 +121,7 @@ class CreateInitialSchema < ActiveRecord::Migration
       t.string   :userid
       t.string   :name
       t.string   :category
-      t.string   :company_id
+      t.integer  :company_id
       t.timestamps
     end
 
