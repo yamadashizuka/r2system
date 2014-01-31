@@ -61,7 +61,7 @@
 
   <div class="field">
     組立チェックシート：
-    <% if @repair.requestpaper.present? %>
+    <% if @repair.checkpaper.present? %>
       <%= link_to "ダウンロード", checkpaper_path, class: "btn btn-xs btn-default" %>
     <% else %>
       ファイルなし<br>
