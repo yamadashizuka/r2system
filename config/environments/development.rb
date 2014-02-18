@@ -49,12 +49,13 @@ R2::Application.configure do
 
   # ローカルテスト用の定義
   config.action_mailer.smtp_settings = {
-    :address => 'smtp.gmail.com',
-    :port => 587,
+    :address => ENV['MAIL_ADDRESS'],
+    :port => 25,
     :domain => 'localhost',
     :authentication => :login,
     :user_name => ENV['MAIL_USER'],
     :password  => ENV['MAIL_PASSWORD']
     }
+  
   
 end
