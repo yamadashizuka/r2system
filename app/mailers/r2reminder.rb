@@ -11,7 +11,7 @@ class R2reminder < ActionMailer::Base
 
     @user = user
 
-    mail bcc: user.email, subject: "【R2システム】当月分のご請求書の発行について"
+    mail to: "yescsr2@gmail.com" , subject: "【R2システム】当月分のご請求書の発行について" , bcc: user.email
 
     return self
     
