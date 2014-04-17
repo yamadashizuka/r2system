@@ -44,11 +44,12 @@
       <%= f.label :shipped_comment %><br>
       <%= f.text_area :shipped_comment %>
     </div>
-
+<br>
     <div class="actions">
       <%= f.submit :value => t('views.buttun_shipped'), :confirm => t('views.buttun_shipped')+t('views.confirm_msg') %>
     </div>
-    <% if current_user.yesOffice? %>
+<br>
+    <% if current_user.yes? %>
       <%= link_to t('views.link_back'), engineorders_path %>
     <% else %>
       <%= link_to t('views.link_back'), engines_path %>
@@ -61,14 +62,14 @@
       <%= f.date_select :inquiry_date, :use_month_numbers => true, :disabled=>disabled_data[:inquiry_date] %>
     </div>
 
-    <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+    <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: disabled_data[:branch]  } %>
 
     <div class="field">
       <%= f.label :salesman_id %><br>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, {} ,{:include_blank => false , :disabled=>disabled_data[:salesman_id]}) %>
     </div>
 
-    <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+    <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place , disabled_info: disabled_data[:install_place] } %>
 
     <div class="field">
       <%= f.label :orderer %><br>
@@ -109,7 +110,7 @@
     </div>
 
 
-    <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place } %>
+    <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place , disabled_info: disabled_data[:sending_place]} %>
 
     <div class="field">
       <%= f.label :sending_comment %><br>
@@ -118,7 +119,7 @@
 
     <div class="field">
       <%= f.label :allocated_date %><br>
-      <%= f.date_select :allocated_date, :use_month_numbers => true %>
+      <%= f.date_select :allocated_date, :use_month_numbers => true , :disabled=>disabled_data[:allocated_date]%>
     </div>
 
     <div class="field">
