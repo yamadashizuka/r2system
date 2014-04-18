@@ -54,20 +54,14 @@
     <%= f.date_select :inquiry_date %>
   </div>
 
-  <% #引合登録以外の場合は、order_dateを表示 %>
-  <div class="field">
-    <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
-  </div>
-  
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: false} %>
   
   <div class="field">
     <%= f.label :salesman_id %><br>
    <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place , disabled_info: false} %>
   
   <div class="field">
     <%= f.label :orderer %><br>
