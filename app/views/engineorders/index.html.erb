@@ -17,7 +17,7 @@
       <% if current_user.yesOffice? %>
         <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
       <% elsif current_user.yesBranch? %>
-        <th colspan=8 rowspan=2>作業登録</th> <!-- YES	点の人の作業数だけ列を繋げる -->
+        <th colspan=6 rowspan=2>作業登録</th> <!-- YES拠点の人の作業数だけ列を繋げる -->
       <% end %>
 </tr>
 <tr>
@@ -49,8 +49,10 @@
         <td  rowspan="2"><%= link_to '出荷', shipped_path(engineorder), class: "workregist_work" %></td>
         <td  rowspan="2"><%= link_to '返却', returning_path(engineorder), class: "workregist_work" %></td>
         <td  rowspan="2"><%= link_to '詳細', engineorder, class: "workregist_show"  %></td>
-        <td  rowspan="2"><%= link_to '修正', edit_engineorder_path(engineorder), class: "workregist_edit"  %></td>
-        <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
+        <% if current_user.yesOffice? %>
+          <td  rowspan="2"><%= link_to '修正', edit_engineorder_path(engineorder), class: "workregist_edit"  %></td>
+          <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
+        <% end %>
 </tr>
 <tr> 
         <td>

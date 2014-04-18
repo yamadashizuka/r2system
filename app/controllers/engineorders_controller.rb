@@ -260,7 +260,7 @@ class EngineordersController < ApplicationController
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
       :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
-      :shipped_date, :returning_date, :returning_comment, :title,
+      :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
       :returning_place_id, :allocated_date)
   end
 end
