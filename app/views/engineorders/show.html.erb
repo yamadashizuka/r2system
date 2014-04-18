@@ -88,18 +88,55 @@
   <%= @engineorder.allocated_date %>
 </div>
 
+ <div class="field">
+   <%= Engineorder.human_attribute_name('invoice_no_new') %>：
+  <%= @engineorder.invoice_no_new %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('shipped_date') %>：
+  <%= @engineorder.shipped_date %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('shipped_comment') %>：
+  <%= @engineorder.shipped_comment %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('invoice_no_old') %>：
+  <%= @engineorder.invoice_no_old %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('returning_place_id') %>：
+  <%= Company.find(@engineorder.returning_place_id).name unless @engineorder.sending_place_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('returning_date') %>：
+  <%= @engineorder.returning_date %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('returning_comment') %>：
+  <%= @engineorder.returning_comment %>
+</div>
 
 <br>
+
  <div class="field">
    <%= Engineorder.human_attribute_name('new_engine_id') %>：
    <%= Engine.find(@engineorder.new_engine_id).engine_name unless @engineorder.new_engine_id.blank? %>
 </div>
 
-
+<%  unless current_user.tender?%>
  <div class="field">
    <%= Engineorder.human_attribute_name('old_engine_id') %>：
    <%= Engine.find(@engineorder.old_engine_id).engine_name unless @engineorder.old_engine_id.blank? %>
 </div>
+<% end %>
 
 <br>
 <% if current_user.yes? %>

@@ -82,10 +82,12 @@
     <%= f.text_field :orderer, :disabled=> disabled_data[:orderer]   %>
   </div>
 
-  <div class="field">
-    <%= f.label :old_engine_id, :disabled=> disabled_data[:inquiry_date]   %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, {}, {:include_blank => true, :disabled=> disabled_data[:old_engine_id]  } ) %>
-  </div>
+    <div class="field">
+      <%= f.label :old_engine_model_name %><br>
+      <%= text_field_tag 'engine_model_name', @engineorder.old_engine.engine_model_name, :disabled=>true %><br>
+      <%= f.label :old_serialno %><br>
+      <%= text_field_tag 'serialno', @engineorder.old_engine.serialno, :disabled=>true %><br>
+     </div>
 
 
   <div class="field">
@@ -124,10 +126,12 @@
     <%= f.date_select :allocated_date, :use_month_numbers => true , :disabled=> disabled_data[:allocated_date]  %>
   </div>
 
-  <div class="field">
-    <%= f.label :new_engine_id %><br>
-    <%= f.collection_select( :new_engine_id, Engine.all, :id, :engine_name, {}, {:include_blank => true , :disabled=> disabled_data[:new_engine_id] } ) %>
-  </div>
+    <div class="field">
+        <%= f.label :new_engine_model_name %><br>
+      <%= text_field_tag 'engine_model_name', @engineorder.new_engine.engine_model_name, :disabled=> true %><br>
+        <%= f.label :new_serialno %><br>
+      <%= text_field_tag 'serialno', @engineorder.new_engine.serialno, :disabled=> true %><br>
+    </div>
   
   <div class="field">
     <%= f.label :shipped_date %><br>

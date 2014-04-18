@@ -74,10 +74,13 @@
    <%= f.collection_select( :salesman_id, User.all, :id, :name, {}, {:include_blank => false,:disabled => disabled_data[:salesman_id] } ) %>
   </div>
 
-  <div class="field">
-    <%= f.label :old_engine_id %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, {}, {:include_blank => true ,:disabled=> disabled_data[:old_engine_id] } )%>
-  </div>
+    <div class="field">
+      <%= f.label :old_engine_model_name %><br>
+      <%= text_field_tag 'engine_model_name', @engineorder.old_engine.engine_model_name, :disabled=>true %><br>
+      <%= f.label :old_serialno %><br>
+      <%= text_field_tag 'serialno', @engineorder.old_engine.serialno, :disabled=>true %><br>
+     </div>
+
 
   <div class="field">
     <%= f.label :time_of_running %><br>
