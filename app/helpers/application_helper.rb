@@ -1,5 +1,5 @@
 module ApplicationHelper
   def anchor_path
-    flash[:anchor_path] || :back
+    controller.anchor_path
   end
 end

@@ -92,7 +92,7 @@ class EngineordersController < ApplicationController
   def destroy
     @engineorder.destroy
     respond_to do |format|
-      format.html { redirect_to engineorders_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end
