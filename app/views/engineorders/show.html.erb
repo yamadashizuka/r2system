@@ -143,7 +143,7 @@
   <% if current_user.yesOffice? %>
     <%= link_to t('views.link_edit'), edit_engineorder_path(@engineorder) %> |
   <% end %>
-  <%= link_to t('views.link_back'), previous_path_like(engineorders_path) %>
+  <%= link_to t('views.link_back'), anchor_path %>
 <% else %>
-  <%= link_to t('views.link_back'), previous_path_like(repairs_path) %>
+  <%= link_to t('views.link_back'), anchor_path %>
 <% end %>

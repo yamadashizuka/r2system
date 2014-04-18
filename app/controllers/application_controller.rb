@@ -7,8 +7,6 @@ class ApplicationController < ActionController::Base
     
   before_filter :configure_permitted_parameters, if: :devise_controller?
 
-  after_filter :crumble_bread, only: [:index, :show]
-
   protected
 
   def configure_permitted_parameters
@@ -16,10 +14,13 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:userid, :name, :email, :password, :remember_me) }
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:userid, :name, :email, :password, :password_confirmation, :current_password, :category, :company_id) }
   end
-  
-  def crumble_bread
-    session[:breadcrumbs] ||= []
-    session[:breadcrumbs].pop unless session[:breadcrumbs].size < 5
-    session[:breadcrumbs].unshift(request.original_fullpath)
+
+  private
+  def anchor!
+    flash[:anchor_path] = request.original_fullpath
+  end
+
+  def keep_anchor!
+    flash.keep(:anchor_path)
   end
 end
