@@ -14,5 +14,13 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:userid, :name, :email, :password, :remember_me) }
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:userid, :name, :email, :password, :password_confirmation, :current_password, :category, :company_id) }
   end
-  
+
+  private
+  def anchor!
+    flash[:anchor_path] = request.original_fullpath
+  end
+
+  def keep_anchor!
+    flash.keep(:anchor_path)
+  end
 end

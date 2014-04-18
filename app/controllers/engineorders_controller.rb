@@ -1,6 +1,9 @@
 class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :edit, :create, :update, :inquiry]
+
   # GET /engineorders
   # GET /engineorders.json
   def index
