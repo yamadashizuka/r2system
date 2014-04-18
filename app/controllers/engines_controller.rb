@@ -1,6 +1,9 @@
 class EnginesController < ApplicationController
   before_action :set_engine, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update]
+
   autocomplete :engine, :engine_model_name, :full => true #, :extra_data => [:default_client_id, :default_client_name]
   
   # GET /engines
@@ -130,7 +133,7 @@ class EnginesController < ApplicationController
   def destroy
     @engine.destroy
     respond_to do |format|
-      format.html { redirect_to engines_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end

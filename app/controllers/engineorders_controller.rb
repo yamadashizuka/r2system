@@ -1,6 +1,9 @@
 class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :edit, :create, :update, :inquiry]
+
   # GET /engineorders
   # GET /engineorders.json
   def index
@@ -89,7 +92,7 @@ class EngineordersController < ApplicationController
   def destroy
     @engineorder.destroy
     respond_to do |format|
-      format.html { redirect_to engineorders_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end
