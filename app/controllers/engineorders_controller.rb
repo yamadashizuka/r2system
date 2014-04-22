@@ -1,10 +1,14 @@
 class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning]
+
   # GET /engineorders
   # GET /engineorders.json
   def index
     @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
   end
 
   # GET /engineorders/1
@@ -89,7 +93,7 @@ class EngineordersController < ApplicationController
   def destroy
     @engineorder.destroy
     respond_to do |format|
-      format.html { redirect_to engineorders_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end
@@ -260,7 +264,7 @@ class EngineordersController < ApplicationController
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
       :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
-      :shipped_date, :returning_date, :returning_comment, :title,
+      :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
       :returning_place_id, :allocated_date)
   end
 end
