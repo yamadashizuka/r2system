@@ -27,4 +27,10 @@ class ApplicationController < ActionController::Base
   def keep_anchor!
     flash.keep(:anchor_path)
   end
+
+  def adjust_page(paginated_rel, action = :index)
+    if paginated_rel.out_of_bounds?
+      redirect_to action: action, page: paginated_rel.total_pages
+    end
+  end
 end

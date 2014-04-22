@@ -81,7 +81,7 @@ class EnginesController < ApplicationController
     # deprecated 警告が出たので、外に出しました。
 #    @engines = Engine.where(cond.reduce(&:and)).order(:id).paginate(page: params[:page], per_page: 10)
     @engines = Engine.where(cond.reduce(&:and)).order(:enginestatus_id,:engine_model_name,:serialno).paginate(page: params[:page], per_page: 10)
-
+    adjust_page(@engines)
   end
 
   # GET /engines/1
