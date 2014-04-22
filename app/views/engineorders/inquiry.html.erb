@@ -25,7 +25,20 @@
     <%= f.date_select :inquiry_date, :use_month_numbers => true %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+    <% if current_user.yesOffice? %>
+    <div>
+      <%= f.label :branch %><br>
+      <%= f.collection_select( :branch_id, Company.all, :id, :name, :include_blank => false ) %><br>	<br>
+    </div>
+  <% else %>
+    <% if @engineorder.branch_id.nil? %>
+      <% branch_id = current_user.company_id %>
+    <% else %> 
+      <% branch_id = @engineorder.branch_id %>
+    <% end %>
+  <% end %>
+
+
 
   <div class="field">
     <%= f.label :salesman_id %><br>
