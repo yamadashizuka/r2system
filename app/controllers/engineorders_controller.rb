@@ -2,12 +2,13 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :edit, :create, :update, :inquiry]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning]
 
   # GET /engineorders
   # GET /engineorders.json
   def index
     @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
   end
 
   # GET /engineorders/1
