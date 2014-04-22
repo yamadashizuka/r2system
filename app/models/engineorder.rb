@@ -1,5 +1,3 @@
-require 'engine'
-
 class Engineorder < ActiveRecord::Base
   #Association
   # engine.status と同様に、DB スキーマを変更せずに order.status で
@@ -17,6 +15,8 @@ class Engineorder < ActiveRecord::Base
   belongs_to :registered_user, :class_name => 'User' 
   belongs_to :updated_user, :class_name => 'User' 
   belongs_to :salesman, :class_name => 'User' 
+  belongs_to :company
+  
 
   # 仕掛中の受注のみを抽出するスコープ (返却日が設定済みなら完了と見なす)
   # ActiveRecord のスコープ機能を使って、よく使う「仕掛かり中？」条件に名前を付
