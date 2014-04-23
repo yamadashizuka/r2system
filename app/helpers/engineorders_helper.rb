@@ -166,7 +166,7 @@ end
       link_to "受注の取り消し(未実装)", "#"
     when Businessstatus::ID_SHIPPING_PREPARATION  # 出荷準備中
       # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
-      link_to "引当の取り消し", undo_allocation_path(engineorder)
+      link_to "引当の取り消し", undo_allocation_path(engineorder), confirm: "引当を取り消してもよろしいですか？" # TODO: confirm 文言を locales/* 登録
     when Businessstatus::ID_SHIPPED  # 出荷済
       # TODO: 未実装
       # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
