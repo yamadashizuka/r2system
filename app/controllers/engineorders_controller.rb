@@ -143,36 +143,20 @@ class EngineordersController < ApplicationController
   def undo_allocation
     set_engineorder
 
-    # 引当の取り消しは、
-    #   1. エンジンオーダの状態 == 出荷準備中
-    #   2. エンジンオーダに新エンジンが割り当て済み
-    #   3. 新エンジンの状態 == 出荷準備中
-    # が前提条件
-    if @engineorder.shipping_preparation? &&
-        new_engine = @engineorder.new_engine and new_engine.before_shipping?
-      # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
-      # のトランザクションにまとめる
-      ActiveRecord::Base.transaction do
-        # 新エンジンの状態を "完成品" に戻す
-        new_engine.status = Enginestatus.of_finished_repair
-        new_engine.save!
-        # 引当時に新規入力した項目をクリア
-        @engineorder.new_engine = nil
-        @engineorder.allocated_date = nil
-        @engineorder.save!
-      end
-
-      # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+    # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
+    # のトランザクションにまとめる
+    ActiveRecord::Base.transaction do
       respond_to do |format|
-        format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_undone") }
-        format.json { head :no_content }
-      end
-    else
-      # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ詳細
-      # 画面の notice メッセージとして、その旨を通知
-      respond_to do |format|
-        format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_not_undoable") }
-        format.json { head :no_content }
+        if @engineorder.undo_allocation
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_undone") }
+          format.json { head :no_content }
+        else
+          # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_not_undoable") }
+          format.json { head :no_content }
+        end
       end
     end
   rescue

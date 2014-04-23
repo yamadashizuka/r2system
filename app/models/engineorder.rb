@@ -156,4 +156,25 @@ class Engineorder < ActiveRecord::Base
     repair.day_of_test       = self.day_of_test
   end
   
+  # 引当を取り消す
+  def undo_allocation
+    # 引当の取り消しは、
+    #   1. エンジンオーダの状態 == 出荷準備中
+    #   2. エンジンオーダに新エンジンが割り当て済み
+    #   3. 新エンジンの状態 == 出荷準備中
+    # が前提条件
+    if self.shipping_preparation? &&
+        new_engine = self.new_engine and new_engine.before_shipping?
+      # 新エンジンの状態を "完成品" に戻す
+      new_engine.status = Enginestatus.of_finished_repair
+      new_engine.save!
+      # 引当時に新規入力した項目をクリア
+      self.new_engine = nil
+      self.allocated_date = nil
+      self.save!
+      true
+    else
+      false
+    end
+  end
 end
