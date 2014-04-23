@@ -10,10 +10,7 @@
   <%= @engineorder.title %>
 </div>
 
- <div class="field">
-   <%= Engineorder.human_attribute_name('businessstatus_id') %>：
-  <%= Businessstatus.find(@engineorder.businessstatus_id).name %>
-</div>
+<%= render "status" %>
 
 <br>
 
