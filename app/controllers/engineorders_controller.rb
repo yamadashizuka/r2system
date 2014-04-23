@@ -2,7 +2,7 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
 
   # GET /engineorders
   # GET /engineorders.json
@@ -137,6 +137,32 @@ class EngineordersController < ApplicationController
   # 返却の処理
   def returning
     set_engineorder
+  end
+
+  # 引当の取り消し
+  def undo_allocation
+    set_engineorder
+
+    # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
+    # のトランザクションにまとめる
+    ActiveRecord::Base.transaction do
+      respond_to do |format|
+        if @engineorder.undo_allocation
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_undone") }
+          format.json { head :no_content }
+        else
+          # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_not_undoable") }
+          format.json { head :no_content }
+        end
+      end
+    end
+  rescue
+    # 引当の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
   end
 
   def editByStatus
