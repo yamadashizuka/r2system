@@ -37,7 +37,6 @@
   <% end %>
 
 
-
   <div class="field">
     <%= f.label :salesman_id %><br>
    <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
