@@ -28,11 +28,12 @@
     <% if current_user.yesOffice? %>
       <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch,disabled_info: false } %>
     <% else %>
-    <% if @engineorder.branch_id.nil? %>
-      <% branch_id = current_user.company_id %>
+    <% if @engineorder.branch.nil? %>
+      <% order_branch_id = current_user.company_id %>
     <% else %> 
-      <% branch_id = @engineorder.branch_id %>
+      <% oder_branch_id = @engineorder.branch %>
     <% end %>
+    <%= f.hidden_field(:branch_id, :value => order_branch_id) %><br>
   <% end %>
 
 
