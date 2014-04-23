@@ -154,4 +154,31 @@ def getDisabled_Returning
   end
 end
 
+  def undo_link(engineorder)
+    case engineorder.status.id
+    when Businessstatus::ID_INQUIRY  # 引合
+      # TODO: 未実装
+      # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
+      link_to "引合の取り消し(未実装)", "#"
+    when Businessstatus::ID_ORDERED  # 受注
+      # TODO: 未実装
+      # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
+      link_to "受注の取り消し(未実装)", "#"
+    when Businessstatus::ID_SHIPPING_PREPARATION  # 出荷準備中
+      # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
+      link_to "引当の取り消し", undo_allocation_path(engineorder)
+    when Businessstatus::ID_SHIPPED  # 出荷済
+      # TODO: 未実装
+      # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
+      link_to "出荷の取り消し(未実装)", "#"
+    when Businessstatus::ID_RETURNED  # 返却済
+      # TODO: 未実装
+      # TODO: 一覧画面のリンクキャプションを locales/* に登録して、ここでも同じキーで引いてくること
+      link_to "返却の取り消し(未実装)", "#"
+    when Businessstatus::ID_CANCELED  # キャンセル
+      # TODO: 未実装
+      # エンジンオーダをキャンセル状態にするユースケースは無い？
+      raise "Not implemented"
+    end
+  end
 end

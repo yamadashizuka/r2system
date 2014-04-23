@@ -35,12 +35,20 @@ class Engineorder < ActiveRecord::Base
   # あと、冗長な self. 指定も削りました。
   alias :_orig_new_engine= :new_engine=
   def new_engine=(engine)
-    if new_engine && new_engine != engine
-      # 新エンジンが指定済みの場合は、その新エンジンをサスペンド状態に変更する
-      new_engine.suspend!
-      new_engine.save
+    if engine
+      if new_engine && new_engine != engine
+        # 新エンジンが指定済みの場合は、その新エンジンをサスペンド状態に変更する
+        new_engine.suspend!
+        new_engine.save
+      end
+    else
+      # エンジンオーダの新エンジンを nil に更新する (引当を取り消す) ので、
+      # エンジンオーダが "出荷準備中" 状態の場合、"受注" 状態に戻す
+      if new_engine && self.shipping_preparation?
+        self.status = Businessstatus.of_ordered
+      end
     end
-    _orig_new_engine = engine
+    self._orig_new_engine = engine
   end
 
   # 旧エンジンをセットする

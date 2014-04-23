@@ -2,7 +2,7 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
 
   # GET /engineorders
   # GET /engineorders.json
@@ -137,6 +137,48 @@ class EngineordersController < ApplicationController
   # 返却の処理
   def returning
     set_engineorder
+  end
+
+  # 引当の取り消し
+  def undo_allocation
+    set_engineorder
+
+    # 引当の取り消しは、
+    #   1. エンジンオーダの状態 == 出荷準備中
+    #   2. エンジンオーダに新エンジンが割り当て済み
+    #   3. 新エンジンの状態 == 出荷準備中
+    # が前提条件
+    if @engineorder.shipping_preparation? &&
+        new_engine = @engineorder.new_engine and new_engine.before_shipping?
+      # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
+      # のトランザクションにまとめる
+      ActiveRecord::Base.transaction do
+        # 新エンジンの状態を "完成品" に戻す
+        new_engine.status = Enginestatus.of_finished_repair
+        new_engine.save!
+        # 引当時に新規入力した項目をクリア
+        @engineorder.new_engine = nil
+        @engineorder.allocated_date = nil
+        @engineorder.save!
+      end
+
+      # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+      respond_to do |format|
+        format.html { redirect_to @engineorder, notice: "引当を取り消しました" }  # TODO: 文言を locales/* に登録すること
+        format.json { head :no_content }
+      end
+    else
+      # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ詳細
+      # 画面の notice メッセージとして、その旨を通知
+      respond_to do |format|
+        format.html { redirect_to @engineorder, notice: "引当を取り消せません" }  # TODO: 文言を locales/* に登録すること
+        format.json { head :no_content }
+      end
+    end
+  rescue
+    # 引当の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
   end
 
   def editByStatus
