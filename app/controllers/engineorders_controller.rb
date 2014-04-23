@@ -164,14 +164,14 @@ class EngineordersController < ApplicationController
 
       # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
       respond_to do |format|
-        format.html { redirect_to @engineorder, notice: "引当を取り消しました" }  # TODO: 文言を locales/* に登録すること
+        format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_undone") }
         format.json { head :no_content }
       end
     else
       # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ詳細
       # 画面の notice メッセージとして、その旨を通知
       respond_to do |format|
-        format.html { redirect_to @engineorder, notice: "引当を取り消せません" }  # TODO: 文言を locales/* に登録すること
+        format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_not_undoable") }
         format.json { head :no_content }
       end
     end
