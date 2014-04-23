@@ -7,8 +7,17 @@ class EngineordersController < ApplicationController
   # GET /engineorders
   # GET /engineorders.json
   def index
+  	  
+  	if current_user.yesOffice?
     @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
     adjust_page(@engineorders)
+    
+    else
+    
+    @engineorders = Engineorder.where(:branch_id => current_user.company_id).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
+    
+    end
   end
 
   # GET /engineorders/1
