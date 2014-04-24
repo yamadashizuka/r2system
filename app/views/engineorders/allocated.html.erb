@@ -37,12 +37,10 @@
   </div>
   
   <div class="field">
-    <%= f.label :new_engine_id %><br>
-    <% if @engineorder.new_engine.nil? %>
-      <%= f.collection_select( :new_engine_id, Engine.completed.load, :id, :engine_name, :include_blank => true ) %>
-    <% else %>
-      <%= f.collection_select( :new_engine_id, Engine.completed.load.unshift(@engineorder.new_engine), :id, :engine_name, :include_blank => true ) %>
-    <% end %>
+    <label for="new_engine_field">新規エンジン</label>
+    <div id="new_engine_field" style="margin-left: 20px">
+      <%= render "engine_field", form: f, parent: @engineorder, assoc_name: :new_engine, selects: [:completed], include_blank: true %>
+    </div>
   </div>
 <br>
   <div class="actions">

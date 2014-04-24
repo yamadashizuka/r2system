@@ -81,6 +81,21 @@ class EngineordersController < ApplicationController
   # PATCH/PUT /engineorders/1
   # PATCH/PUT /engineorders/1.json
   def update
+    # 入力されたエンジンが未登録の場合、事前に登録する
+    #   1. 新規エンジン
+    #     管轄がユーザの会社である "完成品" 状態のエンジンとして登録
+    #   2. 返却エンジン
+    #     未対応
+    ensure_existence_of_engine(:new_engine, current_user.company, Enginestatus.of_finished_repair)
+
+    # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
+    # と異なる場合、一旦引当の取消が必要と判断する
+    if new_engine = @engineorder.new_engine
+      unless new_engine.id == engineorder_params[:new_engine_id]
+        @engineorder.undo_allocation
+      end
+    end
+
     # 流通ステータスをセットする。(privateメソッド)
     setBusinessstatus
 
@@ -282,6 +297,17 @@ class EngineordersController < ApplicationController
     engine_id = params[:engineorder][:old_engine_id]
     unless engine_id.blank?
       @engineorder.old_engine = Engine.find(engine_id)
+    end
+  end
+
+  def ensure_existence_of_engine(assoc_name, company, status)
+    if attrs = params[:engineorder].delete("#{assoc_name}_attributes".intern)
+      params[:engineorder]["#{assoc_name}_id".intern] =
+        Engine.find_or_create_by(engine_model_name: attrs[:engine_model_name],
+                                 serialno: attrs[:serialno]) { |engine|
+          engine.status = status
+          engine.company = company
+        }.id
     end
   end
 
