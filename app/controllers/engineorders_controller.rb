@@ -2,13 +2,22 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
 
   # GET /engineorders
   # GET /engineorders.json
   def index
+  	  
+  	if current_user.yesOffice?
     @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
     adjust_page(@engineorders)
+    
+    else
+    
+    @engineorders = Engineorder.where(:branch_id => current_user.company_id).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
+    
+    end
   end
 
   # GET /engineorders/1
@@ -72,6 +81,21 @@ class EngineordersController < ApplicationController
   # PATCH/PUT /engineorders/1
   # PATCH/PUT /engineorders/1.json
   def update
+    # 入力されたエンジンが未登録の場合、事前に登録する
+    #   1. 新規エンジン
+    #     管轄がユーザの会社である "完成品" 状態のエンジンとして登録
+    #   2. 返却エンジン
+    #     未対応
+    ensure_existence_of_engine(:new_engine, current_user.company, Enginestatus.of_finished_repair)
+
+    # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
+    # と異なる場合、一旦引当の取消が必要と判断する
+    if new_engine = @engineorder.new_engine
+      unless new_engine.id == engineorder_params[:new_engine_id]
+        @engineorder.undo_allocation
+      end
+    end
+
     # 流通ステータスをセットする。(privateメソッド)
     setBusinessstatus
 
@@ -137,6 +161,32 @@ class EngineordersController < ApplicationController
   # 返却の処理
   def returning
     set_engineorder
+  end
+
+  # 引当の取り消し
+  def undo_allocation
+    set_engineorder
+
+    # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
+    # のトランザクションにまとめる
+    ActiveRecord::Base.transaction do
+      respond_to do |format|
+        if @engineorder.undo_allocation
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_undone") }
+          format.json { head :no_content }
+        else
+          # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_not_undoable") }
+          format.json { head :no_content }
+        end
+      end
+    end
+  rescue
+    # 引当の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
   end
 
   def editByStatus
@@ -247,6 +297,17 @@ class EngineordersController < ApplicationController
     engine_id = params[:engineorder][:old_engine_id]
     unless engine_id.blank?
       @engineorder.old_engine = Engine.find(engine_id)
+    end
+  end
+
+  def ensure_existence_of_engine(assoc_name, company, status)
+    if attrs = params[:engineorder].delete("#{assoc_name}_attributes".intern)
+      params[:engineorder]["#{assoc_name}_id".intern] =
+        Engine.find_or_create_by(engine_model_name: attrs[:engine_model_name],
+                                 serialno: attrs[:serialno]) { |engine|
+          engine.status = status
+          engine.company = company
+        }.id
     end
   end
 
