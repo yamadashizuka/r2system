@@ -1,3 +1,4 @@
+#encoding: UTF-8
 module EngineordersHelper
 
 #画面上の編集可否を返す（受注画面）
