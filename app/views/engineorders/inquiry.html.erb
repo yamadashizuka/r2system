@@ -39,7 +39,11 @@
 
   <div class="field">
     <%= f.label :salesman_id %><br>
-   <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
+    <% if current_user.yesOffice? %>
+      <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false, :selected => current_user.id ) %>
+    <% else %>
+      <%= f.collection_select( :salesman_id, User.all, :id, :name, options = {:include_blank => true, :selected => current_user.id}, html_options = {:disabled => :disabled} ) %>
+    <% end %>
   </div>
 
   <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place,disabled_info: false } %>
