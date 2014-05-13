@@ -46,7 +46,16 @@
     <% end %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place,disabled_info: false } %>
+
+  <div class="field">
+★郵便番号のみテスト中★
+<%=  @engineorder.install_place %>
+<% f.label :install_place %>
+  <% f.fields_for :install_place, @engineorder.install_place do |ip| %>
+    <%= ip.label :postcode %>
+    <%= ip.text_field :postcode %>
+  <% end %>
+</div>
 
   <div class="field">
     <%= f.label :orderer %><br>

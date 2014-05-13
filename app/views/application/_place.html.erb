@@ -1,0 +1,19 @@
+<%= f.label (attr_name + "_id").to_sym %><br>
+  <% unless orderinfo.nil? %>
+  <%= fields_for orderinfo.install_place do |ip| %>
+  <table>
+    <tr>
+      <td>(郵便番号)<%= ip.text_field :postcode , :size => 8 ,:disabled => disabled_info %></td>
+    </tr>
+    <tr>
+      <td>(住所)<%= ip.text_field :address , :size => 40 ,:disabled => disabled_info %></td>
+    </tr>
+    <tr>
+      <td>(電話番号)<%= ip.text_field :phone_no , :size => 15 ,:disabled => disabled_info %></td>
+    </tr>
+    <tr>
+      <td>(担当者)<%= ip.text_field :destination_name , :size => 20 ,:disabled => disabled_info %></td>
+    </tr>
+  </table>
+<% end %>
+<% end %>
