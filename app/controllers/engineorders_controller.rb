@@ -28,10 +28,14 @@ class EngineordersController < ApplicationController
   # GET /engineorders/new
   def new
     @engineorder = Engineorder.new
+    @engineorder.install_place = Place.new
   end
 
   # GET /engineorders/1/edit
   def edit
+    if @engineorder.install_place.nil?
+      @engineorder.install_place = Place.new
+    end
     #流通ステータスでレンダリング先を変える。
     # switch 文のような if 文の並びは case 文で書くとすっきりします。
     # 受注オブジェクトの状態問い合わせメソッドを lower-camel-case から
@@ -140,6 +144,7 @@ class EngineordersController < ApplicationController
       else
         @engineorder = Engineorder.new
       end
+        @engineorder.install_place = Place.new
     end
   end
 
@@ -208,8 +213,8 @@ class EngineordersController < ApplicationController
       # 出荷画面からの更新の場合
       # 新エンジンのステータスを出荷済みにセットする。
       @engineorder.new_engine.status = Enginestatus.of_after_shipping
-      # 新エンジンの会社を設置先に変更し、DBに反映する
-      @engineorder.new_engine.company = @engineorder.install_place
+      # 新エンジンの会社を拠点に変更し、DBに反映する
+      @engineorder.new_engine.company = @engineorder.branch
       @engineorder.new_engine.save
       # 出荷しようとしている新エンジンに関わる整備オブジェクトを取得する
       if repair = @engineorder.repair_for_new_engine
@@ -314,18 +319,21 @@ class EngineordersController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_engineorder
     @engineorder = Engineorder.find(params[:id])
+    if @engineorder.install_place.nil?
+      @engineorder.install_place = Place.new
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def engineorder_params
     params.require(:engineorder).permit(
       :issue_no, :inquiry_date, :registered_user_id, :updated_user_id,
-      :branch_id, :salesman_id, :install_place_id, :orderer, :machine_no,
+      :branch_id, :salesman_id, :install_place, :install_place_id, :orderer, :machine_no,
       :time_of_running, :change_comment, :order_date, :sending_place_id,
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
       :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date)
+      :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])
   end
 end

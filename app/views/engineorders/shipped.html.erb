@@ -69,7 +69,36 @@
       <%= f.collection_select( :salesman_id, User.all, :id, :name, {} ,{:include_blank => false , :disabled=>disabled_data[:salesman_id]}) %>
     </div>
 
-    <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place , disabled_info: disabled_data[:install_place] } %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :install_place_id %>
+    <%= f.fields_for :install_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:install_place]  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:install_place]   %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
 
     <div class="field">
       <%= f.label :orderer %><br>

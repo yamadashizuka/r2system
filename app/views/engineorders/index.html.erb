@@ -33,7 +33,7 @@
       <tr>
         <td rowspan="2" class="vtop"><%= engineorder.status.name %></td>
         <td rowspan="2" class="vtop"><%= engineorder.title %></td>
-        <td rowspan="2" class="vtop"><%= Company.find(engineorder.install_place_id).name unless engineorder.install_place_id.nil? %></td>
+        <td rowspan="2" class="vtop"><%= Place.find(engineorder.install_place_id).name unless engineorder.install_place_id.nil? %></td>
         <td rowspan="2" class="vtop"><%= engineorder.issue_no %></td>
 
         <td><%= engineorder.inquiry_date %></td>
