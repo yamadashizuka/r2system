@@ -33,6 +33,9 @@ class EngineordersController < ApplicationController
 
   # GET /engineorders/1/edit
   def edit
+    if @engineorder.install_place.nil?
+      @engineorder.install_place = Place.new
+    end
     #流通ステータスでレンダリング先を変える。
     # switch 文のような if 文の並びは case 文で書くとすっきりします。
     # 受注オブジェクトの状態問い合わせメソッドを lower-camel-case から
@@ -316,6 +319,9 @@ class EngineordersController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_engineorder
     @engineorder = Engineorder.find(params[:id])
+    if @engineorder.install_place.nil?
+      @engineorder.install_place = Place.new
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
@@ -328,6 +334,6 @@ class EngineordersController < ApplicationController
       :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date,:install_place_attributes => [:id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])
+      :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])
   end
 end

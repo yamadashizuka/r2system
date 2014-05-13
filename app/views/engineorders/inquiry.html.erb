@@ -3,7 +3,6 @@
 <h1>引合登録</h1>
 
 <%= form_for(@engineorder) do |f| %>
-
   <%= render "errormsg" , modeldata: @engineorder %>
 
   <div class="field">
@@ -46,16 +45,36 @@
     <% end %>
   </div>
 
-
+<!-- のちほど別erbに切り出す。-->
   <div class="field">
-★郵便番号のみテスト中★
-<%=  @engineorder.install_place %>
-<% f.label :install_place %>
-  <% f.fields_for :install_place, @engineorder.install_place do |ip| %>
-    <%= ip.label :postcode %>
-    <%= ip.text_field :postcode %>
-  <% end %>
-</div>
+    <%= f.label :install_place_id %>
+    <%= f.fields_for :install_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> false %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> false  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> false %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> false %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> false %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
 
   <div class="field">
     <%= f.label :orderer %><br>

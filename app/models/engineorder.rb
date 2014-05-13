@@ -13,7 +13,7 @@ class Engineorder < ActiveRecord::Base
   belongs_to :returning_place, :class_name => 'Company' 
 
   #場所（設置場所）
-  belongs_to :install_place,   :class_name => 'Place' 
+  belongs_to :install_place,   :class_name => 'Place' , foreign_key: 'install_place_id'
   accepts_nested_attributes_for :install_place
 
 
