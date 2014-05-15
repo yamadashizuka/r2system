@@ -39,7 +39,9 @@
   <div class="field">
     <label for="new_engine_field">新規エンジン</label>
     <div id="new_engine_field" style="margin-left: 20px">
-      <%= render "engine_field", form: f, parent: @engineorder, assoc_name: :new_engine, selects: [:completed], include_blank: true %>
+    <%= f.collection_select( :engine_model_name, @engine, :id, :engine_model_name, {},{:include_blank => false,:disabled=> disabled_data[:enginestatus_id] }) %>
+    
+    
     </div>
   </div>
 <br>
