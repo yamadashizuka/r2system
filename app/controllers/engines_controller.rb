@@ -31,8 +31,8 @@ class EnginesController < ApplicationController
         # 方が性能も可読性もあがると思いました。
 
         #YES本社の場合は、初期表示では条件を使用しないため、
-        #本社以外の場合に、検索条件をセットする。
-        unless current_user.yesOffice?
+        #本社以外の場合に、検索条件をセットする。(システム管理者もYES本社と同じ扱い)
+        unless (current_user.yesOffice? || current_user.systemAdmin?)
           @searched[:company_id] = current_user.company_id
         end
       else

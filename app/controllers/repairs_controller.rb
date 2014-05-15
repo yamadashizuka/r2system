@@ -51,7 +51,7 @@ class RepairsController < ApplicationController
 
     #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
     #※管轄が変わると表示されなくなるので注意が必要…
-    unless current_user.yesOffice?
+    unless (current_user.yesOffice? || current_user.systemAdmin? )
       cond.push(arel[:company_id].eq current_user.company_id)
     end
     

@@ -24,13 +24,13 @@
     <%= f.date_select :inquiry_date, :use_month_numbers => true , :start_year => 2005%>
   </div>
 
-    <% if current_user.yesOffice? %>
+    <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch,disabled_info: false } %>
     <% else %>
     <% if @engineorder.branch.nil? %>
       <% order_branch_id = current_user.company_id %>
     <% else %> 
-      <% oder_branch_id = @engineorder.branch %>
+      <% order_branch_id = @engineorder.branch.id %>
     <% end %>
     <%= f.hidden_field(:branch_id, :value => order_branch_id) %><br>
   <% end %>
@@ -38,7 +38,7 @@
 
   <div class="field">
     <%= f.label :salesman_id %><br>
-    <% if current_user.yesOffice? %>
+    <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false, :selected => current_user.id ) %>
     <% else %>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, options = {:include_blank => true, :selected => current_user.id}, html_options = {:disabled => :disabled} ) %>
@@ -83,10 +83,20 @@
 
 
   <div class="field">
-    <%= f.label :old_engine_id %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+    <%= f.label :old_engine %>
+    <%= f.fields_for :old_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td><%= engine_form.collection_select :engine_model_name, Enginemodel.all, :modelcode, :name, include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td><%= engine_form.text_field :serialno %></td>
+        </tr>
+      </table>
+    <% end %>
   </div>
-
 
   <div class="field">
     <%= f.label :time_of_running %><br>
@@ -116,7 +126,7 @@
 <br>
 
   <div class="actions">
-    <%= f.submit :value => t('views.buttun_inquiry'), :confirm => t('views.buttun_inquiry')+t('views.confirm_msg') %>
+    <%= f.submit :value => t('views.buttun_inquiry'), data: {confirm: t('views.buttun_inquiry')+t('views.confirm_msg')} %>
   </div>
 <% end %>
 
