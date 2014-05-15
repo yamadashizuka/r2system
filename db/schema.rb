@@ -87,16 +87,6 @@ ActiveRecord::Schema.define(version: 20140513012540) do
     t.datetime "updated_at"
   end
 
-  create_table "installplaces", force: true do |t|
-    t.string   "name"
-    t.string   "postcode"
-    t.string   "address"
-    t.string   "phone_no"
-    t.string   "destination_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "places", force: true do |t|
     t.string   "name"
     t.string   "category"
