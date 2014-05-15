@@ -4,7 +4,7 @@ module EngineordersHelper
 #画面上の編集可否を返す（受注画面）
 def getDisabled_Ordered
   #本社の人は編集可能
-  if current_user.yesOffice?
+  if current_user.yesOffice? || current_user.systemAdmin?
     return {
       :inquiry_date => false,
       :branch => false,
@@ -33,7 +33,7 @@ end
 
 #画面上の編集可否を返す（引当画面）
 def getDisabled_Allocated
-  if current_user.yesOffice?
+  if current_user.yesOffice? || current_user.systemAdmin?
     return {
       :inquiry_date => false,
       :order_date => false,
@@ -70,7 +70,7 @@ end
 
 	#画面上の編集可否を返す（出荷画面）
 def getDisabled_Shipped
-  if current_user.yesOffice?
+  if current_user.yesOffice? || current_user.systemAdmin?
     return {
       :inquiry_date => false,
       :order_date => false,

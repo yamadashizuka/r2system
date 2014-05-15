@@ -137,7 +137,7 @@
 
 <br>
 <% if current_user.yes? %>
-  <% if current_user.yesOffice? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
     <%= link_to t('views.link_edit'), edit_engineorder_path(@engineorder) %> |
   <% end %>
   <%= link_to t('views.link_back'), anchor_path %>

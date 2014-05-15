@@ -8,7 +8,7 @@ class EngineordersController < ApplicationController
   # GET /engineorders.json
   def index
   	  
-  	if current_user.yesOffice?
+  	if current_user.yesOffice? || current_user.systemAdmin?
     @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
     adjust_page(@engineorders)
     

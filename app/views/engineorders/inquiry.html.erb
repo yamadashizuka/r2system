@@ -24,7 +24,7 @@
     <%= f.date_select :inquiry_date, :use_month_numbers => true , :start_year => 2005%>
   </div>
 
-    <% if current_user.yesOffice? %>
+    <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch,disabled_info: false } %>
     <% else %>
     <% if @engineorder.branch.nil? %>
@@ -38,7 +38,7 @@
 
   <div class="field">
     <%= f.label :salesman_id %><br>
-    <% if current_user.yesOffice? %>
+    <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false, :selected => current_user.id ) %>
     <% else %>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, options = {:include_blank => true, :selected => current_user.id}, html_options = {:disabled => :disabled} ) %>
