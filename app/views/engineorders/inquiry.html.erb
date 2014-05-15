@@ -3,7 +3,6 @@
 <h1>引合登録</h1>
 
 <%= form_for(@engineorder) do |f| %>
-
   <%= render "errormsg" , modeldata: @engineorder %>
 
   <div class="field">
@@ -39,10 +38,43 @@
 
   <div class="field">
     <%= f.label :salesman_id %><br>
-   <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
+    <% if current_user.yesOffice? %>
+      <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false, :selected => current_user.id ) %>
+    <% else %>
+      <%= f.collection_select( :salesman_id, User.all, :id, :name, options = {:include_blank => true, :selected => current_user.id}, html_options = {:disabled => :disabled} ) %>
+    <% end %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place,disabled_info: false } %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :install_place_id %>
+    <%= f.fields_for :install_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> false %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> false  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> false %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> false %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> false %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
 
   <div class="field">
     <%= f.label :orderer %><br>
