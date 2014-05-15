@@ -138,8 +138,35 @@
   </div>
   
   
-  <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place , disabled_info: disabled_data[:sending_place]  } %>
-
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :sending_place_id %>
+    <%= f.fields_for :sending_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:sending_place]  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:sending_place]   %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
   <div class="field">
     <%= f.label :invoice_no_new %><br>
     <%= f.text_field :invoice_no_new , :disabled=> disabled_data[:invoice_no_new]  %>

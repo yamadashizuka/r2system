@@ -29,6 +29,7 @@ class EngineordersController < ApplicationController
   def new
     @engineorder = Engineorder.new
     @engineorder.install_place = Place.new
+    @engineorder.sending_place = Place.new
   end
 
   # GET /engineorders/1/edit
@@ -36,6 +37,10 @@ class EngineordersController < ApplicationController
     if @engineorder.install_place.nil?
       @engineorder.install_place = Place.new
     end
+    if @engineorder.sending_place.nil?
+      @engineorder.sending_place = Place.new
+    end
+
     #流通ステータスでレンダリング先を変える。
     # switch 文のような if 文の並びは case 文で書くとすっきりします。
     # 受注オブジェクトの状態問い合わせメソッドを lower-camel-case から
@@ -322,6 +327,9 @@ class EngineordersController < ApplicationController
     if @engineorder.install_place.nil?
       @engineorder.install_place = Place.new
     end
+    if @engineorder.sending_place.nil?
+      @engineorder.sending_place = Place.new
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
@@ -329,11 +337,13 @@ class EngineordersController < ApplicationController
     params.require(:engineorder).permit(
       :issue_no, :inquiry_date, :registered_user_id, :updated_user_id,
       :branch_id, :salesman_id, :install_place, :install_place_id, :orderer, :machine_no,
-      :time_of_running, :change_comment, :order_date, :sending_place_id,
+      :time_of_running, :change_comment, :order_date, :sending_place ,:sending_place_id,
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
       :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])
+      :returning_place_id, :allocated_date,
+      :install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
+      :sending_place_attributes => [:id,:sending_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])
   end
 end
