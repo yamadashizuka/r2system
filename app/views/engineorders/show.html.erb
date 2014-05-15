@@ -65,7 +65,7 @@
 
  <div class="field">
    <%= Engineorder.human_attribute_name('sending_place_id') %>：
-  <%= Company.find(@engineorder.sending_place_id).name unless @engineorder.sending_place_id.blank? %>
+  <%= Place.find(@engineorder.sending_place_id).name unless @engineorder.sending_place_id.blank? %>
 </div>
 
 

@@ -71,7 +71,7 @@
           <%= '('+Engine.find(engineorder.new_engine_id).serialno+')'  unless engineorder.new_engine_id.nil?%>
           </td>
         <td colspan=2><%= Company.find(engineorder.branch_id).name unless engineorder.branch_id.nil? %></td>
-        <td colspan=2><%= Company.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
+        <td colspan=2><%= Place.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
       </tr>
     <% end %>
   </tbody>
