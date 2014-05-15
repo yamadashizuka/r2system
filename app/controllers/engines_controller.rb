@@ -144,6 +144,14 @@ class EnginesController < ApplicationController
     redirect_to action: "index", notice: t("controller_meg.engine_imported")
   end
 
+  # エンジン型式に対応するシリアルNo.リストを抽出する
+  def list_serialno
+    respond_to do |format|
+      engines = Engine.completed.where(engine_model_name: params[:engine_model_name])
+      format.json { render json: engines.map { |e| e.serialno }.uniq }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_engine
