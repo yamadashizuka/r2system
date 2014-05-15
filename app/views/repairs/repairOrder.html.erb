@@ -54,7 +54,7 @@
     <%= f.file_field :requestpaper %> 
   </div>
 <br>
-  <% if current_user.yesOffice? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
     <div class="actions">
       <%= f.submit :value => t('views.buttun_repairOrdered'), :confirm => t('views.buttun_repairOrdered')+t('views.confirm_msg') %>
     </div>

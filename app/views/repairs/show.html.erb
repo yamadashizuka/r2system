@@ -69,7 +69,7 @@
   </div>
 
 <br><br>
-<% if current_user.yesOffice? %>
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
   <%= link_to t('views.link_edit'), edit_repair_path(@repair) %> |
 <% end %>
 <% if notice == t("controller_msg.repair_created") %>
