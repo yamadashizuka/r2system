@@ -167,6 +167,11 @@ class Engine < ActiveRecord::Base
     status.id == Enginestatus.of_after_shipping.id
   end
 
+  # 返却予定状態かどうか？
+  def about_to_return?
+    status.id == Enginestatus.of_about_to_return.id
+  end
+
   # 廃却状態かどうか？
   def abolished?
     status.id == Enginestatus.of_abolished.id
