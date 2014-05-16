@@ -10,7 +10,10 @@
   <%= @engineorder.title %>
 </div>
 
-<%= render "status" %>
+<div class="field">
+  <%= Engineorder.human_attribute_name('businessstatus_id') %>：
+   <%= @engineorder.status.name %>
+</div>
 
 <br>
 
@@ -33,8 +36,8 @@
 
 
  <div class="field">
-   <%= Engineorder.human_attribute_name('install_place_id') %>：
-  <%= Company.find(@engineorder.install_place_id).name unless @engineorder.install_place_id.blank? %>
+  <%= Engineorder.human_attribute_name('install_place_id') %>：
+  <%= Place.find(@engineorder.install_place_id).name unless @engineorder.install_place_id.blank? %>
 </div>
 
 
@@ -65,7 +68,7 @@
 
  <div class="field">
    <%= Engineorder.human_attribute_name('sending_place_id') %>：
-  <%= Company.find(@engineorder.sending_place_id).name unless @engineorder.sending_place_id.blank? %>
+  <%= Place.find(@engineorder.sending_place_id).name unless @engineorder.sending_place_id.blank? %>
 </div>
 
 
@@ -137,10 +140,13 @@
 
 <br>
 <% if current_user.yes? %>
-  <% if current_user.yesOffice? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
     <%= link_to t('views.link_edit'), edit_engineorder_path(@engineorder) %> |
   <% end %>
   <%= link_to t('views.link_back'), anchor_path %>
 <% else %>
   <%= link_to t('views.link_back'), anchor_path %>
 <% end %>
+
+
+<%= render "statusrollback" %>

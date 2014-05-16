@@ -31,8 +31,8 @@ class EnginesController < ApplicationController
         # 方が性能も可読性もあがると思いました。
 
         #YES本社の場合は、初期表示では条件を使用しないため、
-        #本社以外の場合に、検索条件をセットする。
-        unless current_user.yesOffice?
+        #本社以外の場合に、検索条件をセットする。(システム管理者もYES本社と同じ扱い)
+        unless (current_user.yesOffice? || current_user.systemAdmin?)
           @searched[:company_id] = current_user.company_id
         end
       else
@@ -142,6 +142,14 @@ class EnginesController < ApplicationController
   def import
     Engine.import(params[:file])
     redirect_to action: "index", notice: t("controller_meg.engine_imported")
+  end
+
+  # エンジン型式に対応するシリアルNo.リストを抽出する
+  def list_serialno
+    respond_to do |format|
+      engines = Engine.completed.where(engine_model_name: params[:engine_model_name])
+      format.json { render json: engines.map { |e| e.serialno }.uniq }
+    end
   end
 
   private

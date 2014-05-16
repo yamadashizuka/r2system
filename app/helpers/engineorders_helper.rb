@@ -4,7 +4,7 @@ module EngineordersHelper
 #画面上の編集可否を返す（受注画面）
 def getDisabled_Ordered
   #本社の人は編集可能
-  if current_user.yesOffice?
+  if current_user.yesOffice? || current_user.systemAdmin?
     return {
       :inquiry_date => false,
       :branch => false,
@@ -33,7 +33,7 @@ end
 
 #画面上の編集可否を返す（引当画面）
 def getDisabled_Allocated
-  if current_user.yesOffice?
+  if current_user.yesOffice? || current_user.systemAdmin?
     return {
       :inquiry_date => false,
       :order_date => false,
@@ -70,7 +70,7 @@ end
 
 	#画面上の編集可否を返す（出荷画面）
 def getDisabled_Shipped
-  if current_user.yesOffice?
+  if current_user.yesOffice? || current_user.systemAdmin?
     return {
       :inquiry_date => false,
       :order_date => false,
@@ -159,19 +159,19 @@ end
     case engineorder.status.id
     when Businessstatus::ID_INQUIRY  # 引合
       # TODO: 未実装
-      link_to t("views.link_inquiry") + "の取り消し(未実装)", "#"
+      link_to t("views.link_inquiry") + "の取り消し(未実装)", "#", :style=>"color:red;"
     when Businessstatus::ID_ORDERED  # 受注
-      # TODO: 未実装
-      link_to t("views.link_ordered") + "の取り消し(未実装)", "#"
+      link_to t("views.link_ordered") + "の取り消し", undo_ordered_path(engineorder), :style=>"color:red;"
     when Businessstatus::ID_SHIPPING_PREPARATION  # 出荷準備中
       link_to t("views.link_allocated") + "の取り消し", undo_allocation_path(engineorder),
+              :style=>"color:red;",
               confirm: t("controller_msg.engineorder_allocation_undoing?")
     when Businessstatus::ID_SHIPPED  # 出荷済
       # TODO: 未実装
-      link_to t("views.link_shipped") + "の取り消し(未実装)", "#"
+      link_to t("views.link_shipped") + "の取り消し(未実装)", "#", :style=>"color:red;"
     when Businessstatus::ID_RETURNED  # 返却済
       # TODO: 未実装
-      link_to t("views.link_returning") + "の取り消し(未実装)", "#"
+      link_to t("views.link_returning") + "の取り消し(未実装)", "#", :style=>"color:red;"
     when Businessstatus::ID_CANCELED  # キャンセル
       # TODO: 未実装
       # エンジンオーダをキャンセル状態にするユースケースは無い？

@@ -37,10 +37,33 @@
   </div>
   
   <div class="field">
-    <label for="new_engine_field">新規エンジン</label>
-    <div id="new_engine_field" style="margin-left: 20px">
-      <%= render "engine_field", form: f, parent: @engineorder, assoc_name: :new_engine, selects: [:completed], include_blank: true %>
-    </div>
+    <%= f.label :new_engine %>
+    <%= f.fields_for :new_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td>
+            <% if @engineorder.new_engine && !@engineorder.new_engine.engine_model_name.blank? %>
+              <% col = [@engineorder.new_engine] + Engine.completed.to_a %>
+            <% else %>
+              <% col = Engine.completed.to_a %>
+            <% end %>
+            <%= engine_form.collection_select :engine_model_name, col.compact.uniq(&:engine_model_name), :engine_model_name, :engine_model_name, include_blank: true %>
+          </td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td>
+            <% if @engineorder.new_engine && !@engineorder.new_engine.serialno.blank? %>
+              <% col = [@engineorder.new_engine] + Engine.completed.where(engine_model_name: @engineorder.new_engine.engine_model_name).to_a %>
+            <% else %>
+              <% col = [] %>
+            <% end %>
+            <%= engine_form.collection_select :serialno, col.compact.uniq(&:serialno), :serialno, :serialno, {include_blank: true}, style: "width:100%" %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
   </div>
 <br>
   <div class="actions">
@@ -98,7 +121,37 @@
     <%= f.date_select :order_date, :use_month_numbers => true, :disabled=> disabled_data[:order_date]  %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place, :disabled_info => disabled_data[:install_place] } %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :install_place_id %>
+    <%= f.fields_for :install_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:install_place]  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:install_place]   %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
+
 
   <div class="field">
     <%= f.label :orderer %><br>
@@ -106,7 +159,36 @@
   </div>
 
 
-  <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place ,:disabled_info => disabled_data[:sending_place]} %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :sending_place_id %>
+    <%= f.fields_for :sending_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:sending_place]  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:sending_place]   %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
 
   <div class="field">
     <%= f.label :sending_comment %><br>
