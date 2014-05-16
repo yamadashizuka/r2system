@@ -40,6 +40,9 @@ class EngineordersController < ApplicationController
     if @engineorder.sending_place.nil?
       @engineorder.sending_place = Place.new
     end
+    if @engineorder.new_engine.nil?
+      @engineorder.new_engine = Engine.new
+    end
 
     #流通ステータスでレンダリング先を変える。
     # switch 文のような if 文の並びは case 文で書くとすっきりします。
@@ -104,19 +107,21 @@ class EngineordersController < ApplicationController
   # PATCH/PUT /engineorders/1
   # PATCH/PUT /engineorders/1.json
   def update
-    # 入力されたエンジンが未登録の場合、事前に登録する
-    #   1. 新規エンジン
-    #     管轄がユーザの会社である "完成品" 状態のエンジンとして登録
-    #   2. 返却エンジン
-    #     未対応
-    ensure_existence_of_engine(:new_engine, current_user.company, Enginestatus.of_finished_repair)
+    # 流通ステータスをセットする。(privateメソッド)
+    setBusinessstatus
 
-    # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
-    # と異なる場合、一旦引当の取消が必要と判断する
-    if new_engine = @engineorder.new_engine
-      unless new_engine.id == engineorder_params[:new_engine_id]
+    # 引当の場合
+    if @engineorder.shipping_preparation?
+      # 引当時の新規エンジンは常に登録済み
+      if attrs = engineorder_params[:new_engine_attributes]
+        new_engine = Engine.find_by(attrs)
+      end
+      # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
+      # と異なる場合、一旦引当の取消が必要と判断する
+      if @engineorder.new_engine && @engineorder.new_engine != new_engine
         @engineorder.undo_allocation
       end
+      @engineorder.new_engine = new_engine
     end
 
     # 返却エンジンが修正された場合、返却エンジンを新規登録する
@@ -135,9 +140,6 @@ class EngineordersController < ApplicationController
                                            status: Enginestatus.of_after_shipping,
                                            company: current_user.company)
     end
-
-    # 流通ステータスをセットする。(privateメソッド)
-    setBusinessstatus
 
     respond_to do |format|
       if @engineorder.update(engineorder_params)
@@ -193,6 +195,9 @@ class EngineordersController < ApplicationController
   # 引当の処理
   def allocated
     set_engineorder
+    if @engineorder.new_engine.nil?
+      @engineorder.new_engine = Engine.new
+    end
   end
 
   # 出荷の処理
@@ -372,12 +377,13 @@ class EngineordersController < ApplicationController
       :branch_id, :salesman_id, :install_place, :install_place_id, :orderer, :machine_no,
       :time_of_running, :change_comment, :order_date, :sending_place ,:sending_place_id,
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
-      :new_engine_id, :old_engine_id, :old_engine, :new_engine,
+      :new_engine_id, :old_engine_id,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
       :returning_place_id, :allocated_date,
       :install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
       :sending_place_attributes => [:id,:sending_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
-      :old_engine_attributes => [:id, :engine_model_name, :serialno])
+      :old_engine_attributes => [:id, :engine_model_name, :serialno],
+      :new_engine_attributes => [:engine_model_name, :serialno])
   end
 end

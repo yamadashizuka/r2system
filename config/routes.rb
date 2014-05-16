@@ -20,6 +20,8 @@ R2::Application.routes.draw do
 
   get 'engines/index' => 'engines#index'
 
+  get 'engines/serialno_list' => 'engines#list_serialno', :as => :list_serialno
+
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
 
   get 'engineorders/engineInquiry/:id' => 'engineorders#inquiry', :as => :edit_inquery
