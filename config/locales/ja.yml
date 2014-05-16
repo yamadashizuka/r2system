@@ -217,3 +217,6 @@ ja:
     engineorder_allocation_undoing?: 引当を取り消してもよろしいですか？
     engineorder_allocation_undone: 引当を取り消しました
     engineorder_allocation_not_undoable: 引当を取り消せません
+    engineorder_ordered_undoing?: 受注を取り消してもよろしいですか？
+    engineorder_ordered_undone: 受注を取り消しました
+    engineorder_ordered_not_undoable: 受注を取り消せません

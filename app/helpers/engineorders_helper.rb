@@ -161,8 +161,7 @@ end
       # TODO: 未実装
       link_to t("views.link_inquiry") + "の取り消し(未実装)", "#", :style=>"color:red;"
     when Businessstatus::ID_ORDERED  # 受注
-      # TODO: 未実装
-      link_to t("views.link_ordered") + "の取り消し(未実装)", "#", :style=>"color:red;"
+      link_to t("views.link_ordered") + "の取り消し", undo_ordered_path(engineorder), :style=>"color:red;"
     when Businessstatus::ID_SHIPPING_PREPARATION  # 出荷準備中
       link_to t("views.link_allocated") + "の取り消し", undo_allocation_path(engineorder),
               :style=>"color:red;",

@@ -38,6 +38,9 @@ R2::Application.routes.draw do
 
   get 'engineorders/undo_allocation/:id' => 'engineorders#undo_allocation', :as => :undo_allocation
 
+  get 'engineorders/undo_ordered/:id' => 'engineorders#undo_ordered', :as => :undo_ordered
+
+
   #post 'companies' =>  'companies#show'
 
   resources :engineorders

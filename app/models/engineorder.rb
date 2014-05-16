@@ -189,6 +189,35 @@ class Engineorder < ActiveRecord::Base
     end
   end
 
+  # 受注を取り消す
+  def undo_ordered
+    # 受注の取り消しは、
+    #   1. エンジンオーダの状態 == 受注
+    #   2. エンジンオーダに旧エンジンが割り当て済み
+    #   3. 旧エンジンの状態 == 返却予定
+    # が前提条件。
+    # 受注を取り消すと、以下の状態になる。
+    #   1. エンジンオーダの状態 = 引合
+    #   2. 旧エンジンの状態 = 出荷済
+
+    if self.ordered? &&
+        old_engine = self.old_engine and old_engine.about_to_return?
+      # 旧エンジンの状態を "出荷済" に戻す
+      old_engine.status = Enginestatus.of_before_shipping
+      old_engine.save!
+      # 自分のステータスを引合に戻す
+      self.businessstatus_id = Businessstatus.of_inquiry
+      # 受注時に新規入力した項目をクリア(受注日、送付先、送付コメント)
+      self.order_date = nil
+      self.sending_place_id = nil
+      self.sending_comment = nil
+      self.save!
+      true
+    else
+      false
+    end
+  end
+
   def old_engine_attributes=(attrs)
     self.old_engine = Engine.find_or_initialize_by(id: attrs.delete(:id))
     self.old_engine.attributes = attrs
