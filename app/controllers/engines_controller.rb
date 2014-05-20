@@ -140,7 +140,7 @@ class EnginesController < ApplicationController
 
   #インポートする
   def import
-    Engine.import(params[:file])
+    result = Engine.import(params[:file])
     redirect_to action: "index", notice: t("controller_meg.engine_imported")
   end
 

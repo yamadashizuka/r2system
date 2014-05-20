@@ -179,11 +179,18 @@ class Engine < ActiveRecord::Base
 
 #エンジンのCSVをインポートする
 def self.import(file)
+  import_error_row = Array.new
   CSV.foreach(file.path, headers: true) do |row|
-    Engine.create! row.to_hash
+    #もし、エンジンモデルクラスの型式に、同じ型式が存在しなかったら、そのデータは登録しない。
+    import_row = row.to_hash
+    if Enginemodel.where(name: import_row["engine_model_name"]).present?
+      Engine.create! import_row
+    else
+      import_error_row.push(import_row["engine_model_name"])
+    end
   end
+  return import_error_row
 end
-
 
 
 end
