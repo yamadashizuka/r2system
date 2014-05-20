@@ -203,10 +203,10 @@ class Engineorder < ActiveRecord::Base
     if self.ordered? &&
         old_engine = self.old_engine and old_engine.about_to_return?
       # 旧エンジンの状態を "出荷済" に戻す
-      old_engine.status = Enginestatus.of_before_shipping
+      old_engine.status = Enginestatus.of_after_shipping
       old_engine.save!
-      # 自分のステータスを引合に戻す
-      self.businessstatus_id = Businessstatus.of_inquiry
+      #自分自身のステータスを、引合にする。
+      self.status = Businessstatus.of_inquiry
       # 受注時に新規入力した項目をクリア(受注日、送付先、送付コメント)
       self.order_date = nil
       self.sending_place_id = nil

@@ -274,6 +274,11 @@ class EngineordersController < ApplicationController
 
     # ここの if 文の並びも排他的な条件なので、case 文に変更しました。
     case
+    when params[:commit] == t('views.buttun_ordered')
+      # 受注登録からの更新の場合
+      #旧エンジンのステータスを返却予定に変更する。
+      @engineorder.old_engine.status = Enginestatus.of_about_to_return
+      @engineorder.old_engine.save
     when params[:commit] == t('views.buttun_allocated')
       # 引当画面からの更新の場合
       # 新エンジンのステータスを出荷準備中に変更する。
@@ -334,6 +339,8 @@ class EngineordersController < ApplicationController
       # 受注登録の場合
       # 流通ステータスを、「受注」にセットする。
       @engineorder.status = Businessstatus.of_ordered
+      # エンジンに変更があれば、セットする。
+      setOldEngine
     when params[:commit] == t('views.buttun_allocated')
       # 引当登録の場合
       # 流通ステータスを、「出荷準備中」にセットする。
