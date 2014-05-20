@@ -218,6 +218,46 @@ class Engineorder < ActiveRecord::Base
     end
   end
 
+  def undo_shipping
+    # 出荷の取り消しは、
+    #   1. エンジンオーダの状態 == 出荷済み
+    #   2. 新エンジンの状態 == 出荷済み
+    #   3. 新エンジンの管轄 == 拠点
+    # が前提条件。
+    # 出荷を取り消すと、以下の状態になる。
+    #   1. エンジンオーダの状態 == 出荷準備中
+    #   2. 新エンジンの状態 == 出荷準備中
+    #   3. 新エンジンの管轄 == 整備会社 (新エンジンを修理した会社)
+    #   4. 新エンジンに関する(直近の)修理の出荷日がブランク
+    if self.shipped? and
+        new_engine = self.new_engine and new_engine.after_shipped? and
+        new_engine_owner = new_engine.company and new_engine_owner.base?
+      # 新エンジンの状態を "出荷準備中" に戻す
+      new_engine.status = Enginestatus.of_before_shipping
+      # 新エンジンの管轄を "整備会社" に戻す
+      # 戻し先の整備会社は、新エンジンに関する直近の修理を担当した会社
+      if repair = new_engine.current_repair
+        new_engine.company = repair.company
+      end
+      new_engine.save!
+      # 新エンジンに関する直近の修理の出荷日をブランクに戻す
+      if repair = new_engine.current_repair
+        repair.shipped_date = nil
+        repair.save!
+      end
+      # エンジンオーダの状態を "出荷準備中" に戻す
+      self.status = Businessstatus.of_shipping_preparation
+      # 出荷時に新規入力した項目をクリア(送り状No.、出荷日、出荷コメント)
+      self.invoice_no_new = nil
+      self.shipped_date = nil
+      self.shipped_comment = nil
+      self.save!
+      true
+    else
+      false
+    end
+  end
+
   def old_engine_attributes=(attrs)
     self.old_engine = Engine.find_or_initialize_by(id: attrs.delete(:id))
     self.old_engine.attributes = attrs

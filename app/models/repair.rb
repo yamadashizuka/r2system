@@ -4,6 +4,7 @@ class Repair < ActiveRecord::Base
   
   # Association
   belongs_to :engine
+  belongs_to :company
   
   # Upload
    mount_uploader :requestpaper, RequestpaperUploader
