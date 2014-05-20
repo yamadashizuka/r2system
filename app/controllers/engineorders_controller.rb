@@ -2,7 +2,8 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning,
+                                     :undo_allocation, :undo_ordered]
 
   # GET /engineorders
   # GET /engineorders.json
@@ -130,11 +131,8 @@ class EngineordersController < ApplicationController
     #   * 返却予定 (返却エンジンが画面で修正されなかった場合)
     # となる。
     engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
-                            serialno: @engineorder.old_engine.serialno,
-                            status: Enginestatus.of_after_shipping)
-    if engine
-      @engineorder.old_engine = engine
-    else
+                            serialno: @engineorder.old_engine.serialno)
+    unless engine && @engineorder.old_engine == engine
       @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
                                            serialno: @engineorder.old_engine.serialno,
                                            status: Enginestatus.of_after_shipping,
