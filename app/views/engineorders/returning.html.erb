@@ -36,8 +36,6 @@
     <%= f.text_field :invoice_no_old %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "returning_place", location: @engineorder.returning_place ,disabled_info: false} %>
-
   <div class="field">
     <%= f.label :returning_date %><br>
     <%= f.date_select :returning_date , :use_month_numbers => true, :start_year => 2005 %>
@@ -176,6 +174,8 @@
     <%= f.label :sending_comment %><br>
     <%= f.text_area :sending_comment , :disabled=> disabled_data[:sending_comment]  %>
   </div>
+
+  <%= render "location", {f: f, attr_name: "returning_place", location: @engineorder.returning_place ,disabled_info:  disabled_data[:returning_place]} %>
 
   <div class="field">
     <%= f.label :allocated_date %><br>
