@@ -2,7 +2,8 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning,
+                                     :undo_allocation, :undo_ordered]
 
   # GET /engineorders
   # GET /engineorders.json
@@ -130,11 +131,8 @@ class EngineordersController < ApplicationController
     #   * 返却予定 (返却エンジンが画面で修正されなかった場合)
     # となる。
     engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
-                            serialno: @engineorder.old_engine.serialno,
-                            status: Enginestatus.of_after_shipping)
-    if engine
-      @engineorder.old_engine = engine
-    else
+                            serialno: @engineorder.old_engine.serialno)
+    unless engine && @engineorder.old_engine == engine
       @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
                                            serialno: @engineorder.old_engine.serialno,
                                            status: Enginestatus.of_after_shipping,
@@ -274,6 +272,11 @@ class EngineordersController < ApplicationController
 
     # ここの if 文の並びも排他的な条件なので、case 文に変更しました。
     case
+    when params[:commit] == t('views.buttun_ordered')
+      # 受注登録からの更新の場合
+      #旧エンジンのステータスを返却予定に変更する。
+      @engineorder.old_engine.status = Enginestatus.of_about_to_return
+      @engineorder.old_engine.save
     when params[:commit] == t('views.buttun_allocated')
       # 引当画面からの更新の場合
       # 新エンジンのステータスを出荷準備中に変更する。
@@ -334,6 +337,8 @@ class EngineordersController < ApplicationController
       # 受注登録の場合
       # 流通ステータスを、「受注」にセットする。
       @engineorder.status = Businessstatus.of_ordered
+      # エンジンに変更があれば、セットする。
+      setOldEngine
     when params[:commit] == t('views.buttun_allocated')
       # 引当登録の場合
       # 流通ステータスを、「出荷準備中」にセットする。
