@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140513012540) do
+ActiveRecord::Schema.define(version: 20140520083527) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
@@ -87,16 +87,6 @@ ActiveRecord::Schema.define(version: 20140513012540) do
     t.datetime "updated_at"
   end
 
-  create_table "installplaces", force: true do |t|
-    t.string   "name"
-    t.string   "postcode"
-    t.string   "address"
-    t.string   "phone_no"
-    t.string   "destination_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "places", force: true do |t|
     t.string   "name"
     t.string   "category"
@@ -130,7 +120,10 @@ ActiveRecord::Schema.define(version: 20140513012540) do
     t.string   "checkpaper"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "company_id"
   end
+
+  add_index "repairs", ["company_id"], name: "index_repairs_on_company_id"
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
