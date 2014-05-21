@@ -20,6 +20,8 @@ R2::Application.routes.draw do
 
   get 'engines/index' => 'engines#index'
 
+  get 'engines/serialno_list' => 'engines#list_serialno', :as => :list_serialno
+
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
 
   get 'engineorders/engineInquiry/:id' => 'engineorders#inquiry', :as => :edit_inquery
@@ -36,6 +38,9 @@ R2::Application.routes.draw do
 
   get 'engineorders/undo_allocation/:id' => 'engineorders#undo_allocation', :as => :undo_allocation
 
+  get 'engineorders/undo_ordered/:id' => 'engineorders#undo_ordered', :as => :undo_ordered
+
+
   #post 'companies' =>  'companies#show'
 
   resources :engineorders
@@ -48,7 +53,7 @@ R2::Application.routes.draw do
 
   devise_for :users
   
-  #resources :enginemodels
+  resources :enginemodels
 
   resources :engines do
     get :autocomplete_engine_engine_model_name, :on => :collection

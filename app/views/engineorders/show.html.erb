@@ -10,7 +10,10 @@
   <%= @engineorder.title %>
 </div>
 
-<%= render "status" %>
+<div class="field">
+  <%= Engineorder.human_attribute_name('businessstatus_id') %>：
+   <%= @engineorder.status.name %>
+</div>
 
 <br>
 
@@ -144,3 +147,6 @@
 <% else %>
   <%= link_to t('views.link_back'), anchor_path %>
 <% end %>
+
+
+<%= render "statusrollback" %>

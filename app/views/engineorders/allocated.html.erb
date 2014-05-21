@@ -36,6 +36,7 @@
     <%= f.date_select :allocated_date, :use_month_numbers => true, :start_year => 2005 %>
   </div>
   
+<<<<<<< HEAD
     <div class="field">
     <label for="new_engine_field">新規エンジン</label>
     <div id="new_engine_field" style="margin-left: 20px">
@@ -46,6 +47,36 @@
 
     
     </div>
+=======
+  <div class="field">
+    <%= f.label :new_engine %>
+    <%= f.fields_for :new_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td>
+            <% if @engineorder.new_engine && !@engineorder.new_engine.engine_model_name.blank? %>
+              <% col = [@engineorder.new_engine] + Engine.completed.to_a %>
+            <% else %>
+              <% col = Engine.completed.to_a %>
+            <% end %>
+            <%= engine_form.collection_select :engine_model_name, col.compact.uniq(&:engine_model_name), :engine_model_name, :engine_model_name, include_blank: true %>
+          </td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td>
+            <% if @engineorder.new_engine && !@engineorder.new_engine.serialno.blank? %>
+              <% col = [@engineorder.new_engine] + Engine.completed.where(engine_model_name: @engineorder.new_engine.engine_model_name).to_a %>
+            <% else %>
+              <% col = [] %>
+            <% end %>
+            <%= engine_form.collection_select :serialno, col.compact.uniq(&:serialno), :serialno, :serialno, {include_blank: true}, style: "width:100%" %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+>>>>>>> cbf5f1a3d6d7a53f767043fc226e2b58f4af0112
   </div>
 <br>
   <div class="actions">

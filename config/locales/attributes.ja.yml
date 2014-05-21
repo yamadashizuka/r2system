@@ -69,6 +69,7 @@ ja:
         desirable_delivery_date: 希望納期
         businessstatus_id: ステータス
         new_engine_id: 新規エンジン
+        new_engine: 新規エンジン
         old_engine_id: 返却エンジン
         old_engine: 返却エンジン
         invoice_no: 送り状No
@@ -96,3 +97,6 @@ ja:
       engineorder/old_engine:
         engine_model_name: 返却エンジンのエンジン型式
         serialno: 返却エンジンのエンジンNo.
+      engineorder/new_engine:
+        engine_model_name: 新規エンジンのエンジン型式
+        serialno: 新規エンジンのエンジンNo.

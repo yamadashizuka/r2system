@@ -2,7 +2,8 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning,
+                                     :undo_allocation, :undo_ordered]
 
   # GET /engineorders
   # GET /engineorders.json
@@ -39,6 +40,9 @@ class EngineordersController < ApplicationController
     end
     if @engineorder.sending_place.nil?
       @engineorder.sending_place = Place.new
+    end
+    if @engineorder.new_engine.nil?
+      @engineorder.new_engine = Engine.new
     end
 
     #流通ステータスでレンダリング先を変える。
@@ -104,19 +108,21 @@ class EngineordersController < ApplicationController
   # PATCH/PUT /engineorders/1
   # PATCH/PUT /engineorders/1.json
   def update
-    # 入力されたエンジンが未登録の場合、事前に登録する
-    #   1. 新規エンジン
-    #     管轄がユーザの会社である "完成品" 状態のエンジンとして登録
-    #   2. 返却エンジン
-    #     未対応
-    ensure_existence_of_engine(:new_engine, current_user.company, Enginestatus.of_finished_repair)
+    # 流通ステータスをセットする。(privateメソッド)
+    setBusinessstatus
 
-    # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
-    # と異なる場合、一旦引当の取消が必要と判断する
-    if new_engine = @engineorder.new_engine
-      unless new_engine.id == engineorder_params[:new_engine_id]
+    # 引当の場合
+    if @engineorder.shipping_preparation?
+      # 引当時の新規エンジンは常に登録済み
+      if attrs = engineorder_params[:new_engine_attributes]
+        new_engine = Engine.find_by(attrs)
+      end
+      # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
+      # と異なる場合、一旦引当の取消が必要と判断する
+      if @engineorder.new_engine && @engineorder.new_engine != new_engine
         @engineorder.undo_allocation
       end
+      @engineorder.new_engine = new_engine
     end
 
     # 返却エンジンが修正された場合、返却エンジンを新規登録する
@@ -125,19 +131,13 @@ class EngineordersController < ApplicationController
     #   * 返却予定 (返却エンジンが画面で修正されなかった場合)
     # となる。
     engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
-                            serialno: @engineorder.old_engine.serialno,
-                            status: Enginestatus.of_after_shipping)
-    if engine
-      @engineorder.old_engine = engine
-    else
+                            serialno: @engineorder.old_engine.serialno)
+    unless engine && @engineorder.old_engine == engine
       @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
                                            serialno: @engineorder.old_engine.serialno,
                                            status: Enginestatus.of_after_shipping,
                                            company: current_user.company)
     end
-
-    # 流通ステータスをセットする。(privateメソッド)
-    setBusinessstatus
 
     respond_to do |format|
       if @engineorder.update(engineorder_params)
@@ -193,6 +193,9 @@ class EngineordersController < ApplicationController
   # 引当の処理
   def allocated
     set_engineorder
+    if @engineorder.new_engine.nil?
+      @engineorder.new_engine = Engine.new
+    end
   end
 
   # 出荷の処理
@@ -231,6 +234,35 @@ class EngineordersController < ApplicationController
     raise
   end
 
+  # 受注の取り消し
+  def undo_ordered
+    set_engineorder
+
+    # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
+    # のトランザクションにまとめる
+    ActiveRecord::Base.transaction do
+      respond_to do |format|
+        if @engineorder.undo_ordered
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_ordered_undone") }
+          format.json { head :no_content }
+        else
+          # 受注の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_ordered_not_undoable") }
+          format.json { head :no_content }
+        end
+      end
+    end
+  rescue
+    # 受注の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
+  end
+
+
+
+
   def editByStatus
     # 今の状態では、引当を複数実施する（引当のやり直し）は出来ないかもしれない
     # 下記は要確認
@@ -240,6 +272,11 @@ class EngineordersController < ApplicationController
 
     # ここの if 文の並びも排他的な条件なので、case 文に変更しました。
     case
+    when params[:commit] == t('views.buttun_ordered')
+      # 受注登録からの更新の場合
+      #旧エンジンのステータスを返却予定に変更する。
+      @engineorder.old_engine.status = Enginestatus.of_about_to_return
+      @engineorder.old_engine.save
     when params[:commit] == t('views.buttun_allocated')
       # 引当画面からの更新の場合
       # 新エンジンのステータスを出荷準備中に変更する。
@@ -300,6 +337,8 @@ class EngineordersController < ApplicationController
       # 受注登録の場合
       # 流通ステータスを、「受注」にセットする。
       @engineorder.status = Businessstatus.of_ordered
+      # エンジンに変更があれば、セットする。
+      setOldEngine
     when params[:commit] == t('views.buttun_allocated')
       # 引当登録の場合
       # 流通ステータスを、「出荷準備中」にセットする。
@@ -372,12 +411,13 @@ class EngineordersController < ApplicationController
       :branch_id, :salesman_id, :install_place, :install_place_id, :orderer, :machine_no,
       :time_of_running, :change_comment, :order_date, :sending_place ,:sending_place_id,
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
-      :new_engine_id, :old_engine_id, :old_engine, :new_engine,
+      :new_engine_id, :old_engine_id,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
       :returning_place_id, :allocated_date,
       :install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
       :sending_place_attributes => [:id,:sending_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
-      :old_engine_attributes => [:id, :engine_model_name, :serialno])
+      :old_engine_attributes => [:id, :engine_model_name, :serialno],
+      :new_engine_attributes => [:engine_model_name, :serialno])
   end
 end
