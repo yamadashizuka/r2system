@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20140513012540) do
 
+# Could not dump table "Book1" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
+
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
     t.datetime "created_at"

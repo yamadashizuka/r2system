@@ -129,7 +129,8 @@ def getDisabled_Returning
       :invoice_no_new => false,
       :new_engine_id => false,
       :shipped_date => false,
-      :shipped_comment => false
+      :shipped_comment => false,
+      :returning_place => false
       }
   else
       return  {
@@ -150,7 +151,8 @@ def getDisabled_Returning
       :invoice_no_new => true,
       :new_engine_id => true,
       :shipped_date => true,
-      :shipped_comment => true
+      :shipped_comment => true,
+      :returning_place => true
       }
   end
 end
