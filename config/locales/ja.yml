@@ -222,5 +222,8 @@ ja:
     engineorder_ordered_undoing?: 受注を取り消してもよろしいですか？
     engineorder_ordered_undone: 受注を取り消しました
     engineorder_ordered_not_undoable: 受注を取り消せません
+    engineorder_shipping_undoing?: 出荷を取り消してもよろしいですか？
+    engineorder_shipping_undone: 出荷を取り消しました
+    engineorder_shipping_not_undoable: 出荷を取り消せません
     engine_deleted: エンジン情報を削除しました
     engine_not_deleted: エンジン情報は削除できません
