@@ -225,16 +225,22 @@ class RepairsController < ApplicationController
       # エンジンオブジェクトの状態更新を、そのまま代入文に置き換えました。
       @repair.engine.status = Enginestatus.of_before_repair
       @repair.engine.company = current_user.company	
+      # 登録ユーザの会社を整備担当の会社とする
+      @repair.company = current_user.company
     end
     # 整備開始→整備中
     if params[:commit] == t('views.buttun_repairStarted')
       @repair.engine.status = Enginestatus.of_under_repair
       @repair.engine.company = current_user.company
+      # 登録ユーザの会社を整備担当の会社とする
+      @repair.company = current_user.company
     end
     # 整備完了→完成品
     if params[:commit] == t('views.buttun_repairFinished')
       @repair.engine.status = Enginestatus.of_finished_repair
       @repair.engine.company = current_user.company
+      # 登録ユーザの会社を整備担当の会社とする
+      @repair.company = current_user.company
     end
 
   end

@@ -236,7 +236,7 @@ class Engineorder < ActiveRecord::Base
       new_engine.status = Enginestatus.of_before_shipping
       # 新エンジンの管轄を "整備会社" に戻す
       # 戻し先の整備会社は、新エンジンに関する直近の修理を担当した会社
-      if repair = new_engine.current_repair
+      if repair = new_engine.last_repair
         new_engine.company = repair.company
       end
       new_engine.save!

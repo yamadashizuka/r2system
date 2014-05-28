@@ -69,6 +69,11 @@ class Engine < ActiveRecord::Base
     repairs.opened.first
   end
 
+  # このエンジンに関する直近の完了済み整備を取得
+  def last_repair
+    repairs.completed.order(finish_date: :desc).limit(1).first
+  end
+
   # Get unclosed order (this engine is old engine for it and it is not unclosed)
   # 旧エンジンとして関わっている受注オブジェクトのうち、現在仕掛中のものを返す
   def current_order_as_old

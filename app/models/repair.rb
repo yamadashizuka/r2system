@@ -15,6 +15,9 @@ class Repair < ActiveRecord::Base
   # います。
   scope :opened, -> { where shipped_date: nil }
 
+  # 完了した整備のみを抽出するスコープ (完了日が設定済みなら整備完了)
+  scope :completed, -> { where.not finish_date: nil }
+
   # エンジンをセットする
   def setEngine(engine)
     if self.engine.nil?
