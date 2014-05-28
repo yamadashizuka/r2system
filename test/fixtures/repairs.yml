@@ -1,0 +1,12 @@
+repair1:
+  issue_no: 1
+  issue_date: <%= Date.today %>
+  arrive_date: <%= Date.today %>
+  start_date: <%= Date.today %>
+  finish_date: <%= Date.today %>
+  order_date: <%= Date.today %>
+  construction_no: 1
+  desirable_finish_date: <%= Date.today %>
+  estimated_finish_date: <%= Date.today %>
+  engine: engine7
+  company: company2

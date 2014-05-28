@@ -48,3 +48,9 @@ engine6:
   serialno: "00000001"
   enginestatus_id: <%= Enginestatus::ID_AFTER_SHIPPING %>
   company_id: 1
+
+engine7:
+  engine_model_name: エンジンモデルコード1
+  serialno: "111"
+  enginestatus_id: <%= Enginestatus::ID_FINISHED_REPAIR %>
+  company: company2

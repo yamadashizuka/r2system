@@ -42,6 +42,8 @@ R2::Application.routes.draw do
 
   get 'engineorders/undo_ordered/:id' => 'engineorders#undo_ordered', :as => :undo_ordered
 
+  get 'engineorders/undo_shipping/:id' => 'engineorders#undo_shipping', :as => :undo_shipping
+
   #post 'companies' =>  'companies#show'
 
   resources :engineorders
