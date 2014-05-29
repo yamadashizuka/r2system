@@ -329,6 +329,8 @@ class EngineordersController < ApplicationController
       end
       # 旧エンジンのステータスを受領前にセットする。
       @engineorder.old_engine.status = Enginestatus.of_before_arrive
+      # 旧エンジンの管轄を整備会社に移す
+      @engineorder.old_engine.company = @engineorder.returning_place
       # DBに格納する。
       repair.save
       @engineorder.old_engine.save
