@@ -20,6 +20,8 @@ R2::Application.routes.draw do
 
   get 'engines/index' => 'engines#index'
 
+  get 'engines/dellist' => 'engines#dellist', :as => :delengine
+
   get 'engines/serialno_list' => 'engines#list_serialno', :as => :list_serialno
 
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
@@ -40,6 +42,7 @@ R2::Application.routes.draw do
 
   get 'engineorders/undo_ordered/:id' => 'engineorders#undo_ordered', :as => :undo_ordered
 
+  get 'engineorders/undo_shipping/:id' => 'engineorders#undo_shipping', :as => :undo_shipping
 
   #post 'companies' =>  'companies#show'
 

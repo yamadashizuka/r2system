@@ -3,7 +3,7 @@ class EngineordersController < ApplicationController
 
   after_action :anchor!, only: [:index]
   after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning,
-                                     :undo_allocation, :undo_ordered]
+                                     :undo_allocation, :undo_ordered, :undo_shipping]
 
   # GET /engineorders
   # GET /engineorders.json
@@ -260,8 +260,30 @@ class EngineordersController < ApplicationController
     raise
   end
 
+  def undo_shipping
+    set_engineorder
 
-
+    # エンジンオーダ、新エンジン、新エンジンに関する修理の状態に不整合が生じな
+    # いよう、更新をひとつのトランザクションにまとめる
+    ActiveRecord::Base.transaction do
+      respond_to do |format|
+        if @engineorder.undo_shipping
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_shipping_undone") }
+          format.json { head :no_content }
+        else
+          # 出荷の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_shipping_not_undoable") }
+          format.json { head :no_content }
+        end
+      end
+    end
+  rescue
+    # 引当の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
+  end
 
   def editByStatus
     # 今の状態では、引当を複数実施する（引当のやり直し）は出来ないかもしれない
