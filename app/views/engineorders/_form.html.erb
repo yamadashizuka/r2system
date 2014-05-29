@@ -51,7 +51,7 @@
 
   <div class="field">
     <%= f.label :inquiry_date %><br>
-    <%= f.date_select :inquiry_date, :start_year => 2005 %>
+    <%= f.date_select :inquiry_date, :start_year　= 2005　:end_year = 2030 %>
   </div>
 
   <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: false} %>
@@ -156,7 +156,7 @@
   </div>
   <div class="field">
     <%= f.label :day_of_test %><br>
-    <%= f.date_select :day_of_test, :start_year => 1990 %>
+    <%= f.date_select (:day_of_test, :start_year => 1990, :end_year => 2030)　%>
   </div>
 
   <div class="field">
