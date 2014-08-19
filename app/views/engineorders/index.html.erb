@@ -1,5 +1,17 @@
 <h1>流通一覧</h1>
 
+<h3>検索条件</h3>
+<%= form_tag(engineorders_index_path, :method => :get) do %>
+<div class="well">
+  <div class ="filed">
+    ステータス
+    <%= collection_select(:search, :businessstatus_id, Businessstatus.all, :id, :name, :include_blank => true, :selected => @searched[:businessstatus_id]) %>
+  </div>
+  <br>
+<%= submit_tag "検索" %>
+<% end %>
+</div>
+
 <table class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>

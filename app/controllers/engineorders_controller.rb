@@ -8,21 +8,71 @@ class EngineordersController < ApplicationController
   # GET /engineorders
   # GET /engineorders.json
   def index
-  	  
-  	if current_user.yesOffice? || current_user.systemAdmin?
-    @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    adjust_page(@engineorders)
-    
+
+    if params[:page].nil?
+      # ページ繰り以外
+      @searched = Hash.new
+      session[:searched] = @searched
+
+
+      if params[:commit].nil?
+        # 初期表示時：全件表示（条件なし）
+      else
+        # 検索ボタン押下時：画面入力された条件のセッションへの保存
+        # 検索条件を取り込むときに、あらかじめ blank? なものは設定されていないと見なす。(engineの検索と同じ)
+        params[:search].each do |key, val|
+          @searched[key.intern] = val unless val.blank?
+        end
+      end
     else
-    
-    @engineorders = Engineorder.where(:branch_id => current_user.company_id).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    adjust_page(@engineorders)
-    
+      # ページ繰り時：検索条件のセッションからの取り出し
+      @searched = session[:searched]
     end
+  	
+      # Rails 標準の Arel 機能を使って、WHERE 条件をオブジェクトとして扱うように
+      # 変更しました。
+      # cond 配列に WHERE 条件を溜め込んでいきます。
+      # Arel は SQL を組み立てるための DSL のようなもので、文字列として SQL 文の
+      # 断片を埋め込む必要も無くなり、DBMS を取り替えやすくなります。
+    arel = Engineorder.arel_table
+    cond = []
+
+    # ビジネスステータス（ステータス）
+    if businessstatus_id = @searched[:businessstatus_id]
+      cond.push(arel[:businessstatus_id].eq businessstatus_id)
+    end
+
+    #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。
+    unless (current_user.yesOffice? || current_user.systemAdmin? )
+      cond.push(arel[:branch_id].eq current_user.company_id)
+    end
+
+    #変更前ロジック
+    
+  	#if current_user.yesOffice? || current_user.systemAdmin?
+    #@engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    #adjust_page(@engineorders)
+    
+    #else
+  
+    #@engineorders = Engineorder.where(:branch_id => current_user.company_id).where(:businessstatus_id => @searched[:businessstatus_id] ).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    #adjust_page(@engineorders)
+
+    #end
+  
+    @engineorders = Engineorder.where(cond.reduce(&:and)).order(:updated_at).paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
+
+
   end
 
   # GET /engineorders/1
   # GET /engineorders/1.json
+
+
+
+
+
   def show
   end
 

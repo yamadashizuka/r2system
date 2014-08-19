@@ -25,7 +25,7 @@ class Engineorder < ActiveRecord::Base
   belongs_to :updated_user, :class_name => 'User' 
   belongs_to :salesman, :class_name => 'User' 
   belongs_to :company
-  
+  belongs_to :enginestatus
 
   # 仕掛中の受注のみを抽出するスコープ (返却日が設定済みなら完了と見なす)
   # ActiveRecord のスコープ機能を使って、よく使う「仕掛かり中？」条件に名前を付

@@ -20,6 +20,8 @@ R2::Application.routes.draw do
 
   get 'engines/index' => 'engines#index'
 
+  get 'engineorders/index' => 'engineorders#index'
+
   get 'engines/dellist' => 'engines#dellist', :as => :delengine
 
   get 'engines/serialno_list' => 'engines#list_serialno', :as => :list_serialno
