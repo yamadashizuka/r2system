@@ -42,6 +42,23 @@ class EngineordersController < ApplicationController
       cond.push(arel[:businessstatus_id].eq businessstatus_id)
     end
 
+    #拠点
+     if company_id = @searched[:company_id]
+      cond.push(arel[:branch_id].eq company_id)
+    end
+
+    #物件名
+    if title = @searched[:title]
+      cond.push(arel[:title].matches "%#{title}%")
+    end
+
+    #物件名
+      if name = @searched[:name]
+        place = Place.where("name like ?","%" + name + "%").first
+        cond.push(arel[:install_place_id].eq place[:id])
+      end
+
+
     #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。
     unless (current_user.yesOffice? || current_user.systemAdmin? )
       cond.push(arel[:branch_id].eq current_user.company_id)
@@ -58,7 +75,7 @@ class EngineordersController < ApplicationController
     #@engineorders = Engineorder.where(:branch_id => current_user.company_id).where(:businessstatus_id => @searched[:businessstatus_id] ).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
     #adjust_page(@engineorders)
 
-    #end
+    #end 
   
     @engineorders = Engineorder.where(cond.reduce(&:and)).order(:updated_at).paginate(page: params[:page], per_page: 10)
     adjust_page(@engineorders)
@@ -68,11 +85,6 @@ class EngineordersController < ApplicationController
 
   # GET /engineorders/1
   # GET /engineorders/1.json
-
-
-
-
-
   def show
   end
 
