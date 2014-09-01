@@ -261,6 +261,15 @@ class RepairsController < ApplicationController
     send_file("public/#{filename}")
   end
 
+  # 未請求作業一覧を表示する
+  def index_unbilled
+    # TODO: ダミー実装
+    @repairs = Repair.joins(:engine).where(
+      finish_date: (Date.parse("2014-08-26")..Date.parse("2014-09-25")),
+      engines: {enginestatus_id: Enginestatus.of_finished_repair}
+    ).paginate(page: params[:page], per_page: 10)
+    # TODO: 整備ステータスに対応すること
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -48,6 +48,8 @@ R2::Application.routes.draw do
 
   get 'engineorders/undo_shipping/:id' => 'engineorders#undo_shipping', :as => :undo_shipping
 
+  get 'unbilled_repairs/index' => 'repairs#index_unbilled', :as => :unbilled_repairs
+
   #post 'companies' =>  'companies#show'
 
   resources :engineorders
