@@ -8,12 +8,11 @@
       <tr>
         <td width="10%">請求月度</td>
         <td width="90%">
-          <!--<%= select_tag :year, options_for_select({"2014年"=>2014, "2013年"=>2013}) %>-->
-          <%= select_year Date.today, end_year: Date.today.year, start_year: (Date.today.year - 3) %>
-          <%= select_month Date.today %>
+          <%= date_select :search, :month, start_year: (Date.today.year - 3), end_year: Date.today.year, discard_day: true %>
         </td>
       </tr>
     </table>
+    <br>
     <%= submit_tag "検索" %>
   <% end %>
 </div>

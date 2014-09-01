@@ -264,10 +264,14 @@ class RepairsController < ApplicationController
   # 未請求作業一覧を表示する
   def index_unbilled
     # TODO: ダミー実装
+    @searched = Hash.new
+    session[:searched] = @searched
+    p :index_unbilled, params[:search]
     @repairs = Repair.joins(:engine).where(
       finish_date: (Date.parse("2014-08-26")..Date.parse("2014-09-25")),
       engines: {enginestatus_id: Enginestatus.of_finished_repair}
     ).paginate(page: params[:page], per_page: 10)
+    adjust_page(@repairs)
     # TODO: 整備ステータスに対応すること
   end
 
