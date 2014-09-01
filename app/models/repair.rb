@@ -5,7 +5,9 @@ class Repair < ActiveRecord::Base
   # Association
   belongs_to :engine
   belongs_to :company
-  
+  belongs_to :status, class_name: 'Paymentstatus', foreign_key: 'Paymentstatus_id'
+
+
   # Upload
    mount_uploader :requestpaper, RequestpaperUploader
    mount_uploader :checkpaper, CheckpaperUploader

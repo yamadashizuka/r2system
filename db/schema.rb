@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140901051044) do
+ActiveRecord::Schema.define(version: 20140901064011) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 20140901051044) do
     t.datetime "updated_at"
   end
 
-  create_table "payments", force: true do |t|
+  create_table "paymentstatuses", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 20140901051044) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "company_id"
+    t.integer  "paymentstatus_id"
   end
 
   add_index "repairs", ["company_id"], name: "index_repairs_on_company_id"
