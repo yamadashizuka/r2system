@@ -35,6 +35,7 @@ class EngineordersController < ApplicationController
       # Arel は SQL を組み立てるための DSL のようなもので、文字列として SQL 文の
       # 断片を埋め込む必要も無くなり、DBMS を取り替えやすくなります。
     arel = Engineorder.arel_table
+    arel_place = Place.arel_table
     cond = []
 
     # ビジネスステータス（ステータス）
@@ -54,8 +55,8 @@ class EngineordersController < ApplicationController
 
     #物件名
       if name = @searched[:name]
-        place = Place.where("name like ?","%" + name + "%").first
-        cond.push(arel[:install_place_id].eq place[:id])
+        place = Place.where(arel_place[:name].matches "%#{name}%").pluck(:id)
+        cond.push(arel[:install_place_id].in place)
       end
 
 
