@@ -1,5 +1,7 @@
 R2::Application.routes.draw do
 
+  resources :paymentstatuses
+
   resources :places
 
   get 'repairs/new/:engine_id' => 'repairs#new'
