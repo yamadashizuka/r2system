@@ -5,7 +5,7 @@ class Repair < ActiveRecord::Base
   # Association
   belongs_to :engine
   belongs_to :company
-  belongs_to :status, class_name: 'Paymentstatus', foreign_key: 'Paymentstatus_id'
+  belongs_to :status, class_name: 'Paymentstatus', foreign_key: 'paymentstatus_id'
 
 
   # Upload
