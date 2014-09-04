@@ -284,9 +284,9 @@ class RepairsController < ApplicationController
     end_date = Date.new(year, month, 25)  # TODO: 締め日を常数定義すること
     start_date = end_date.advance(months: -1, days: 1)  # 前月の締め日の翌日
 
-    # TODO: 整備ステータスに対応すること
     @repairs = Repair.joins(:engine).where(
       finish_date: start_date..end_date,
+      paymentstatus_id: Paymentstatus.of_unpaid,
       engines: {enginestatus_id: Enginestatus.of_finished_repair}
     ).order(:finish_date).paginate(page: params[:page], per_page: 10)
     adjust_page(@repairs)
