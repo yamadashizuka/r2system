@@ -8,7 +8,8 @@
       <tr>
         <td width="10%">請求月度</td>
         <td width="90%">
-          <%= date_select :search, :month, start_year: (Date.today.year - 3), end_year: Date.today.year, discard_day: true %>
+          <%= date_select :search, :billing_month, start_year: (Date.today.year - 2), end_year: Date.today.year, discard_day: true,
+                                                   default: {year: @searched["billing_month(1i)"], month: @searched["billing_month(2i)"]}  %>
         </td>
       </tr>
     </table>
@@ -51,18 +52,18 @@
         </td>
         <td><%= repair.engine.engine_model_name %></td>
         <td><%= repair.engine.serialno %></td>
-
         <td class="workregist"><%= link_to '詳細', repair, class: "workregist_show"  %></td>
-        <% if current_user.yesOffice? || current_user.systemAdmin? %>
-          <td class="workregist"><%= link_to '訂正', edit_repair_path(repair), class: "workregist_edit"  %></td>
-          <td class="workregist">
-            <% unless (repair.engine.finished_repair? or repair.engine.before_shipping? or repair.engine.before_shipping?) %>
-            <%= link_to '削除', repair, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } ,class: "workregist_del"  %></td>
-          <% end %>
-        <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= link_to "ファイルエクスポート" %>
+<% unless @repairs.empty? %>
+  <%= link_to "ファイルエクスポート" %>
+<% end %>
+
+<br>
+<%= will_paginate @repairs, :previous_label=>'≪前', :next_label=>'次≫' %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>
