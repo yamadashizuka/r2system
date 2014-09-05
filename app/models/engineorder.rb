@@ -2,6 +2,7 @@ class Engineorder < ActiveRecord::Base
   #Association
   # engine.status と同様に、DB スキーマを変更せずに order.status で
   # Businessstatus を取得できるように変更しました。
+  
   belongs_to :status, class_name: 'Businessstatus', foreign_key: 'businessstatus_id'
 
   belongs_to :old_engine, :class_name => 'Engine' 
