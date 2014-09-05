@@ -50,6 +50,10 @@ R2::Application.routes.draw do
 
   get 'unbilled_repairs/index' => 'repairs#index_unbilled', :as => :unbilled_repairs
 
+  get 'purchase_repairs/index' => 'repairs#index_purchase', :as => :purchase_repairs
+
+  get 'repairs/purchase/:id' => 'repairs#purchase'
+
   #post 'companies' =>  'companies#show'
 
   resources :engineorders
