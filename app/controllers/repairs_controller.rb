@@ -151,7 +151,7 @@ class RepairsController < ApplicationController
       @repair.status = Paymentstatus.of_unpaid
     end
 
-    # 整備完了の場合、会計ステータスに「未払い」を付与
+    # 仕入れの場合、会計ステータスに「支払済」を付与
     if params[:commit] == t('views.buttun_repairpurchase')
       @repair.status = Paymentstatus.of_paid
     end
@@ -325,11 +325,6 @@ class RepairsController < ApplicationController
       engines: {enginestatus_id: Enginestatus.of_finished_repair}
     ).order(:finish_date).paginate(page: params[:page], per_page: 10)
     adjust_page(@repairs)
-
-# 仕入れの場合、会計ステータスに「支払済」を付与
-    if params[:commit] == t('views.buttun_purchase')
-      @repair.status = Paymentstatus.of_paid
-    end
 
   end
 
