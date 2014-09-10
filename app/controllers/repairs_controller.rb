@@ -270,7 +270,7 @@ class RepairsController < ApplicationController
     @repairs = Repair.joins(:engine)
                      .where(paymentstatus_id: Paymentstatus.of_unpaid,
                             engines: {enginestatus_id: Enginestatus.of_finished_repair})
-                     .order(finish_date: :desc)
+                     .order(:finish_date)
                      .paginate(page: params[:page], per_page: 10)
     adjust_page(@repairs)
   end
