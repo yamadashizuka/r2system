@@ -267,29 +267,7 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
-    if params[:page]
-      # ページ繰り時は、検索条件を引き継ぐ
-      @searched = session[:searched]
-    else
-      if params[:commit]
-        # 再検索時は、以前の検索条件に新しく入力された条件をマージ
-        @searched = session[:searched]
-        @searched.merge!(params[:search])
-      else
-        # 初期表示時は、当月を検索条件として設定
-        @searched = {"billing_month(1i)" => Date.today.year,
-                     "billing_month(2i)" => Date.today.month}
-        session[:searched] = @searched
-      end
-    end
-
-    year  = @searched["billing_month(1i)"].to_i  # 請求月度 (年)
-    month = @searched["billing_month(2i)"].to_i  # 請求月度 (月)
-    end_date = Date.new(year, month, 25)  # TODO: 締め日を常数定義すること
-    start_date = end_date.advance(months: -1, days: 1)  # 前月の締め日の翌日
-
     @repairs = Repair.joins(:engine).where(
-      finish_date: start_date..end_date,
       paymentstatus_id: Paymentstatus.of_unpaid,
       engines: {enginestatus_id: Enginestatus.of_finished_repair}
     ).order(:finish_date).paginate(page: params[:page], per_page: 10)
