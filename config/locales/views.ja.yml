@@ -23,5 +23,7 @@ ja:
     link_show: 詳細
     link_purchase: 仕入詳細
     link_destroy: 削除
+    link_csv_export: ファイルエクスポート
     confirm_msg: 'してよろしいですか？'
     confirm_msg_cmn: 'よろしいですか？'
+    title_repairs_index_unbilled: ヤンマー未検収一覧（仮）
