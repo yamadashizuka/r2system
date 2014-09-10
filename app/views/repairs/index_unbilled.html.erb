@@ -31,7 +31,7 @@
 <p>※は繰り越し分です</p>
 
 <% unless @repairs.empty? %>
-  <%= link_to t('views.link_csv_export') %>
+  <%= link_to t('views.link_csv_export'), unbilled_repairs_path(format: 'csv') %>
 <% end %>
 
 <br>

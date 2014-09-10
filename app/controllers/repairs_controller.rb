@@ -267,12 +267,34 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
-    @repairs = Repair.joins(:engine)
-                     .where(paymentstatus_id: Paymentstatus.of_unpaid,
-                            engines: {enginestatus_id: Enginestatus.of_finished_repair})
-                     .order(:finish_date)
-                     .paginate(page: params[:page], per_page: 10)
-    adjust_page(@repairs)
+    respond_to do |format|
+      @repairs = Repair.joins(:engine)
+                       .where(paymentstatus_id: Paymentstatus.of_unpaid,
+                              engines: {enginestatus_id: Enginestatus.of_finished_repair})
+                       .order(:finish_date)
+      format.html {
+        @repairs = @repairs.paginate(page: params[:page], per_page: 10)
+        adjust_page(@repairs)
+      }
+      format.csv {
+        col_names = [Repair.human_attribute_name(:order_no),
+                     Repair.human_attribute_name(:construction_no),
+                     Repair.human_attribute_name(:finish_date),
+                     Engine.human_attribute_name(:engine_model_name),
+                     Engine.human_attribute_name(:serialno),
+                     "繰越"]
+        csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
+          @repairs.each do |repair|
+            csv << [repair.order_no, repair.construction_no,
+                    repair.finish_date, repair.engine.engine_model_name,
+                    repair.engine.serialno,
+                    ApplicationController.helpers.carry_over_mark(repair)]
+          end
+        }
+        send_data(csv_str.encode(Encoding::SJIS),
+                  type: "text/csv; charset=shift_jis", filename: "data.csv")
+      }
+    end
   end
 
    # 仕入れ品一覧を表示する
