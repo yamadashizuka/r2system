@@ -16,14 +16,16 @@
 
 <% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
   <p><%= link_to '整備会社作業一覧', repairs_path %></p>
-  <p><%= link_to '未請求作業一覧', unbilled_repairs_path %></p>
 <% end %>
 
+<br>
 
-<% if current_user.yesOffice? || current_user.systemAdmin? %>
- <h3>会計</h3>
-    <p><%= link_to '仕入処理', purchase_repairs_path %></p>
-    <br>
+　<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+  <h3>会計</h3>
+    <p><%= link_to '未請求作業一覧', unbilled_repairs_path %></p>
+    <% if current_user.yesOffice? || current_user.systemAdmin?%>
+      <p><%= link_to '仕入処理', purchase_repairs_path %></p>
+    <% end %>
 <% end %>
 
 <br>

@@ -151,7 +151,7 @@ class RepairsController < ApplicationController
       @repair.status = Paymentstatus.of_unpaid
     end
 
-    # 仕入れの場合、会計ステータスに「支払済」を付与
+    # 仕入れ登録の場合、会計ステータスに「支払済」を付与
     if params[:commit] == t('views.buttun_repairpurchase')
       @repair.status = Paymentstatus.of_paid
     end
@@ -296,7 +296,7 @@ class RepairsController < ApplicationController
     adjust_page(@repairs)
   end
 
-   # 仕入れ品一覧を表示する
+   # 仕入済の一覧を表示する
   def index_purchase
     if params[:page]
       # ページ繰り時は、検索条件を引き継ぐ
@@ -314,14 +314,14 @@ class RepairsController < ApplicationController
       end
     end
 
-    year  = @searched["billing_month(1i)"].to_i  # 請求月度 (年)
-    month = @searched["billing_month(2i)"].to_i  # 請求月度 (月)
-    end_date = Date.new(year, month, 25)  # TODO: 締め日を常数定義すること
-    start_date = end_date.advance(months: -1, days: 1)  # 前月の締め日の翌日
+    year  = @searched["billing_month(1i)"].to_i  # 仕入月度 (年)
+    month = @searched["billing_month(2i)"].to_i  # 仕入月度 (月)
+    start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
+    end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
     @repairs = Repair.joins(:engine).where(
       finish_date: start_date..end_date,
-      paymentstatus_id: Paymentstatus.of_unpaid,
+      paymentstatus_id: Paymentstatus.of_paid,
       engines: {enginestatus_id: Enginestatus.of_finished_repair}
     ).order(:finish_date).paginate(page: params[:page], per_page: 10)
     adjust_page(@repairs)
