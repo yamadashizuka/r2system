@@ -267,10 +267,11 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
-    @repairs = Repair.joins(:engine).where(
-      paymentstatus_id: Paymentstatus.of_unpaid,
-      engines: {enginestatus_id: Enginestatus.of_finished_repair}
-    ).order(:finish_date).paginate(page: params[:page], per_page: 10)
+    @repairs = Repair.joins(:engine)
+                     .where(paymentstatus_id: Paymentstatus.of_unpaid,
+                            engines: {enginestatus_id: Enginestatus.of_finished_repair})
+                     .order(:finish_date)
+                     .paginate(page: params[:page], per_page: 10)
     adjust_page(@repairs)
   end
 
