@@ -16,7 +16,7 @@
 
 <% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
   <p><%= link_to '整備会社作業一覧', repairs_path %></p>
-  <p><%= link_to '未請求作業一覧', unbilled_repairs_path %></p>
+  <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
 <% end %>
 
 
