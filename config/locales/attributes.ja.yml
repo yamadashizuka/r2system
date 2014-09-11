@@ -39,6 +39,8 @@ ja:
         change_comment: コメント(交換理由)
         requestpaper: 整備依頼書
         checkpaper: 組立チェックシート
+        purachase_date: 仕入日
+        purachase_price: 仕入価格（税抜）
       user:
         userid: ログインＩＤ
         code: 社員コード

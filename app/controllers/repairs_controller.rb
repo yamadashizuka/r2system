@@ -321,12 +321,37 @@ class RepairsController < ApplicationController
     start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
     end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
-    @repairs = Repair.joins(:engine).where(
-      purachase_date: start_date..end_date,
-      paymentstatus_id: Paymentstatus.of_paid,
-      engines: {enginestatus_id: Enginestatus.of_finished_repair}
-    ).order(:purachase_date).paginate(page: params[:page], per_page: 10)
-    adjust_page(@repairs)
+    respond_to do |format|
+      @repairs = Repair.joins(:engine).where(
+        purachase_date: start_date..end_date,
+        paymentstatus_id: Paymentstatus.of_paid,
+        engines: {enginestatus_id: Enginestatus.of_finished_repair}
+       ).order(:purachase_date)
+
+      format.html {
+        @repairs = @repairs.paginate(page: params[:page], per_page: 10)
+        adjust_page(@repairs)
+      }
+      format.csv {
+        col_names = [Repair.human_attribute_name(:order_no),
+                     Repair.human_attribute_name(:purachase_date),
+                     Engine.human_attribute_name(:engine_model_name),
+                     Engine.human_attribute_name(:serialno),
+                     Repair.human_attribute_name(:purachase_price)
+                     ]
+        csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
+          @repairs.each do |repair|
+            csv << [repair.order_no, repair.purachase_date,
+                    repair.engine.engine_model_name, repair.engine.serialno,
+                    repair.purachase_price]
+          end
+        }
+        send_data(csv_str.encode(Encoding::SJIS),
+                  type: "text/csv; charset=shift_jis", filename: "purachase_date.csv")
+      }
+
+
+    end
 
   end
 
