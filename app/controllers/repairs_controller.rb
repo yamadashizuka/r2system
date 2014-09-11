@@ -2,7 +2,7 @@
 class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 
-  after_action :anchor!, only: [:index, :index_unbilled, :purchase]
+  after_action :anchor!, only: [:index, :index_unbilled, :purchase, :index_purchase]
   after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
 
   # GET /repairs
@@ -152,7 +152,7 @@ class RepairsController < ApplicationController
       @repair.status = Paymentstatus.of_unpaid
     end
 
-    # 仕入れの場合、会計ステータスに「支払済」を付与
+    # 仕入れ登録の場合、会計ステータスに「支払済」を付与
     if params[:commit] == t('views.buttun_repairpurchase')
       @repair.status = Paymentstatus.of_paid
     end
@@ -298,7 +298,7 @@ class RepairsController < ApplicationController
     end
   end
 
-   # 仕入れ品一覧を表示する
+   # 仕入済の一覧を表示する
   def index_purchase
     if params[:page]
       # ページ繰り時は、検索条件を引き継ぐ
@@ -316,17 +316,42 @@ class RepairsController < ApplicationController
       end
     end
 
-    year  = @searched["billing_month(1i)"].to_i  # 請求月度 (年)
-    month = @searched["billing_month(2i)"].to_i  # 請求月度 (月)
-    end_date = Date.new(year, month, 25)  # TODO: 締め日を常数定義すること
-    start_date = end_date.advance(months: -1, days: 1)  # 前月の締め日の翌日
+    year  = @searched["billing_month(1i)"].to_i  # 仕入月度 (年)
+    month = @searched["billing_month(2i)"].to_i  # 仕入月度 (月)
+    start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
+    end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
-    @repairs = Repair.joins(:engine).where(
-      finish_date: start_date..end_date,
-      paymentstatus_id: Paymentstatus.of_unpaid,
-      engines: {enginestatus_id: Enginestatus.of_finished_repair}
-    ).order(:finish_date).paginate(page: params[:page], per_page: 10)
-    adjust_page(@repairs)
+    respond_to do |format|
+      @repairs = Repair.joins(:engine).where(
+        purachase_date: start_date..end_date,
+        paymentstatus_id: Paymentstatus.of_paid,
+        engines: {enginestatus_id: Enginestatus.of_finished_repair}
+       ).order(:purachase_date)
+
+      format.html {
+        @repairs = @repairs.paginate(page: params[:page], per_page: 10)
+        adjust_page(@repairs)
+      }
+      format.csv {
+        col_names = [Repair.human_attribute_name(:order_no),
+                     Repair.human_attribute_name(:purachase_date),
+                     Engine.human_attribute_name(:engine_model_name),
+                     Engine.human_attribute_name(:serialno),
+                     Repair.human_attribute_name(:purachase_price)
+                     ]
+        csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
+          @repairs.each do |repair|
+            csv << [repair.order_no, repair.purachase_date,
+                    repair.engine.engine_model_name, repair.engine.serialno,
+                    repair.purachase_price]
+          end
+        }
+        send_data(csv_str.encode(Encoding::SJIS),
+                  type: "text/csv; charset=shift_jis", filename: "purachase_date.csv")
+      }
+
+
+    end
 
   end
 
