@@ -2,7 +2,7 @@
 class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 
-  after_action :anchor!, only: [:index, :index_unbilled, :purchase]
+  after_action :anchor!, only: [:index, :index_unbilled, :purchase, :index_purchase]
   after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
 
   # GET /repairs
@@ -322,10 +322,10 @@ class RepairsController < ApplicationController
     end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
     @repairs = Repair.joins(:engine).where(
-      finish_date: start_date..end_date,
+      purachase_date: start_date..end_date,
       paymentstatus_id: Paymentstatus.of_paid,
       engines: {enginestatus_id: Enginestatus.of_finished_repair}
-    ).order(:finish_date).paginate(page: params[:page], per_page: 10)
+    ).order(:purachase_date).paginate(page: params[:page], per_page: 10)
     adjust_page(@repairs)
 
   end

@@ -26,7 +26,7 @@
       <th>エンジン型式</th>
       <th>エンジンNo.</th>
       <th>仕入価格</th>
-      <th class="workregist">　詳細情報 </th>
+      <th class="workregist">詳細情報</th>
     </tr>
   </thead>
 
@@ -34,12 +34,11 @@
     <% @repairs.each do |repair| %>
       <tr>
         <td><%= repair.order_no %></td>
-        <td>仕入日が出るところ</td>
-        <td><%= repair.finish_date %></td>
+        <td><%= repair.purachase_date %></td>
         <td><%= repair.engine.engine_model_name %></td>
         <td><%= repair.engine.serialno %></td>
-        <td>仕入れ価格が出るところ</td>
-        <td class="workregist"><%= link_to '仕入詳細', purchase_path(repair), class: "workregist_show"  %></td>
+        <td><%= repair.purachase_price %></td>
+        <td class="workregist"><%= link_to t('views.link_show'), repair, class: 'workregist_show' %></td>
       </tr>
     <% end %>
   </tbody>
