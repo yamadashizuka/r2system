@@ -347,7 +347,7 @@ class RepairsController < ApplicationController
           end
         }
         send_data(csv_str.encode(Encoding::SJIS),
-                  type: "text/csv; charset=shift_jis", filename: "purachase_date.csv")
+                  type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
       }
 
 
