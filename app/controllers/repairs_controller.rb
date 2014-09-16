@@ -347,7 +347,7 @@ class RepairsController < ApplicationController
           end
         }
         send_data(csv_str.encode(Encoding::SJIS),
-                  type: "text/csv; charset=shift_jis", filename: "purachase_date.csv")
+                  type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
       }
 
 
@@ -368,6 +368,6 @@ class RepairsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def repair_params
-      params.require(:repair).permit(:id, :issue_no, :issue_date, :arrive_date, :start_date, :finish_date, :before_comment, :after_comment, :time_of_running, :day_of_test, :returning_comment, :arrival_comment, :order_no, :order_date, :construction_no, :desirable_finish_date, :estimated_finish_date, :engine_id, :enginestatus_id, :shipped_date, :requestpaper, :checkpaper, :paymentstatus_id)
+      params.require(:repair).permit(:id, :issue_no, :issue_date, :arrive_date, :start_date, :finish_date, :before_comment, :after_comment, :time_of_running, :day_of_test, :returning_comment, :arrival_comment, :order_no, :order_date, :construction_no, :desirable_finish_date, :estimated_finish_date, :engine_id, :enginestatus_id, :shipped_date, :requestpaper, :checkpaper, :paymentstatus_id, :purachase_date, :purachase_comment, :purachase_price)
     end
 end

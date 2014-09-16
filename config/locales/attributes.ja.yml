@@ -40,6 +40,7 @@ ja:
         requestpaper: 整備依頼書
         checkpaper: 組立チェックシート
         purachase_date: 仕入日
+        purachase_comment: コメント（仕入）
         purachase_price: 仕入価格（税抜）
       user:
         userid: ログインＩＤ

@@ -8,24 +8,27 @@
   <%= render 'engineInfo' %>
   <% disabled_data = getDisabled_RepairFinished %>
 
- <%= "こはどこ?"%>
-　　　　　　　　　　　　　　　　　　　　　
-
 <br>
-
   <div class="field">
     <%= f.label :finish_date %><br>
-    <%= f.date_select :finish_date, :use_month_numbers => true, :start_year => 2000 %>
-  </div>
-  <div class="field">
-    <%= f.label :after_comment %><br>
-    <%= f.text_area :after_comment %>
-  </div>
-  <div class="field">
-    <%= f.label :checkpaper %><br>
-    <%= f.file_field :checkpaper %> 
+    <%= f.date_select :finish_date, :use_month_numbers => true, :start_year => 2000, :disabled=> true  %>
   </div>
   <br>
+  <div class="field">
+    <%= f.label  :purchase_date %><br>
+    <%= f.date_select :purachase_date, :use_month_numbers => true, :start_year => 2000 %>
+  </div>
+
+  <div class="field">
+    <%= f.label :purchase_price %><br>
+    <%= f.text_field :purachase_price %>
+  </div>
+
+   <div class="field">
+    <%= f.label :purchase_comment %><br>
+    <%= f.text_area :purachase_comment %>
+  </div>
+
   <br>
   <div class="actions">
     <%= f.submit :value => t('views.buttun_repairpurchase'), :confirm => t('views.buttun_repairpurchase')+t('views.confirm_msg') %>
@@ -81,8 +84,16 @@
     <%= f.date_select :estimated_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:estimated_finish_date], :start_year => 2000 %>
   </div>
   <div class="field">
-    <%= f.label :before_comment %><br>
-    <%= f.text_area :before_comment, :disabled=>disabled_data[:before_comment] %>
+    <%= label_tag '組立チェックシート' %><br>
+    <% if @repair.checkpaper.present? %>
+      <%= link_to "ダウンロード", @repair.checkpaper_url(:display), :target=>'_blank', class: "btn btn-xs btn-default" %>
+    <% else %>
+      ファイルなし<br>
+    <% end %>
+  </div>
+   <div class="field">
+    <%= f.label :after_comment %><br>
+    <%= f.text_area :after_comment, :disabled=> true %>
   </div>
   </div>
   </div>
