@@ -20,6 +20,17 @@
 
 <br>
 
+<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+  <h3>会計</h3>
+  <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
+    <p><%= link_to '仕入済一覧', purchase_repairs_path %></p>
+    <br>
+  <% end %>
+<% end %>
+
+<br>
+
 <% if current_user.yesOffice? || current_user.systemAdmin? %>
  <h3>マスター管理</h3>
  <p><%= link_to '法人', companies_path %></p>

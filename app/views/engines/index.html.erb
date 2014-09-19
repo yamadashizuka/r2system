@@ -44,7 +44,7 @@
       <th>受領日</th>
       <th>サスペンド</th>
       <% if current_user.yesOffice? || current_user.systemAdmin?%> <!-- YES本社の人の作業数だけ列を繋げる -->
-        <th class="workregist" colspan=5>作業登録</th>
+        <th class="workregist" colspan=6>作業登録</th>
       <% elsif current_user.tender? %> <!-- 整備会社の作業数だけ列を繋げる -->
         <th class="workregist" colspan=1>作業登録</th>
       <% end %>                        <!-- YES拠点の人は作業なし -->
@@ -66,7 +66,7 @@
 
 
         <% unless current_user.tender? %>
-          <td class="workregist"><%= link_to '引合', new_inquiry_path(engine), class: "workregist_work" %> </td>
+          <td class="workregist"><%= link_to '引合', purchase_path(engine), class: "workregist_work" %> </td>
         <% end %>
 
         <td class="workregist-wide">
@@ -77,6 +77,7 @@
           <% end %>
         </td>
         <% if current_user.yesOffice? || current_user.systemAdmin? %>
+          <td class="workregist"><%= link_to '仕入登録',purchase_path(engine.current_repair) if engine.current_repair.present? %></td>
           <td class="workregist"><%= link_to '詳細', engine , class: "workregist_show" %></td>
           <td class="workregist"><%= link_to '修正', edit_engine_path(engine) , class: "workregist_edit" %></td>
           <td class="workregist"><%= link_to '削除', engine, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } , class: "workregist_del" %>

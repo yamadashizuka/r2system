@@ -1,5 +1,28 @@
 <h1>流通一覧</h1>
 
+<h3>検索条件</h3>
+<%= form_tag(engineorders_index_path, :method => :get) do %>
+<div class="well">
+  <tr>
+    <td width="80">ステータス</td>
+    <td with="120"><%= collection_select(:search, :businessstatus_id, Businessstatus.all, :id, :name, :include_blank => true, :selected => @searched[:businessstatus_id]) %></td>
+    <td width="80" >拠　　　点</td>
+    <td width="120"><%= collection_select(:search, :company_id, Company.all, :id, :name, :include_blank => true, :selected => @searched[:company_id]) %></td>
+　　</tr>
+  <br>
+  <br>
+  <tr>
+      <td width="80" >物 件 名</td>
+      <td width="120"><%= text_field :search, :title, :value => @searched[:title] %></td>
+      <td width="80" >設置先名</td>
+      <td width="120"><%= text_field :search, :name, :value => @searched[:name] %></td>
+  </tr>
+  <br>
+  <br>
+<%= submit_tag "検索" %>
+<% end %>
+</div>
+
 <table class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>
@@ -53,7 +76,7 @@
         <td>
           <%= Engine.find(engineorder.new_engine_id).engine_model_name unless engineorder.new_engine_id.nil?%></br>
           <%= '('+Engine.find(engineorder.new_engine_id).serialno+')'  unless engineorder.new_engine_id.nil?%>
-          </td>
+        </td>
         <td colspan=2><%= Company.find(engineorder.branch_id).name unless engineorder.branch_id.nil? %></td>
         <td colspan=2><%= Place.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
       </tr>
