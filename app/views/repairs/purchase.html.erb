@@ -18,12 +18,17 @@
     <%= f.label  :purchase_date %><br>
     <%= f.date_select :purachase_date, :use_month_numbers => true, :start_year => 2000 %>
   </div>
-
+   <br>
+  <div class="field">
+    <%= f.label :competitor_code %><br>
+    <%= f.text_field :competitor_code %>
+  </div>
+  <br>
   <div class="field">
     <%= f.label :purchase_price %><br>
     <%= f.text_field :purachase_price %>
   </div>
-
+  <br>
    <div class="field">
     <%= f.label :purchase_comment %><br>
     <%= f.text_area :purachase_comment %>
