@@ -26,9 +26,10 @@
   <br>
   <div class="field">
     <%= f.label :purchase_price %><br>
-    <%= f.text_field :purachase_price %>
-  </div>
-  <br>
+
+    <%= f.text_field :purachase_price, :value=>number_with_delimiter(@repair.purachase_price), :autocomplete=>'off', :style=>"text-align:right" %> 円
+    </div>
+  <br> 
    <div class="field">
     <%= f.label :purchase_comment %><br>
     <%= f.text_area :purachase_comment %>
