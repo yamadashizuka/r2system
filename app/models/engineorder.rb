@@ -2,6 +2,7 @@ class Engineorder < ActiveRecord::Base
   #Association
   # engine.status と同様に、DB スキーマを変更せずに order.status で
   # Businessstatus を取得できるように変更しました。
+  
   belongs_to :status, class_name: 'Businessstatus', foreign_key: 'businessstatus_id'
 
   belongs_to :old_engine, :class_name => 'Engine' 
@@ -25,7 +26,7 @@ class Engineorder < ActiveRecord::Base
   belongs_to :updated_user, :class_name => 'User' 
   belongs_to :salesman, :class_name => 'User' 
   belongs_to :company
-  
+  belongs_to :enginestatus
 
   # 仕掛中の受注のみを抽出するスコープ (返却日が設定済みなら完了と見なす)
   # ActiveRecord のスコープ機能を使って、よく使う「仕掛かり中？」条件に名前を付

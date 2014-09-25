@@ -1,3 +1,4 @@
+#encoding:UTF-8
 module RepairsHelper
 
   # エンジン到着登録のためのパスを生成する  
@@ -20,6 +21,10 @@ module RepairsHelper
     return '/repairs/repairFinished/' +  repair.id.to_s
   end
 
+# 仕入れ登録のためのパスを生成する
+  def purchase_path(repair)
+    return '/repairs/purchase/' +  repair.id.to_s
+  end
 
 
 #画面上の編集可否を返す（受領画面）
@@ -118,6 +123,20 @@ def getDisabled_RepairFinished
         :estimated_finish_date=>false,
         :before_comment=>false
     }
+  end
+end
+
+def carried_over?(repair)
+  cutoff_date = Date.new(Date.today.year, Date.today.month, 25) # TODO: 締め日を常数定義すること
+  prev_cutoff_date = cutoff_date.advance(months: -1)
+  repair.finish_date <= prev_cutoff_date
+end
+
+def carry_over_mark(repair)
+  if carried_over?(repair)
+    "※"
+  else
+    ""
   end
 end
 

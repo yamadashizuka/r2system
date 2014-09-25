@@ -1,5 +1,7 @@
 R2::Application.routes.draw do
 
+  resources :paymentstatuses
+
   resources :places
 
   get 'repairs/new/:engine_id' => 'repairs#new'
@@ -19,6 +21,8 @@ R2::Application.routes.draw do
   get 'repairs/index' => 'repairs#index'
 
   get 'engines/index' => 'engines#index'
+
+  get 'engineorders/index' => 'engineorders#index'
 
   get 'engines/dellist' => 'engines#dellist', :as => :delengine
 
@@ -43,6 +47,12 @@ R2::Application.routes.draw do
   get 'engineorders/undo_ordered/:id' => 'engineorders#undo_ordered', :as => :undo_ordered
 
   get 'engineorders/undo_shipping/:id' => 'engineorders#undo_shipping', :as => :undo_shipping
+
+  get 'unbilled_repairs/index' => 'repairs#index_unbilled', :as => :unbilled_repairs
+
+  get 'purchase_repairs/index' => 'repairs#index_purchase', :as => :purchase_repairs
+
+  get 'repairs/purchase/:id' => 'repairs#purchase'
 
   #post 'companies' =>  'companies#show'
 

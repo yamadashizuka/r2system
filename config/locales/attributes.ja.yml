@@ -39,6 +39,10 @@ ja:
         change_comment: コメント(交換理由)
         requestpaper: 整備依頼書
         checkpaper: 組立チェックシート
+        purchase_date: 仕入日
+        purchase_comment: コメント（仕入）
+        purchase_price: 仕入価格（税抜）
+        competitor_code: 他社品コード（仮）
       user:
         userid: ログインＩＤ
         code: 社員コード

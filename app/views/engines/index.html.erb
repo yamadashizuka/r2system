@@ -65,10 +65,6 @@
         <td><%= display_suspended_or_not(engine) %></td>
 
 
-        <% unless current_user.tender? %>
-          <td class="workregist"><%= link_to '引合', new_inquiry_path(engine), class: "workregist_work" %> </td>
-        <% end %>
-
         <td class="workregist-wide">
           <% if engine.before_arrive? %>
             <%= link_to '受領', engine_arrived_path(engine), class: "workregist_work" %>
@@ -77,6 +73,7 @@
           <% end %>
         </td>
         <% if current_user.yesOffice? || current_user.systemAdmin? %>
+          <td class="workregist"><%= link_to '仕入登録',purchase_path(engine.current_repair) if engine.current_repair.present? %></td>
           <td class="workregist"><%= link_to '詳細', engine , class: "workregist_show" %></td>
           <td class="workregist"><%= link_to '修正', edit_engine_path(engine) , class: "workregist_edit" %></td>
           <td class="workregist"><%= link_to '削除', engine, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } , class: "workregist_del" %>

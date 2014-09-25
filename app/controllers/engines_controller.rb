@@ -64,7 +64,7 @@ class EnginesController < ApplicationController
     if engine_model_name = @searched[:engine_model_name]
       cond.push(arel[:engine_model_name].matches "%#{engine_model_name}%")
     end
-    # お客様名
+    # エンジンNo
     if serialno = @searched[:serialno]
       cond.push(arel[:serialno].matches "%#{serialno}%")
     end
