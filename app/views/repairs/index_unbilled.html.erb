@@ -28,7 +28,7 @@
       <th><%= Engine.human_attribute_name(:engine_model_name) %></th>
       <th><%= Engine.human_attribute_name(:serialno) %></th>
       <th>繰越</th>
-      <th class="workregist">詳細情報</th>
+      <th class="workregist" colspan=2>詳細情報</th>
     </tr>
   </thead>
 
@@ -42,6 +42,9 @@
         <td><%= repair.engine.serialno %></td>
         <td><%= carry_over_mark(repair) %></td>
         <td class="workregist"><%= link_to t('views.link_show'), repair, class: 'workregist_show' %></td>
+        <% if current_user.yesOffice? || current_user.systemAdmin? %>
+          <td class="workregist"><%= link_to "仕入登録", purchase_path(repair), class: 'workregist_edit' %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
