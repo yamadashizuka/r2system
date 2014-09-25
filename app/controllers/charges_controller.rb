@@ -45,7 +45,8 @@ class ChargesController < ApplicationController
   def update
     #振替ボタン押下時に、振替前→振替済にフラグを変更する
     if  params[:commit] == t('views.buttun_charge')
-      charge_params[:charge_flg] = true
+      @charge.charge_flg = true
+      @charge.save
     end
 
     respond_to do |format|
