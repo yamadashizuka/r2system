@@ -25,6 +25,7 @@
       <th><%= Repair.human_attribute_name(:purchase_date) %></th>
       <th><%= Engine.human_attribute_name(:engine_model_name) %></th>
       <th><%= Engine.human_attribute_name(:serialno) %></th>
+      <th><%= Engineorder.human_attribute_name(:sales_amount) %></th>
       <th><%= Repair.human_attribute_name(:purchase_price) %></th>
       <th class="workregist">詳細情報</th>
     </tr>
@@ -37,6 +38,7 @@
         <td><%= repair.purachase_date %></td>
         <td><%= repair.engine.engine_model_name %></td>
         <td><%= repair.engine.serialno %></td>
+        <td><%= repair.engine.current_order_as_new.sales_amount %></td>
         <td><%= repair.purachase_price %></td>
         <td class="workregist"><%= link_to '振替', edit_charge_path(repair.charge) %></td>
       </tr>
