@@ -1,5 +1,7 @@
 R2::Application.routes.draw do
 
+  resources :charges
+
   resources :paymentstatuses
 
   resources :places
