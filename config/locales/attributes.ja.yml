@@ -91,6 +91,7 @@ ja:
         new_serialno: '新規エンジンS/#'
         old_engine_model_name: 返却エンジン型式
         old_serialno: '返却エンジンS/#'
+        sales_amount: 売上金額（見込）
       place:
         name: 会社名
         category: 分類
