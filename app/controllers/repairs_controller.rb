@@ -311,7 +311,11 @@ class RepairsController < ApplicationController
       }
       format.csv {
         csv_str = CSV.generate { |csv|
-          csv << ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
+          title = ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
+          unless @searched[:company_id].blank?
+            title.push(Company.find(@searched[:company_id]).name)
+          end
+          csv << title
           csv << []
           csv << [Repair.human_attribute_name(:order_no),
                   Repair.human_attribute_name(:construction_no),
