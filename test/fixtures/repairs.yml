@@ -668,7 +668,7 @@ repair_201409_24:
   start_date:  "2014-09-24"
   finish_date: "2014-09-24"
   engine: engine7
-  company: company2
+  company: company3
   paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
 
 repair_201409_25:

@@ -270,11 +270,23 @@ class RepairsController < ApplicationController
   def index_unbilled
     respond_to do |format|
       cutoff_date = ApplicationController.helpers.cutoff_date
+
+      # ユーザの所属組織により、表示する未検収情報を制限する。
+      #   o YES 本社ユーザ : すべての未検収情報を閲覧可能
+      #   o 整備会社ユーザ : 自社が完了した未検収情報のみ閲覧可能
+      if current_user.yesOffice? || current_user.systemAdmin?
+        company_cond = {}
+      else
+        company_cond = {company_id: current_user.company_id}
+      end
+
       @repairs = Repair.joins(:engine)
+                       .where(company_cond)
                        .where(paymentstatus_id: Paymentstatus.of_unpaid,
                               engines: {enginestatus_id: Enginestatus.of_finished_repair})
                        .where("finish_date <= ?", cutoff_date)
                        .order(:finish_date)
+
       format.html {
         @repairs = @repairs.paginate(page: params[:page], per_page: 10)
         adjust_page(@repairs)
