@@ -268,20 +268,53 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
+
+    case
+    when params[:search]
+      # 再検索時は、新しく入力された検索条件を使用
+      @searched = params[:search].deep_symbolize_keys
+    when session[:searched]
+      # ページ繰り時、ファイルエクスポート時は、設定済みの検索条件を使用
+      @searched = session[:searched]
+    else
+      # 初期表示時は、整備会社条件を空白とする
+      @searched = {company_id: nil}
+    end
+    session[:searched] = @searched
+
     respond_to do |format|
       cutoff_date = ApplicationController.helpers.cutoff_date
+      title = "#{cutoff_date.year}年#{cutoff_date.month}月度求償分"
+
+      # ユーザの所属組織により、表示する未検収情報を制限する。
+      #   o YES 本社ユーザ : 選択した整備会社が完了した未検収情報を閲覧可能
+      #   o 整備会社ユーザ : 自社が完了した未検収情報のみ閲覧可能
+      if current_user.yesOffice? || current_user.systemAdmin?
+        if @searched[:company_id].blank?
+          company_cond = {}  # 整備会社欄が空白の場合は、company_id 条件無し
+          title += "（ALL）"
+        else
+          company_cond = {company_id: @searched[:company_id]}
+          title += "（#{Company.find(@searched[:company_id]).name}）"
+        end
+      else
+        company_cond = {company_id: current_user.company_id}
+      end
+
       @repairs = Repair.joins(:engine)
+                       .where(company_cond)
                        .where(paymentstatus_id: Paymentstatus.of_unpaid,
                               engines: {enginestatus_id: Enginestatus.of_finished_repair})
                        .where("finish_date <= ?", cutoff_date)
                        .order(:finish_date)
+
       format.html {
         @repairs = @repairs.paginate(page: params[:page], per_page: 10)
         adjust_page(@repairs)
       }
       format.csv {
         csv_str = CSV.generate { |csv|
-          csv << ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
+          csv << [title]
           csv << []
           csv << [Repair.human_attribute_name(:order_no),
                   Repair.human_attribute_name(:construction_no),
@@ -297,8 +330,8 @@ class RepairsController < ApplicationController
           end
         }
 
-        send_data(csv_str.encode(Encoding::SJIS), type: "text/csv; charset=shift_jis",
-                  filename: "#{cutoff_date.year}年#{cutoff_date.month}月度求償分.csv")
+        send_data(csv_str.encode(Encoding::SJIS),
+                  type: "text/csv; charset=shift_jis", filename: "#{title}.csv")
       }
     end
   end
