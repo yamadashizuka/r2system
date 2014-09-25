@@ -2,6 +2,9 @@
 class Company < ActiveRecord::Base
   has_many :engineorders
 
+  # 整備会社を抽出するスコープ
+  scope :tender, -> { where category: "整備会社" }
+
   # カテゴリが "YES本社" であることを確認する
   def headquarter?
     # TODO: 定数値が散らばるので db/seeds.rb と合わせて整理すること

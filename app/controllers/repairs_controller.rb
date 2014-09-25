@@ -268,14 +268,32 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
+
+    case
+    when params[:search]
+      # 再検索時は、新しく入力された検索条件を使用
+      @searched = params[:search].deep_symbolize_keys
+    when session[:searched]
+      # ページ繰り時、ファイルエクスポート時は、設定済みの検索条件を使用
+      @searched = session[:searched]
+    else
+      # 初期表示時は、整備会社条件を空白とする
+      @searched = {company_id: nil}
+    end
+    session[:searched] = @searched
+
     respond_to do |format|
       cutoff_date = ApplicationController.helpers.cutoff_date
 
       # ユーザの所属組織により、表示する未検収情報を制限する。
-      #   o YES 本社ユーザ : すべての未検収情報を閲覧可能
+      #   o YES 本社ユーザ : 選択した整備会社が完了した未検収情報を閲覧可能
       #   o 整備会社ユーザ : 自社が完了した未検収情報のみ閲覧可能
       if current_user.yesOffice? || current_user.systemAdmin?
-        company_cond = {}
+        if @searched[:company_id].blank?
+          company_cond = {}  # 整備会社欄が空白の場合は、company_id 条件無し
+        else
+          company_cond = {company_id: @searched[:company_id]}
+        end
       else
         company_cond = {company_id: current_user.company_id}
       end
@@ -293,7 +311,11 @@ class RepairsController < ApplicationController
       }
       format.csv {
         csv_str = CSV.generate { |csv|
-          csv << ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
+          title = ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
+          unless @searched[:company_id].blank?
+            title.push(Company.find(@searched[:company_id]).name)
+          end
+          csv << title
           csv << []
           csv << [Repair.human_attribute_name(:order_no),
                   Repair.human_attribute_name(:construction_no),
