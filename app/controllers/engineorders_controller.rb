@@ -375,6 +375,13 @@ class EngineordersController < ApplicationController
       # 新エンジンの会社を拠点に変更し、DBに反映する
       @engineorder.new_engine.company = @engineorder.branch
       @engineorder.new_engine.save
+      #振替を新規で登録する
+      charge = Charge.new
+      charge.engine_id = @engineorder.new_engine.id
+      charge.repair_id = @engineorder.new_engine.current_repair.id
+      charge.charge_flg = false
+      charge.save
+
       # 出荷しようとしている新エンジンに関わる整備オブジェクトを取得する
       if repair = @engineorder.repair_for_new_engine
         repair.shipped_date = @engineorder.shipped_date
