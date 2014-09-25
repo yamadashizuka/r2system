@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 20140925020522) do
     t.date     "allocated_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sales_amount"
   end
 
   create_table "engines", force: true do |t|

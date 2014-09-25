@@ -259,6 +259,11 @@ class Engineorder < ActiveRecord::Base
     end
   end
 
+  #sales_amountの値を'カンマ'をとった状態でオーバーライトする
+  def sales_amount=(value)
+    self[:sales_amount] = value.gsub(/,/, '')
+  end
+
   def old_engine_attributes=(attrs)
     self.old_engine = Engine.find_or_initialize_by(id: attrs.delete(:id))
     self.old_engine.attributes = attrs

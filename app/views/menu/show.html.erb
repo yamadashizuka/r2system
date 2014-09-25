@@ -5,7 +5,7 @@
 <% end %>
 <h3>業務</h3>
 
-<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin? || current_user.yes? %>
   <p><%= link_to 'エンジン一覧', engines_path %></p>
 <% end %>
 
