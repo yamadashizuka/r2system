@@ -35,29 +35,48 @@ class EngineordersController < ApplicationController
       # Arel は SQL を組み立てるための DSL のようなもので、文字列として SQL 文の
       # 断片を埋め込む必要も無くなり、DBMS を取り替えやすくなります。
     arel = Engineorder.arel_table
-    arel_place = Place.arel_table
+    arel_engine = Engine.arel_table
+    #検索条件統一化のため一旦コメントアウト
+    #arel_place = Place.arel_table
+    
+    arel_engine = Engine.arel_table
+
     cond = []
 
-    # ビジネスステータス（ステータス）
-    if businessstatus_id = @searched[:businessstatus_id]
-      cond.push(arel[:businessstatus_id].eq businessstatus_id)
-    end
-
-    #拠点
+    #拠点：管轄
      if company_id = @searched[:company_id]
       cond.push(arel[:branch_id].eq company_id)
     end
 
-    #物件名
-    if title = @searched[:title]
-      cond.push(arel[:title].matches "%#{title}%")
+    # 返却エンジン型式（エンジン型式）
+    if old_engine_id = @searched[:old_engine_id]
+      cond.push(arel[:old_engine_id].eq old_engine_id)
     end
 
+   #エンジンNo
+    if serialno = @searched[:serialno]
+       engineid = Engine.where(arel_engine[:serialno].matches "%#{serialno}%").pluck(:id)
+      cond.push(arel[:old_engine_id].in engineid)
+    end
+
+   # ビジネスステータス（ステータス）
+    if businessstatus_id = @searched[:businessstatus_id]
+      cond.push(arel[:businessstatus_id].eq businessstatus_id)
+    end
+
+
+ #検索条件統一化のため一旦コメントアウト
     #物件名
-      if name = @searched[:name]
-        place = Place.where(arel_place[:name].matches "%#{name}%").pluck(:id)
-        cond.push(arel[:install_place_id].in place)
-      end
+      #if title = @searched[:title]
+        #cond.push(arel[:title].matches "%#{title}%")
+      #end
+
+    #物件名
+      #if name = @searched[:name]
+        #place = Place.where(arel_place[:name].matches "%#{name}%").pluck(:id)
+        #cond.push(arel[:install_place_id].in place)
+      #end
+
 
 
     #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。
@@ -375,6 +394,13 @@ class EngineordersController < ApplicationController
       # 新エンジンの会社を拠点に変更し、DBに反映する
       @engineorder.new_engine.company = @engineorder.branch
       @engineorder.new_engine.save
+      #振替を新規で登録する
+      charge = Charge.new
+      charge.engine_id = @engineorder.new_engine.id
+      charge.repair_id = @engineorder.new_engine.current_repair.id
+      charge.charge_flg = false
+      charge.save
+
       # 出荷しようとしている新エンジンに関わる整備オブジェクトを取得する
       if repair = @engineorder.repair_for_new_engine
         repair.shipped_date = @engineorder.shipped_date
@@ -499,7 +525,7 @@ class EngineordersController < ApplicationController
       :new_engine_id, :old_engine_id,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date,
+      :returning_place_id, :allocated_date, :sales_amount,
       :install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
       :sending_place_attributes => [:id,:sending_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
       :old_engine_attributes => [:id, :engine_model_name, :serialno],

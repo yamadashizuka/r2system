@@ -6,7 +6,7 @@ class Repair < ActiveRecord::Base
   belongs_to :engine
   belongs_to :company
   belongs_to :status, class_name: 'Paymentstatus', foreign_key: 'paymentstatus_id'
-
+  has_one :charge
 
   # Upload
    mount_uploader :requestpaper, RequestpaperUploader
@@ -124,7 +124,7 @@ class Repair < ActiveRecord::Base
     return  ((Date.today - self.day_of_test)/365).ceil unless self.day_of_test.nil? 
   end
 
-  #purachase_priceをオーバーライトする
+  #purachase_priceを'カンマ'をとった状態でオーバーライトする
   def purachase_price=(value)
     self[:purachase_price] = value.gsub(/,/, '')
   end

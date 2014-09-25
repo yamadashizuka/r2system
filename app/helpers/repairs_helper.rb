@@ -126,8 +126,16 @@ def getDisabled_RepairFinished
   end
 end
 
+def cutoff_date
+  # TODO: 締め日を常数定義すること
+  if Date.today.day > 25
+    Date.new(Date.today.next_month.year, Date.today.next_month.month, 25)
+  else
+    Date.new(Date.today.year, Date.today.month, 25)
+  end
+end
+
 def carried_over?(repair)
-  cutoff_date = Date.new(Date.today.year, Date.today.month, 25) # TODO: 締め日を常数定義すること
   prev_cutoff_date = cutoff_date.advance(months: -1)
   repair.finish_date <= prev_cutoff_date
 end

@@ -11,13 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140919083218) do
+ActiveRecord::Schema.define(version: 20140925020522) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "charges", force: true do |t|
+    t.boolean  "charge_flg"
+    t.integer  "charge_price"
+    t.string   "charge_comment"
+    t.integer  "repair_id"
+    t.integer  "engine_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "charges", ["engine_id"], name: "index_charges_on_engine_id"
+  add_index "charges", ["repair_id"], name: "index_charges_on_repair_id"
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -68,6 +81,7 @@ ActiveRecord::Schema.define(version: 20140919083218) do
     t.date     "allocated_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sales_amount"
   end
 
   create_table "engines", force: true do |t|
