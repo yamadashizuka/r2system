@@ -3,13 +3,12 @@
 <h3>検索条件</h3>
 
 <div class="well">
-  <%= form_tag purchase_repairs_path, :method => :get do %>
+  <%= form_tag charge_repairs_path, :method => :get do %>
     <table>
       <tr>
-        <td>仕入月度　</td>
-        <td width="90%">
-          <%= date_select :search, :billing_month, start_year: (Date.today.year - 2), end_year: Date.today.year, discard_day: true,
-                                                   default: {year: @searched["billing_month(1i)"], month: @searched["billing_month(2i)"]}  %>
+        <td>振替前/振替済</td>
+        <td>
+        <%= select :search, :charge_flg, [["振替前", "before"], ["振替後", "after"]],  :selected => @searched["charge_flg"] %>
         </td>
       </tr>
     </table>
@@ -27,7 +26,9 @@
       <th><%= Engine.human_attribute_name(:serialno) %></th>
       <th><%= Engineorder.human_attribute_name(:sales_amount) %></th>
       <th><%= Repair.human_attribute_name(:purchase_price) %></th>
+
       <th class="workregist">詳細情報</th>
+
     </tr>
   </thead>
 
@@ -40,14 +41,16 @@
         <td><%= repair.engine.serialno %></td>
         <td><%= repair.engine.current_order_as_new.sales_amount %></td>
         <td><%= repair.purachase_price %></td>
-        <td class="workregist"><%= link_to '振替', edit_charge_path(repair.charge) %></td>
+        <td class="workregist">
+          <%= link_to '振替', edit_charge_path(repair.charge) %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <% unless @repairs.empty? %>
-  <%= link_to t('views.link_csv_export'), purchase_repairs_path(format: 'csv') %>
+  <%= link_to t('views.link_csv_export'), charge_repairs_path(format: 'csv') %>
 <% end %>
 
 <br>

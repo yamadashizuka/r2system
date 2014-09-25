@@ -372,21 +372,24 @@ class RepairsController < ApplicationController
         @searched = session[:searched]
         @searched.merge!(params[:search])
       else
-        # 初期表示時は、当月を検索条件として設定
-        @searched = {"billing_month(1i)" => Date.today.year,
-                     "billing_month(2i)" => Date.today.month}
+        # 初期表示時は、未振替情報を表示
+        @searched = {"charge_flg" => "before"}
         session[:searched] = @searched
       end
     end
 
-    year  = @searched["billing_month(1i)"].to_i  # 仕入月度 (年)
-    month = @searched["billing_month(2i)"].to_i  # 仕入月度 (月)
-    start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
-    end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
+    if @searched["charge_flg"] == "after"
+      charge_status = true
+      csv_name = "振替後"
+    else
+      charge_status = false
+      csv_name = "振替前"
+    end
+
 
     respond_to do |format|
       @repairs = Repair.joins(:charge).where(
-        charges: {charge_flg: false}
+        charges: {charge_flg: charge_status}
        ).order(:purachase_date)
 
       format.html {
@@ -398,17 +401,19 @@ class RepairsController < ApplicationController
                      Repair.human_attribute_name(:purachase_date),
                      Engine.human_attribute_name(:engine_model_name),
                      Engine.human_attribute_name(:serialno),
+                     Engineorder.human_attribute_name(:sales_amount),
                      Repair.human_attribute_name(:purachase_price)
                      ]
         csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
           @repairs.each do |repair|
             csv << [repair.order_no, repair.purachase_date,
                     repair.engine.engine_model_name, repair.engine.serialno,
+                    repair.engine.current_order_as_new.sales_amount,
                     repair.purachase_price]
           end
         }
         send_data(csv_str.encode(Encoding::SJIS),
-                  type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
+                  type: "text/csv; charset=shift_jis", filename: "#{csv_name}.csv")
       }
 
 
