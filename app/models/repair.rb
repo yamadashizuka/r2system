@@ -124,4 +124,9 @@ class Repair < ActiveRecord::Base
     return  ((Date.today - self.day_of_test)/365).ceil unless self.day_of_test.nil? 
   end
 
+  #purachase_priceをオーバーライトする
+  def purachase_price=(value)
+    self[:purachase_price] = value.gsub(/,/, '')
+  end
+  
 end

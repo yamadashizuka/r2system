@@ -48,7 +48,6 @@
     <%= f.text_field :invoice_no_new %>
   </div>
 
-
   <div class="field">
     <%= f.label :inquiry_date %><br>
     <%= f.date_select :inquiry_date %>
@@ -173,7 +172,7 @@
 <% #引当登録以降の場合は、受注日を表示 %> 
   <div class="field">
     <%= f.label :order_date %><br>
-    <%= f.date_select :order_date, :start_year => 2005 %>
+    <%= f.date_select :order_date, :start_year => 2005, :end_year => 2030 %>
   </div>
   
 
