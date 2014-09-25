@@ -280,13 +280,15 @@ class RepairsController < ApplicationController
         adjust_page(@repairs)
       }
       format.csv {
-        col_names = [Repair.human_attribute_name(:order_no),
-                     Repair.human_attribute_name(:construction_no),
-                     Repair.human_attribute_name(:finish_date),
-                     Engine.human_attribute_name(:engine_model_name),
-                     Engine.human_attribute_name(:serialno),
-                     "繰越"]
-        csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
+        csv_str = CSV.generate { |csv|
+          csv << ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
+          csv << []
+          csv << [Repair.human_attribute_name(:order_no),
+                  Repair.human_attribute_name(:construction_no),
+                  Repair.human_attribute_name(:finish_date),
+                  Engine.human_attribute_name(:engine_model_name),
+                  Engine.human_attribute_name(:serialno),
+                  "繰越"]
           @repairs.each do |repair|
             csv << [repair.order_no, repair.construction_no,
                     repair.finish_date, repair.engine.engine_model_name,
