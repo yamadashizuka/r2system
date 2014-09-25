@@ -1,5 +1,24 @@
 <h1><%= t('views.title_repairs_index_unbilled') %></h1>
 
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
+  <h3>検索条件</h3>
+  <div class="well">
+    <%= form_tag unbilled_repairs_path, :method => :get do %>
+      <table>
+        <tr>
+          <td width="80">整備会社</td>
+          <td width="120">
+            <%= collection_select(:search, :company_id, Company.all.tender, :id, :name,
+                                  include_blank: true, selected: @searched[:company_id]) %>
+          </td>
+        </tr>
+      </table>
+      <br>
+      <%= submit_tag "検索" %>
+    <% end %>
+  </div>
+<% end %>
+
 <table class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>
