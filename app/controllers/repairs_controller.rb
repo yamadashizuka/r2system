@@ -284,6 +284,7 @@ class RepairsController < ApplicationController
 
     respond_to do |format|
       cutoff_date = ApplicationController.helpers.cutoff_date
+      title = "#{cutoff_date.year}年#{cutoff_date.month}月度求償分"
 
       # ユーザの所属組織により、表示する未検収情報を制限する。
       #   o YES 本社ユーザ : 選択した整備会社が完了した未検収情報を閲覧可能
@@ -291,8 +292,10 @@ class RepairsController < ApplicationController
       if current_user.yesOffice? || current_user.systemAdmin?
         if @searched[:company_id].blank?
           company_cond = {}  # 整備会社欄が空白の場合は、company_id 条件無し
+          title += "（ALL）"
         else
           company_cond = {company_id: @searched[:company_id]}
+          title += "（#{Company.find(@searched[:company_id]).name}）"
         end
       else
         company_cond = {company_id: current_user.company_id}
@@ -311,11 +314,7 @@ class RepairsController < ApplicationController
       }
       format.csv {
         csv_str = CSV.generate { |csv|
-          title = ["#{cutoff_date.year}年#{cutoff_date.month}月度求償分"]
-          unless @searched[:company_id].blank?
-            title.push(Company.find(@searched[:company_id]).name)
-          end
-          csv << title
+          csv << [title]
           csv << []
           csv << [Repair.human_attribute_name(:order_no),
                   Repair.human_attribute_name(:construction_no),
@@ -331,8 +330,8 @@ class RepairsController < ApplicationController
           end
         }
 
-        send_data(csv_str.encode(Encoding::SJIS), type: "text/csv; charset=shift_jis",
-                  filename: "#{cutoff_date.year}年#{cutoff_date.month}月度求償分.csv")
+        send_data(csv_str.encode(Encoding::SJIS),
+                  type: "text/csv; charset=shift_jis", filename: "#{title}.csv")
       }
     end
   end
