@@ -379,6 +379,7 @@ class EngineordersController < ApplicationController
       charge = Charge.new
       charge.engine_id = @engineorder.new_engine.id
       charge.repair_id = @engineorder.new_engine.current_repair.id
+      charge.charge_flg = false
       charge.save
 
       # 出荷しようとしている新エンジンに関わる整備オブジェクトを取得する

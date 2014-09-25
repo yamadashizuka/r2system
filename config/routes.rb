@@ -54,6 +54,8 @@ R2::Application.routes.draw do
 
   get 'purchase_repairs/index' => 'repairs#index_purchase', :as => :purchase_repairs
 
+  get 'charge_repairs/index' => 'repairs#index_charge', :as => :charge_repairs
+
   get 'repairs/purchase/:id' => 'repairs#purchase'
 
   #post 'companies' =>  'companies#show'

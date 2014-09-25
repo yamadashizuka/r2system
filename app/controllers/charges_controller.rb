@@ -1,5 +1,8 @@
 class ChargesController < ApplicationController
   before_action :set_charge, only: [:show, :edit, :update, :destroy]
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update]
+
 
   # GET /charges
   # GET /charges.json
@@ -40,6 +43,11 @@ class ChargesController < ApplicationController
   # PATCH/PUT /charges/1
   # PATCH/PUT /charges/1.json
   def update
+    #振替ボタン押下時に、振替前→振替済にフラグを変更する
+    if  params[:commit] == t('views.buttun_charge')
+      charge_params[:charge_flg] = true
+    end
+
     respond_to do |format|
       if @charge.update(charge_params)
         format.html { redirect_to @charge, notice: 'Charge was successfully updated.' }

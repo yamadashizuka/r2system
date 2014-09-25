@@ -2,7 +2,7 @@
 class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 
-  after_action :anchor!, only: [:index, :index_unbilled, :purchase, :index_purchase]
+  after_action :anchor!, only: [:index, :index_unbilled, :purchase, :index_purchase, :index_charge]
   after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
 
   # GET /repairs
@@ -354,6 +354,63 @@ class RepairsController < ApplicationController
     end
 
   end
+
+
+   # 振替の一覧を表示する
+  def index_charge
+    if params[:page]
+      # ページ繰り時は、検索条件を引き継ぐ
+      @searched = session[:searched]
+    else
+      if params[:commit]
+        # 再検索時は、以前の検索条件に新しく入力された条件をマージ
+        @searched = session[:searched]
+        @searched.merge!(params[:search])
+      else
+        # 初期表示時は、当月を検索条件として設定
+        @searched = {"billing_month(1i)" => Date.today.year,
+                     "billing_month(2i)" => Date.today.month}
+        session[:searched] = @searched
+      end
+    end
+
+    year  = @searched["billing_month(1i)"].to_i  # 仕入月度 (年)
+    month = @searched["billing_month(2i)"].to_i  # 仕入月度 (月)
+    start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
+    end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
+
+    respond_to do |format|
+      @repairs = Repair.joins(:charge).where(
+        charges: {charge_flg: false}
+       ).order(:purachase_date)
+
+      format.html {
+        @repairs = @repairs.paginate(page: params[:page], per_page: 10)
+        adjust_page(@repairs)
+      }
+      format.csv {
+        col_names = [Repair.human_attribute_name(:order_no),
+                     Repair.human_attribute_name(:purachase_date),
+                     Engine.human_attribute_name(:engine_model_name),
+                     Engine.human_attribute_name(:serialno),
+                     Repair.human_attribute_name(:purachase_price)
+                     ]
+        csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
+          @repairs.each do |repair|
+            csv << [repair.order_no, repair.purachase_date,
+                    repair.engine.engine_model_name, repair.engine.serialno,
+                    repair.purachase_price]
+          end
+        }
+        send_data(csv_str.encode(Encoding::SJIS),
+                  type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
+      }
+
+
+    end
+
+  end
+
 
   def purchase
     set_repair

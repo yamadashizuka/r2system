@@ -20,14 +20,16 @@
 
 <br>
 
-<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
   <h3>会計</h3>
-  <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
+  <% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+    <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
+  <% end %>
   <% if current_user.yesOffice? || current_user.systemAdmin? %>
     <p><%= link_to '仕入済一覧', purchase_repairs_path %></p>
-    <br>
   <% end %>
-<% end %>
+  <% if current_user.yes? || current_user.systemAdmin?%>
+    <p><%= link_to '振替一覧', charge_repairs_path %></p>
+  <% end %>
 
 <br>
 

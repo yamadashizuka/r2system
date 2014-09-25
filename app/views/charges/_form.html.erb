@@ -12,26 +12,15 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :charge_flg %><br>
-    <%= f.check_box :charge_flg %>
-  </div>
-  <div class="field">
     <%= f.label :charge_price %><br>
     <%= f.number_field :charge_price %>
   </div>
   <div class="field">
     <%= f.label :charge_comment %><br>
-    <%= f.text_field :charge_comment %>
+    <%= f.text_area :charge_comment %>
   </div>
-  <div class="field">
-    <%= f.label :repair_id %><br>
-    <%= f.text_field :repair_id %>
-  </div>
-  <div class="field">
-    <%= f.label :engine_id %><br>
-    <%= f.text_field :engine_id %>
-  </div>
+
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit  t('views.buttun_charge')%>
   </div>
 <% end %>
