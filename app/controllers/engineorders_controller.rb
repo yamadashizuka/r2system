@@ -36,6 +36,7 @@ class EngineordersController < ApplicationController
       # 断片を埋め込む必要も無くなり、DBMS を取り替えやすくなります。
     arel = Engineorder.arel_table
     arel_engine = Engine.arel_table
+    arel_engine_old_engine_id = Engine.arel_table
     #検索条件統一化のため一旦コメントアウト
     #arel_place = Place.arel_table
     
@@ -49,8 +50,9 @@ class EngineordersController < ApplicationController
     end
 
     # 返却エンジン型式（エンジン型式）
-    if old_engine_id = @searched[:old_engine_id]
-      cond.push(arel[:old_engine_id].eq old_engine_id)
+    if modelcode = @searched[:modelcode]
+      old_engine_id = Engine.where(arel_engine_old_engine_id[:engine_model_name].matches "%#{modelcode}%").pluck(:id)
+      cond.push(arel[:old_engine_id].in old_engine_id)
     end
 
    #エンジンNo
@@ -78,11 +80,11 @@ class EngineordersController < ApplicationController
       #end
 
 
-
+    #全件表示に変更のため、一旦コメントアウト
     #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。
-    unless (current_user.yesOffice? || current_user.systemAdmin? )
-      cond.push(arel[:branch_id].eq current_user.company_id)
-    end
+    #unless (current_user.yesOffice? || current_user.systemAdmin? )
+      #cond.push(arel[:branch_id].eq current_user.company_id)
+    #end
 
     #変更前ロジック
     

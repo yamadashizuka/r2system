@@ -30,11 +30,13 @@ class EnginesController < ApplicationController
         # ハッシュのキーのような定型的な「識別子」っぽいものは、シンボルとした
         # 方が性能も可読性もあがると思いました。
 
+        #全件表示に変更のため、一旦コメントアウト
         #YES本社の場合は、初期表示では条件を使用しないため、
         #本社以外の場合に、検索条件をセットする。(システム管理者もYES本社と同じ扱い)
-        unless (current_user.yesOffice? || current_user.systemAdmin?)
-          @searched[:company_id] = current_user.company_id
-        end
+        #unless (current_user.yesOffice? || current_user.systemAdmin?)
+          #@searched[:company_id] = current_user.company_id
+        #end
+
       else
         # 検索ボタン押下時：画面入力された条件のセッションへの保存
         # 検索条件を取り込むときに、あらかじめ blank? なものは設定されていない

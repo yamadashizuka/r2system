@@ -27,4 +27,5 @@ ja:
     link_csv_export: ファイルエクスポート
     confirm_msg: 'してよろしいですか？'
     confirm_msg_cmn: 'よろしいですか？'
-    title_repairs_index_unbilled: ヤンマー未検収一覧（仮）
+    title_repairs_index_unbilled: ヤンマー未検収一覧
+    title_repairs_index_purchase: ヤンマー検収済一覧
