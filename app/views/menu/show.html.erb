@@ -25,7 +25,7 @@
     <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
   <% end %>
   <% if current_user.yesOffice? || current_user.systemAdmin? %>
-    <p><%= link_to '仕入済一覧', purchase_repairs_path %></p>
+    <p><%= link_to t('views.title_repairs_index_purchase'), purchase_repairs_path %></p>
   <% end %>
   <% if current_user.yes? || current_user.systemAdmin?%>
     <p><%= link_to '振替一覧', charge_repairs_path %></p>

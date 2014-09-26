@@ -2,7 +2,7 @@
 class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 
-  after_action :anchor!, only: [:index, :index_unbilled, :purchase, :index_purchase, :index_charge]
+  after_action :anchor!, only: [:index, :index_unbilled, :index_purchase, :index_charge]
   after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
 
   # GET /repairs
