@@ -352,7 +352,9 @@ class EngineordersController < ApplicationController
     ActiveRecord::Base.transaction do
       respond_to do |format|
         if @engineorder.undo_shipping
-          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクトと同時に、振替を削除する。
+          Charge.delete_all(:repair_id @engineorder.new_engine.current_repair.id)
+
           format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_shipping_undone") }
           format.json { head :no_content }
         else

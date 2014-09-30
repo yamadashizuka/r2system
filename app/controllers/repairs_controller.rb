@@ -408,27 +408,52 @@ class RepairsController < ApplicationController
         # 初期表示時は、未振替情報を表示
         @searched = {"charge_flg" => "before"}
         session[:searched] = @searched
+       #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
+       unless (current_user.yesOffice? || current_user.systemAdmin? )
+          @searched["company_id"] == current_user.company_id
+        end    
       end
     end
 
-    if @searched["charge_flg"] == "after"
-      charge_status = true
-      csv_name = "振替後"
+
+   #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
+    arel_engine = Engine.arel_table
+    cond_engine = []
+
+
+    
+    if (current_user.yesOffice? || current_user.systemAdmin? )
+     # company_idがあれば、条件に追加、
+      cond_engine.push(arel_engine[:company_id].eq @searched["company_id"]) if @searched["company_id"].present?
+    #拠点の場合は、拠点管轄のエンジンを対象とする。
     else
-      charge_status = false
-      csv_name = "振替前"
+      cond_engine.push(arel_engine[:company_id].eq current_user.company_id)
+    end
+
+
+
+   #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
+    arel_charge = Charge.arel_table
+    cond_charge = []
+
+    if @searched["charge_flg"] == "after"
+         cond_charge.push(arel_charge[:charge_flg].eq true)
+    else
+         cond_charge.push(arel_charge[:charge_flg].eq false)
     end
 
 
     respond_to do |format|
-      @repairs = Repair.joins(:charge).where(
-        charges: {charge_flg: charge_status}
-       ).order(:purachase_date)
+
+      @repairs = Repair.includes(:engine).includes(:charge)
+      .where(cond_engine.reduce(&:and)).where(cond_charge.reduce(&:and))
+      .order(:purachase_date)
 
       format.html {
         @repairs = @repairs.paginate(page: params[:page], per_page: 10)
         adjust_page(@repairs)
       }
+
       format.csv {
         col_names = [Repair.human_attribute_name(:order_no),
                      Repair.human_attribute_name(:purachase_date),
@@ -446,9 +471,8 @@ class RepairsController < ApplicationController
           end
         }
         send_data(csv_str.encode(Encoding::SJIS),
-                  type: "text/csv; charset=shift_jis", filename: "#{csv_name}.csv")
+                  type: "text/csv; charset=shift_jis", filename: "test.csv")
       }
-
 
     end
 
