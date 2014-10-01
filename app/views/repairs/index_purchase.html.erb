@@ -44,6 +44,10 @@
   </tbody>
 </table>
 
+<div>
+  <p>合計仕入価格：<%= number_with_delimiter(@total_price) %> 円</p>
+</div>
+
 <% unless @repairs.empty? %>
   <%= link_to t('views.link_csv_export'), purchase_repairs_path(format: 'csv') %>
 <% end %>
