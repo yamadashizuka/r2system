@@ -128,5 +128,14 @@ class Repair < ActiveRecord::Base
   def purachase_price=(value)
     self[:purachase_price] = value.gsub(/,/, '')
   end
-  
+
+  # この整備の支払状態が「支払済」であるかを確認する
+  def paid?
+    self.status == Paymentstatus.of_paid
+  end
+
+  # この整備の支払状態が「未払い」であるかを確認する
+  def unpaid?
+    self.status == Paymentstatus.of_unpaid
+  end
 end
