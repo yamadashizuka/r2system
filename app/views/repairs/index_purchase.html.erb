@@ -8,8 +8,8 @@
       <tr>
         <td>仕入月度　</td>
         <td width="90%">
-          <%= date_select :search, :billing_month, start_year: (Date.today.year - 2), end_year: Date.today.year, discard_day: true,
-                                                   default: {year: @searched["billing_month(1i)"], month: @searched["billing_month(2i)"]}  %>
+          <%= date_select :search, :purchase_month, start_year: (Date.today.year - 2), end_year: Date.today.year, discard_day: true,
+                                                   default: {year: @searched[:"purchase_month(1i)"], month: @searched[:"purchase_month(2i)"]}  %>
         </td>
       </tr>
     </table>
