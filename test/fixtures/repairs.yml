@@ -632,7 +632,7 @@ repair_201409_21:
   start_date:  "2014-09-21"
   finish_date: "2014-09-21"
   engine: engine7
-  company: company2
+  company: company3
   paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
 
 repair_201409_22:
@@ -644,7 +644,7 @@ repair_201409_22:
   start_date:  "2014-09-22"
   finish_date: "2014-09-22"
   engine: engine7
-  company: company2
+  company: company3
   paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
 
 repair_201409_23:
@@ -668,7 +668,7 @@ repair_201409_24:
   start_date:  "2014-09-24"
   finish_date: "2014-09-24"
   engine: engine7
-  company: company2
+  company: company3
   paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
 
 repair_201409_25:

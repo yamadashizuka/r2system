@@ -36,6 +36,7 @@ class EngineordersController < ApplicationController
       # 断片を埋め込む必要も無くなり、DBMS を取り替えやすくなります。
     arel = Engineorder.arel_table
     arel_engine = Engine.arel_table
+    arel_engine_old_engine_id = Engine.arel_table
     #検索条件統一化のため一旦コメントアウト
     #arel_place = Place.arel_table
     
@@ -49,8 +50,9 @@ class EngineordersController < ApplicationController
     end
 
     # 返却エンジン型式（エンジン型式）
-    if old_engine_id = @searched[:old_engine_id]
-      cond.push(arel[:old_engine_id].eq old_engine_id)
+    if modelcode = @searched[:modelcode]
+      old_engine_id = Engine.where(arel_engine_old_engine_id[:engine_model_name].matches "%#{modelcode}%").pluck(:id)
+      cond.push(arel[:old_engine_id].in old_engine_id)
     end
 
    #エンジンNo
@@ -348,7 +350,9 @@ class EngineordersController < ApplicationController
     ActiveRecord::Base.transaction do
       respond_to do |format|
         if @engineorder.undo_shipping
-          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクトと同時に、振替を削除する。
+          Charge.delete_all(:repair_id @engineorder.new_engine.current_repair.id)
+
           format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_shipping_undone") }
           format.json { head :no_content }
         else
