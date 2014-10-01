@@ -260,12 +260,11 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
-
     case
     when params[:search]
       # 再検索時は、新しく入力された検索条件を使用
       @searched = params[:search].deep_symbolize_keys
-    when session[:searched]
+    when session[:searched] && (params[:page] || request.format.csv?)
       # ページ繰り時、ファイルエクスポート時は、設定済みの検索条件を使用
       @searched = session[:searched]
     else
@@ -330,24 +329,22 @@ class RepairsController < ApplicationController
 
    # 仕入済の一覧を表示する
   def index_purchase
-    if params[:page]
-      # ページ繰り時は、検索条件を引き継ぐ
+    case
+    when params[:search]
+      # 再検索時は、新しく入力された検索条件を使用
+      @searched = params[:search].deep_symbolize_keys
+    when session[:searched] && (params[:page] || request.format.csv?)
+      # ページ繰り時、ファイルエクスポート時は、保存済みの検索条件を使用
       @searched = session[:searched]
     else
-      if params[:commit]
-        # 再検索時は、以前の検索条件に新しく入力された条件をマージ
-        @searched = session[:searched]
-        @searched.merge!(params[:search])
-      else
-        # 初期表示時は、当月を検索条件として設定
-        @searched = {"billing_month(1i)" => Date.today.year,
-                     "billing_month(2i)" => Date.today.month}
-        session[:searched] = @searched
-      end
+      # 初期表示時は、当月を検索条件として設定
+      @searched = {:"purchase_month(1i)" => Date.today.year, :"purchase_month(2i)" => Date.today.month}
+      session[:searched] = @searched
     end
+    session[:searched] = @searched
 
-    year  = @searched["billing_month(1i)"].to_i  # 仕入月度 (年)
-    month = @searched["billing_month(2i)"].to_i  # 仕入月度 (月)
+    year  = @searched[:"purchase_month(1i)"].to_i  # 仕入月度 (年)
+    month = @searched[:"purchase_month(2i)"].to_i  # 仕入月度 (月)
     start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
     end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
@@ -381,12 +378,8 @@ class RepairsController < ApplicationController
         send_data(csv_str.encode(Encoding::SJIS),
                   type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
       }
-
-
     end
-
   end
-
 
    # 振替の一覧を表示する
   def index_charge
