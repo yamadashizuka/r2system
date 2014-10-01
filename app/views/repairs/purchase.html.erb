@@ -15,23 +15,23 @@
   </div>
   <br>
   <div class="field">
-    <%= f.label  :purchase_date %><br>
-    <%= f.date_select :purachase_date, :use_month_numbers => true, :start_year => 2000 %>
+    <%= f.label  :purachase_date %><br>
+    <%= f.date_select :purachase_date, :use_month_numbers => true, :start_year => 2000, :disabled => @repair.paid? %>
   </div>
-   <br>
+  <br>
   <div class="field">
     <%= f.label :competitor_code %><br>
     <%= f.text_field :competitor_code %>
   </div>
   <br>
   <div class="field">
-    <%= f.label :purchase_price %><br>
+    <%= f.label :purachase_price %><br>
 
     <%= f.text_field :purachase_price, :value=>number_with_delimiter(@repair.purachase_price), :autocomplete=>'off', :style=>"text-align:right" %> 円
     </div>
   <br> 
    <div class="field">
-    <%= f.label :purchase_comment %><br>
+    <%= f.label :purachase_comment %><br>
     <%= f.text_area :purachase_comment %>
   </div>
 
