@@ -43,7 +43,7 @@
         <td><%= carry_over_mark(repair) %></td>
         <td class="workregist"><%= link_to t('views.link_show'), repair, class: 'workregist_show' %></td>
         <% if current_user.yesOffice? || current_user.systemAdmin? %>
-          <td class="workregist"><%= link_to "仕入登録", purchase_path(repair), class: 'workregist_edit' %></td>
+          <td class="workregist"><%= link_to t('views.link_purchase'), purchase_path(repair), class: 'workregist_edit' %></td>
         <% end %>
       </tr>
     <% end %>
