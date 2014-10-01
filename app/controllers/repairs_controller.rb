@@ -52,9 +52,9 @@ class RepairsController < ApplicationController
 
     #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
     #※管轄が変わると表示されなくなるので注意が必要…
-    unless (current_user.yesOffice? || current_user.systemAdmin? )
-      cond.push(arel[:company_id].eq current_user.company_id)
-    end
+   # unless (current_user.yesOffice? || current_user.systemAdmin? )
+      #cond.push(arel[:company_id].eq current_user.company_id)
+    #end
     
     #対象のエンジン情報を取得して、そのエンジンに紐付く整備情報を取得する
     @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id],Engine.arel_table[:engine_model_name],Engine.arel_table[:serialno]).paginate(page: params[:page], per_page: 10)

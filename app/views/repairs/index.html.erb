@@ -58,8 +58,8 @@
         <% end %>
 
         <td class="workregist">
-          <% if repair.order_no.present? and (repair.engine.under_repair? or repair.engine.before_repair?)  %>
-            <%= link_to '開始', start_repair_path(repair) , class: "workregist_work"%></td>
+          <% if repair.order_no.present? and (repair.engine.under_repair? or repair.engine.before_repair?) and repair.engine.company_id == current_user.company_id  %>
+            <%= link_to '開始', start_repair_path(repair) , class: "workregist_work"%></td>                 
           <% end %>
         </td>
 
