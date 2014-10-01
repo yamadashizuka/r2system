@@ -16,6 +16,9 @@
     <br>
     <%= submit_tag "検索" %>
   <% end %>
+  <div>
+    <p>合計仕入価格：<%= number_with_delimiter(@total_price) %> 円</p>
+  </div>
 </div>
 
 <table class="table table-striped table-bordered table-condensed">
@@ -45,10 +48,6 @@
 </table>
 
 <p>※当月のみ仕入修正・戻しが可能です</p>
-
-<div>
-  <p>合計仕入価格：<%= number_with_delimiter(@total_price) %> 円</p>
-</div>
 
 <% unless @repairs.empty? %>
   <%= link_to t('views.link_csv_export'), purchase_repairs_path(format: 'csv') %>
