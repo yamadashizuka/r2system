@@ -1,4 +1,4 @@
-<h1>仕入済一覧</h1>
+<h1><%= t('views.title_repairs_index_purchase') %></h1>
 
 <h3>検索条件</h3>
 
@@ -43,6 +43,12 @@
     <% end %>
   </tbody>
 </table>
+
+<p>※当月のみ仕入修正・戻しが可能です</p>
+
+<div>
+  <p>合計仕入価格：<%= number_with_delimiter(@total_price) %> 円</p>
+</div>
 
 <% unless @repairs.empty? %>
   <%= link_to t('views.link_csv_export'), purchase_repairs_path(format: 'csv') %>

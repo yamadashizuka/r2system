@@ -135,9 +135,12 @@ def cutoff_date
   end
 end
 
+def previous_cutoff_date
+  cutoff_date.advance(months: -1)
+end
+
 def carried_over?(repair)
-  prev_cutoff_date = cutoff_date.advance(months: -1)
-  repair.finish_date <= prev_cutoff_date
+  repair.finish_date <= previous_cutoff_date
 end
 
 def carry_over_mark(repair)
@@ -145,6 +148,16 @@ def carry_over_mark(repair)
     "※"
   else
     ""
+  end
+end
+
+def undo_link(repair)
+  if repair.paid?
+    link_to t("views.link_purchase") + "の取り消し", undo_purchase_path(repair), 
+            :style=>"color:red;",
+            confirm: t("controller_msg.repair_purchase_undoing?")
+  else
+    raise "整備に関する逆向きユースケースは、仕入戻しのみ"
   end
 end
 

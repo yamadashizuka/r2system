@@ -2,8 +2,8 @@
 class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 
-  after_action :anchor!, only: [:index, :index_unbilled, :purchase, :index_purchase, :index_charge]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
+  after_action :anchor!, only: [:index, :index_unbilled, :index_purchase, :index_charge]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase, :undo_purchase]
 
   # GET /repairs
   # GET /repairs.json
@@ -79,33 +79,25 @@ class RepairsController < ApplicationController
   # GET /repairs/1/edit
   # ステータスでレンダリング先を変える。
   def edit
-    #エンジンが受領前状態の場合、
-    # メソッド名の lower-camel-case -> snake-case 変更です。
-    # ここの if 文の並びも排他的な条件なので、case 文に変更すると読みやすくなる
-    # と思います。
-    if @repair.engine.before_arrive?
-      render :templathe => "repairs/returning"
+    # エンジンが仕入済みの場合
+    if @repair.paid?
+      render :template => "repairs/purchase"
+    else
+      case
+        #エンジンが受領前の場合
+      when @repair.engine.before_arrive?
+        render :templathe => "repairs/returning"
+      when @repair.engine.before_repair?
+        #エンジンが整備前状態の場合、整備前
+        render :template => "repairs/engineArrived"
+      when @repair.engine.under_repair?
+        #エンジンが整備中の場合
+        render :template => "repairs/repairStarted"
+      when @repair.engine.finished_repair?
+        #エンジンが整備完了(完成品状態)の場合、
+        render :template => "repairs/repairFinished"
+      end
     end
-    #エンジンが整備前状態の場合、整備前
-    if @repair.engine.before_repair?
-      render :template => "repairs/engineArrived"
-    end
-    #エンジンが整備中の場合
-    if @repair.engine.under_repair?
-      render :template => "repairs/repairStarted"
-    end
-    #エンジンが整備完了(完成品状態)の場合、
-    if @repair.engine.finished_repair?
-      render :template => "repairs/repairFinished"
-    end
-  
-    #if @repair.engine.beforeShipping?
-    #  render :template => "engineorders/?"
-    #end
-    #if @repair.engine.afterShipped?
-    #  render :template => "engineorders/?"
-    #end
-  
   end
 
   # POST /repairs
@@ -365,6 +357,7 @@ class RepairsController < ApplicationController
         paymentstatus_id: Paymentstatus.of_paid,
         engines: {enginestatus_id: Enginestatus.of_finished_repair}
        ).order(:purachase_date)
+      @total_price = @repairs.sum(:purachase_price)
 
       format.html {
         @repairs = @repairs.paginate(page: params[:page], per_page: 10)
@@ -383,6 +376,7 @@ class RepairsController < ApplicationController
                     repair.engine.engine_model_name, repair.engine.serialno,
                     repair.purachase_price]
           end
+          csv << ["合計仕入価格", @total_price]
         }
         send_data(csv_str.encode(Encoding::SJIS),
                   type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
@@ -408,27 +402,52 @@ class RepairsController < ApplicationController
         # 初期表示時は、未振替情報を表示
         @searched = {"charge_flg" => "before"}
         session[:searched] = @searched
+       #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
+       unless (current_user.yesOffice? || current_user.systemAdmin? )
+          @searched["company_id"] == current_user.company_id
+        end    
       end
     end
 
-    if @searched["charge_flg"] == "after"
-      charge_status = true
-      csv_name = "振替後"
+
+   #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
+    arel_engine = Engine.arel_table
+    cond_engine = []
+
+
+    
+    if (current_user.yesOffice? || current_user.systemAdmin? )
+     # company_idがあれば、条件に追加、
+      cond_engine.push(arel_engine[:company_id].eq @searched["company_id"]) if @searched["company_id"].present?
+    #拠点の場合は、拠点管轄のエンジンを対象とする。
     else
-      charge_status = false
-      csv_name = "振替前"
+      cond_engine.push(arel_engine[:company_id].eq current_user.company_id)
+    end
+
+
+
+   #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
+    arel_charge = Charge.arel_table
+    cond_charge = []
+
+    if @searched["charge_flg"] == "after"
+         cond_charge.push(arel_charge[:charge_flg].eq true)
+    else
+         cond_charge.push(arel_charge[:charge_flg].eq false)
     end
 
 
     respond_to do |format|
-      @repairs = Repair.joins(:charge).where(
-        charges: {charge_flg: charge_status}
-       ).order(:purachase_date)
+
+      @repairs = Repair.includes(:engine).includes(:charge)
+      .where(cond_engine.reduce(&:and)).where(cond_charge.reduce(&:and))
+      .order(:purachase_date)
 
       format.html {
         @repairs = @repairs.paginate(page: params[:page], per_page: 10)
         adjust_page(@repairs)
       }
+
       format.csv {
         col_names = [Repair.human_attribute_name(:order_no),
                      Repair.human_attribute_name(:purachase_date),
@@ -446,9 +465,8 @@ class RepairsController < ApplicationController
           end
         }
         send_data(csv_str.encode(Encoding::SJIS),
-                  type: "text/csv; charset=shift_jis", filename: "#{csv_name}.csv")
+                  type: "text/csv; charset=shift_jis", filename: "test.csv")
       }
-
 
     end
 
@@ -459,6 +477,21 @@ class RepairsController < ApplicationController
     set_repair
   end
 
+  # 仕入の取り消し
+  def undo_purchase
+    set_repair
+    respond_to do |format|
+      if @repair.undo_purchase
+        # 取り消し成功時は、整備の詳細画面にリダイレクト
+        format.html { redirect_to @repair, notice: t("controller_msg.repair_purchase_undone") }
+        format.json { head :no_content }
+      else
+        # 失敗した場合、整備の詳細画面の notice メッセージとして、その旨を通知
+        format.html { redirect_to @repair, notice: t("controller_msg.repair_purchase_not_undoable") }
+        format.json { head :no_content }
+      end
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
