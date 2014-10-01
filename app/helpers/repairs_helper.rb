@@ -151,4 +151,14 @@ def carry_over_mark(repair)
   end
 end
 
+def undo_link(repair)
+  if repair.paid?
+    link_to t("views.link_purchase") + "の取り消し", undo_purchase_path(repair), 
+            :style=>"color:red;",
+            confirm: t("controller_msg.repair_purchase_undoing?")
+  else
+    raise "整備に関する逆向きユースケースは、仕入戻しのみ"
+  end
+end
+
 end

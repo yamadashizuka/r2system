@@ -126,7 +126,11 @@ class Repair < ActiveRecord::Base
 
   #purachase_priceを'カンマ'をとった状態でオーバーライトする
   def purachase_price=(value)
-    self[:purachase_price] = value.gsub(/,/, '')
+    if value
+      self[:purachase_price] = value.gsub(/,/, '')
+    else
+      self[:purachase_price] = nil
+    end
   end
 
   # この整備の支払状態が「支払済」であるかを確認する
@@ -137,5 +141,44 @@ class Repair < ActiveRecord::Base
   # この整備の支払状態が「未払い」であるかを確認する
   def unpaid?
     self.status == Paymentstatus.of_unpaid
+  end
+
+  # 当月中に仕入されたかを確認する
+  def paid_in_this_month?
+    # TODO: models から helpers に依存すべきではない気がする
+    self.purachase_date > ApplicationController.helpers.previous_cutoff_date &&
+      self.purachase_date <= ApplicationController.helpers.cutoff_date
+  end
+
+  # 仕入を取り消す
+  def undo_purchase
+    # 仕入の取り消しは、
+    #   1. 整備の支払状態 == 支払済
+    #   2. 仕入日が当月中
+    # が前提条件
+    cutoff_date = ApplicationController.helpers.cutoff_date
+    prev_cutoff_date = ApplicationController.helpers.previous_cutoff_date
+    if self.paid? && self.paid_in_this_month?
+      # 仕入登録時に更新する項目とそれらの戻し方は下記の通り。
+      #   * Repair#status (paymentstatus_id) を ID_PAID に更新
+      #     => ID_UNPAID に戻す
+      #   * Repair#purachase_date を新規設定
+      #     => nil に戻す
+      #   * Repair#purachase_comment を新規設定
+      #     => nil に戻す
+      #   * Repair#purachase_price を新規設定
+      #     => nil に戻す
+      #   * Repair#competitor_code を新規設定
+      #     => nil に戻す
+      self.status = Paymentstatus.of_unpaid
+      self.purachase_date = nil
+      self.purachase_comment = nil
+      self.purachase_price = nil
+      self.competitor_code = nil
+      self.save!
+      true
+    else
+      false
+    end
   end
 end

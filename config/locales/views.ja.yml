@@ -19,10 +19,10 @@ ja:
     link_allocated: 引当
     link_shipped: 出荷
     link_returning: 返却
+    link_purchase: 仕入登録
     link_back: 戻る
     link_edit: 修正
     link_show: 詳細
-    link_purchase: 仕入詳細
     link_destroy: 削除
     link_csv_export: ファイルエクスポート
     confirm_msg: 'してよろしいですか？'

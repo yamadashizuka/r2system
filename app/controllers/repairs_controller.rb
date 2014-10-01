@@ -3,7 +3,7 @@ class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 
   after_action :anchor!, only: [:index, :index_unbilled, :index_purchase, :index_charge]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase, :undo_purchase]
 
   # GET /repairs
   # GET /repairs.json
@@ -475,6 +475,21 @@ class RepairsController < ApplicationController
     set_repair
   end
 
+  # 仕入の取り消し
+  def undo_purchase
+    set_repair
+    respond_to do |format|
+      if @repair.undo_purchase
+        # 取り消し成功時は、整備の詳細画面にリダイレクト
+        format.html { redirect_to @repair, notice: t("controller_msg.repair_purchase_undone") }
+        format.json { head :no_content }
+      else
+        # 失敗した場合、整備の詳細画面の notice メッセージとして、その旨を通知
+        format.html { redirect_to @repair, notice: t("controller_msg.repair_purchase_not_undoable") }
+        format.json { head :no_content }
+      end
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
