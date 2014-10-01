@@ -357,6 +357,7 @@ class RepairsController < ApplicationController
         paymentstatus_id: Paymentstatus.of_paid,
         engines: {enginestatus_id: Enginestatus.of_finished_repair}
        ).order(:purachase_date)
+      @total_price = @repairs.sum(:purachase_price)
 
       format.html {
         @repairs = @repairs.paginate(page: params[:page], per_page: 10)
@@ -375,6 +376,7 @@ class RepairsController < ApplicationController
                     repair.engine.engine_model_name, repair.engine.serialno,
                     repair.purachase_price]
           end
+          csv << ["合計仕入価格", @total_price]
         }
         send_data(csv_str.encode(Encoding::SJIS),
                   type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
