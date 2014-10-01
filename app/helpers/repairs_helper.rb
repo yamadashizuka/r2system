@@ -135,9 +135,12 @@ def cutoff_date
   end
 end
 
+def previous_cutoff_date
+  cutoff_date.advance(months: -1)
+end
+
 def carried_over?(repair)
-  prev_cutoff_date = cutoff_date.advance(months: -1)
-  repair.finish_date <= prev_cutoff_date
+  repair.finish_date <= previous_cutoff_date
 end
 
 def carry_over_mark(repair)

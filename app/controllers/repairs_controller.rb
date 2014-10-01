@@ -79,33 +79,25 @@ class RepairsController < ApplicationController
   # GET /repairs/1/edit
   # ステータスでレンダリング先を変える。
   def edit
-    #エンジンが受領前状態の場合、
-    # メソッド名の lower-camel-case -> snake-case 変更です。
-    # ここの if 文の並びも排他的な条件なので、case 文に変更すると読みやすくなる
-    # と思います。
-    if @repair.engine.before_arrive?
-      render :templathe => "repairs/returning"
+    # エンジンが仕入済みの場合
+    if @repair.paid?
+      render :template => "repairs/purchase"
+    else
+      case
+        #エンジンが受領前の場合
+      when @repair.engine.before_arrive?
+        render :templathe => "repairs/returning"
+      when @repair.engine.before_repair?
+        #エンジンが整備前状態の場合、整備前
+        render :template => "repairs/engineArrived"
+      when @repair.engine.under_repair?
+        #エンジンが整備中の場合
+        render :template => "repairs/repairStarted"
+      when @repair.engine.finished_repair?
+        #エンジンが整備完了(完成品状態)の場合、
+        render :template => "repairs/repairFinished"
+      end
     end
-    #エンジンが整備前状態の場合、整備前
-    if @repair.engine.before_repair?
-      render :template => "repairs/engineArrived"
-    end
-    #エンジンが整備中の場合
-    if @repair.engine.under_repair?
-      render :template => "repairs/repairStarted"
-    end
-    #エンジンが整備完了(完成品状態)の場合、
-    if @repair.engine.finished_repair?
-      render :template => "repairs/repairFinished"
-    end
-  
-    #if @repair.engine.beforeShipping?
-    #  render :template => "engineorders/?"
-    #end
-    #if @repair.engine.afterShipped?
-    #  render :template => "engineorders/?"
-    #end
-  
   end
 
   # POST /repairs
