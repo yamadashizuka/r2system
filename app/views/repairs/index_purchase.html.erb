@@ -44,6 +44,8 @@
   </tbody>
 </table>
 
+<p>※当月のみ仕入修正・戻しが可能です</p>
+
 <% unless @repairs.empty? %>
   <%= link_to t('views.link_csv_export'), purchase_repairs_path(format: 'csv') %>
 <% end %>
