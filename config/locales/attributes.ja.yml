@@ -105,3 +105,6 @@ ja:
       engineorder/new_engine:
         engine_model_name: 新規エンジンのエンジン型式
         serialno: 新規エンジンのエンジンNo.
+      charge:
+        charge_date: 振替日
+        charge_comment: 振替コメント
