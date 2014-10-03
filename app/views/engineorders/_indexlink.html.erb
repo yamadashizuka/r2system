@@ -1,5 +1,20 @@
+<% if current_user.yesBranch? 
+     if engineorder.branch_id == current_user.company_id
+       myBranch = true
+       otherBranch = false
+     else
+       myBranch = false
+       otherBranch = true
+      end 
+   else 
+     myBranch = false
+     otherBranch = false
+  end
+ %>
+
+
   <td  rowspan="2" class="workregist" >
-    <% if engineorder.inquiry? %>
+    <% if engineorder.inquiry? && !otherBranch %>
       <%= link_to t("views.link_inquiry"), edit_inquery_path(engineorder) , class: "workregist_work" %>
     <% else %>
       <%= t("views.link_inquiry") %>
@@ -7,7 +22,7 @@
   </td>
 
   <td  rowspan="2" class="workregist" >
-    <% if engineorder.inquiry? || engineorder.ordered? %>
+    <% if (engineorder.inquiry? || engineorder.ordered?)  && !otherBranch %>
       <%= link_to t("views.link_ordered"), ordered_path(engineorder), class: "workregist_work" %>
     <% else %>
       <%= t("views.link_ordered") %>
@@ -21,8 +36,9 @@
       <% if current_user.yesOffice? || current_user.systemAdmin? %>
         <%= link_to t("views.link_allocated"), allocated_path(engineorder), class: "workregist_work" %>
       <% end %>
+
     <% elsif engineorder.shipping_preparation? %>
-      <% if current_user.yesBranch? %>
+      <% if current_user.yesOffice? %>
         <%= link_to t("views.link_allocated"), allocated_path(engineorder), class: "workregist_work" %>
       <% else %>
         <%= t("views.link_allocated") %>
@@ -44,7 +60,11 @@
 
   <td  rowspan="2" class="workregist" >
     <% if engineorder.shipped? || engineorder.returned? %>
-      <%= link_to t("views.link_returning"), returning_path(engineorder), class: "workregist_work" %>
+     <% if current_user.yesOffice? || current_user.systemAdmin? || myBranch %>
+        <%= link_to t("views.link_returning"), returning_path(engineorder), class: "workregist_work" %>
+      <% else %>
+        <%= t("views.link_returning") %>
+      <% end %>
     <% end %>
   </td>
   
@@ -60,7 +80,7 @@
 
   <td  rowspan="2" class="workregist">
    <% if engineorder.inquiry? %>
-     <% if current_user.yesBranch? || current_user.systemAdmin? %>
+     <% if myBranch || current_user.systemAdmin? %>
       <%= link_to t("views.link_destroy"), engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %>
       <% end %>
     <% end %>

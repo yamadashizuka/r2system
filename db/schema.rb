@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140925020522) do
+ActiveRecord::Schema.define(version: 20141003061421) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20140925020522) do
     t.integer  "engine_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "charge_date"
   end
 
   add_index "charges", ["engine_id"], name: "index_charges_on_engine_id"

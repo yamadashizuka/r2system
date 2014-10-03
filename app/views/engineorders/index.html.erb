@@ -11,7 +11,7 @@
     <br>
   <tr>
     <td width="80">エンジン型式</td>
-    <td with="120"><%= collection_select(:search, :modelcode, Enginemodel.all, :modelcode, :name, :include_blank => true, :selected => @searched[:modelcode]) %></td>
+    <td with="120"><%= collection_select(:search, :modelcode, Enginemodel.all, :modelcode, :modelcode, :include_blank => true, :selected => @searched[:modelcode]) %></td>
     <td width="80" >エンジンNo</td>
     <td width="120"><%= text_field :search, :serialno, :value => @searched[:serialno] %></td>
   <tr>
@@ -40,11 +40,8 @@
       <th><%= Engineorder.human_attribute_name('allocated_date') %></th>
       <th><%= Engineorder.human_attribute_name('shipped_date') %></th>
       <th><%= Engineorder.human_attribute_name('returning_date') %></th>
-      <% if current_user.yesOffice? || current_user.systemAdmin? %>
-        <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
-      <% elsif current_user.yesBranch? %>
-        <th colspan=7 rowspan=2>作業登録</th> <!-- YES拠点の人の作業数だけ列を繋げる -->
-      <% end %>
+      
+      <th colspan=8 rowspan=2>作業登録</th>
 </tr>
 <tr>
       <th><%= Engineorder.human_attribute_name('old_engine_id') %></th>

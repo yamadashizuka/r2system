@@ -43,18 +43,36 @@ class RepairsController < ApplicationController
 
     #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
     arel = Engine.arel_table
+    arel_engine = Engine.arel_table
+    arel_engine_old_engine_id = Engine.arel_table
+
     cond = []
+
+    #拠点：管轄
+     if company_id = @searched[:company_id]
+      cond.push(arel[:company_id].eq company_id)
+    end
+
+  # エンジン型式
+    if engine_model_name = @searched[:engine_model_name]
+      cond.push(arel[:engine_model_name].matches "%#{engine_model_name}%")
+    end
+
+   # エンジンNo
+    if serialno = @searched[:serialno]
+      cond.push(arel[:serialno].matches "%#{serialno}%")
+    end  
 
     # エンジンステータス
     if enginestatus_id = @searched[:enginestatus_id]
       cond.push(arel[:enginestatus_id].eq enginestatus_id)
     end
 
-    #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
+    #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。(全件表示のため、一旦コメントアウト)
     #※管轄が変わると表示されなくなるので注意が必要…
-    unless (current_user.yesOffice? || current_user.systemAdmin? )
-      cond.push(arel[:company_id].eq current_user.company_id)
-    end
+    # unless (current_user.yesOffice? || current_user.systemAdmin? )
+      #cond.push(arel[:company_id].eq current_user.company_id)
+    #end
     
     #対象のエンジン情報を取得して、そのエンジンに紐付く整備情報を取得する
     @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id],Engine.arel_table[:engine_model_name],Engine.arel_table[:serialno]).paginate(page: params[:page], per_page: 10)
@@ -260,12 +278,11 @@ class RepairsController < ApplicationController
 
   # 未請求作業一覧を表示する
   def index_unbilled
-
     case
     when params[:search]
       # 再検索時は、新しく入力された検索条件を使用
       @searched = params[:search].deep_symbolize_keys
-    when session[:searched]
+    when session[:searched] && (params[:page] || request.format.csv?)
       # ページ繰り時、ファイルエクスポート時は、設定済みの検索条件を使用
       @searched = session[:searched]
     else
@@ -330,24 +347,22 @@ class RepairsController < ApplicationController
 
    # 仕入済の一覧を表示する
   def index_purchase
-    if params[:page]
-      # ページ繰り時は、検索条件を引き継ぐ
+    case
+    when params[:search]
+      # 再検索時は、新しく入力された検索条件を使用
+      @searched = params[:search].deep_symbolize_keys
+    when session[:searched] && (params[:page] || request.format.csv?)
+      # ページ繰り時、ファイルエクスポート時は、保存済みの検索条件を使用
       @searched = session[:searched]
     else
-      if params[:commit]
-        # 再検索時は、以前の検索条件に新しく入力された条件をマージ
-        @searched = session[:searched]
-        @searched.merge!(params[:search])
-      else
-        # 初期表示時は、当月を検索条件として設定
-        @searched = {"billing_month(1i)" => Date.today.year,
-                     "billing_month(2i)" => Date.today.month}
-        session[:searched] = @searched
-      end
+      # 初期表示時は、当月を検索条件として設定
+      @searched = {:"purchase_month(1i)" => Date.today.year, :"purchase_month(2i)" => Date.today.month}
+      session[:searched] = @searched
     end
+    session[:searched] = @searched
 
-    year  = @searched["billing_month(1i)"].to_i  # 仕入月度 (年)
-    month = @searched["billing_month(2i)"].to_i  # 仕入月度 (月)
+    year  = @searched[:"purchase_month(1i)"].to_i  # 仕入月度 (年)
+    month = @searched[:"purchase_month(2i)"].to_i  # 仕入月度 (月)
     start_date = Date.new(year, month, 1)  # 仕入月度は、1日から
     end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
@@ -381,12 +396,8 @@ class RepairsController < ApplicationController
         send_data(csv_str.encode(Encoding::SJIS),
                   type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
       }
-
-
     end
-
   end
-
 
    # 振替の一覧を表示する
   def index_charge
