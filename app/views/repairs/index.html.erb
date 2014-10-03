@@ -3,9 +3,25 @@
 <h3>検索条件</h3>
 <%= form_tag  repairs_index_path , :method => :get do %>
 <div class="well">
+<tr>
+    <td width="80" > 拠点 ： 管轄 </td>
+    <td width="120"><%= collection_select(:search, :company_id, Company.all, :id, :name, :include_blank => true, :selected => @searched[:company_id]) %></td>
+<tr>
+<br>
+<br>
+<tr>
+      <td width="80" >エンジン型式</td>
+      <td width="120"><%= text_field :search, :engine_model_name, :value => @searched[:engine_model_name] %></td>
+      <td width="80" >エンジンNo.</td>
+      <td width="120"><%= text_field :search, :serialno, :value => @searched[:serialno] %><br /></td>
+</tr>
+<br>
+<br>
+<tr>
   <div class ="filed">
     ステータス
     <%= collection_select(:search, :enginestatus_id, Enginestatus.all, :id, :name, :include_blank => true, :selected => @searched[:enginestatus_id]) %>
+  <tr>
   </div>
   <br>
 <%= submit_tag "検索" %>
@@ -64,18 +80,19 @@
         </td>
 
         <td class="workregist">
-          <% if repair.engine.under_repair? %>
+          <% if repair.engine.under_repair? and repair.engine.company_id == current_user.company_id %>
             <%= link_to '完了', finish_repair_path(repair), class: "workregist_work" %>
           <% end %>
         </td>
 
         <td class="workregist">   
-          <% if repair.engine.before_shipping? %>
+          <% if repair.engine.before_shipping?  and repair.engine.company_id == current_user.company_id %>
             <%= link_to '出荷', shipped_path(repair.engine.current_order_as_new), class: "workregist_work" %>
           <% end %>
         </td>
 
         <td class="workregist"><%= link_to '詳細', repair, class: "workregist_show"  %></td>
+        
         <% if current_user.yesOffice? || current_user.systemAdmin? %>
           <td class="workregist"><%= link_to '訂正', edit_repair_path(repair), class: "workregist_edit"  %></td>
           <td class="workregist">
