@@ -25,7 +25,11 @@ module RepairsHelper
   def purchase_path(repair)
     return '/repairs/purchase/' +  repair.id.to_s
   end
-
+  
+# 整備一覧画面からエンジン到着登録のためのパスを生成する  
+  def repair_arrived_path(repair)
+    return '/repairs/engineArrived/' + repair.engine_id.to_s
+  end
 
 #画面上の編集可否を返す（受領画面）
 def getDisabled_EngineArrived
