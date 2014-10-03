@@ -43,18 +43,36 @@ class RepairsController < ApplicationController
 
     #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
     arel = Engine.arel_table
+    arel_engine = Engine.arel_table
+    arel_engine_old_engine_id = Engine.arel_table
+
     cond = []
+
+    #拠点：管轄
+     if company_id = @searched[:company_id]
+      cond.push(arel[:company_id].eq company_id)
+    end
+
+  # エンジン型式
+    if engine_model_name = @searched[:engine_model_name]
+      cond.push(arel[:engine_model_name].matches "%#{engine_model_name}%")
+    end
+
+   # エンジンNo
+    if serialno = @searched[:serialno]
+      cond.push(arel[:serialno].matches "%#{serialno}%")
+    end  
 
     # エンジンステータス
     if enginestatus_id = @searched[:enginestatus_id]
       cond.push(arel[:enginestatus_id].eq enginestatus_id)
     end
 
-    #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
+    #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。(全件表示のため、一旦コメントアウト)
     #※管轄が変わると表示されなくなるので注意が必要…
-    unless (current_user.yesOffice? || current_user.systemAdmin? )
-      cond.push(arel[:company_id].eq current_user.company_id)
-    end
+    # unless (current_user.yesOffice? || current_user.systemAdmin? )
+      #cond.push(arel[:company_id].eq current_user.company_id)
+    #end
     
     #対象のエンジン情報を取得して、そのエンジンに紐付く整備情報を取得する
     @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id],Engine.arel_table[:engine_model_name],Engine.arel_table[:serialno]).paginate(page: params[:page], per_page: 10)

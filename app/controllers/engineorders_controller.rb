@@ -79,9 +79,7 @@ class EngineordersController < ApplicationController
         #cond.push(arel[:install_place_id].in place)
       #end
 
-
-    #全件表示に変更のため、一旦コメントアウト
-    #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。
+    #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。→全件表示とするため一旦コメントアウト
     #unless (current_user.yesOffice? || current_user.systemAdmin? )
       #cond.push(arel[:branch_id].eq current_user.company_id)
     #end

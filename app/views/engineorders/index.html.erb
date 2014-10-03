@@ -40,6 +40,7 @@
       <th><%= Engineorder.human_attribute_name('allocated_date') %></th>
       <th><%= Engineorder.human_attribute_name('shipped_date') %></th>
       <th><%= Engineorder.human_attribute_name('returning_date') %></th>
+      
       <% if current_user.yesOffice? || current_user.systemAdmin? %>
         <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
       <% elsif current_user.yesBranch? %>
