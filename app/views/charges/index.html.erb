@@ -4,7 +4,7 @@
   <thead>
     <tr>
       <th>Charge flg</th>
-      <th>Charge price</th>
+      <th>Charge date</th>
       <th>Charge comment</th>
       <th>Repair</th>
       <th>Engine</th>
@@ -18,7 +18,7 @@
     <% @charges.each do |charge| %>
       <tr>
         <td><%= charge.charge_flg %></td>
-        <td><%= charge.charge_price %></td>
+        <td><%= charge.charge_date %></td>
         <td><%= charge.charge_comment %></td>
         <td><%= charge.repair %></td>
         <td><%= charge.engine %></td>

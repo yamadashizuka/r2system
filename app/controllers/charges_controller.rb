@@ -78,6 +78,6 @@ class ChargesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def charge_params
-      params.require(:charge).permit(:charge_flg, :charge_price, :charge_comment, :repair_id, :engine_id)
+      params.require(:charge).permit(:charge_flg, :charge_price, :charge_comment, :repair_id, :engine_id, :charge_date)
     end
 end
