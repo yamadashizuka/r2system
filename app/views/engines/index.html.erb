@@ -90,9 +90,13 @@
 <br>
 <%= will_paginate @engines, :previous_label=>'≪前', :next_label=>'次≫' %>
 <br>
+
+<% if current_user.yesOffice? || current_user.systemAdmin? || current_user.tender? %>
 <br>
 <%= link_to '新規登録', new_engine_path %>
 <br>
+<% end %>
+
 <br>
 <%= link_to t('views.link_back'), root_path %>
 
