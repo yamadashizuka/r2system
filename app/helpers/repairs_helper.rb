@@ -155,7 +155,7 @@ def carry_over_mark(repair)
   end
 end
 
-def undo_link(repair)
+def repairs_undo_link(repair)
   if repair.paid?
     link_to t("views.link_purchase") + "の取り消し", undo_purchase_path(repair), 
             :style=>"color:red;",

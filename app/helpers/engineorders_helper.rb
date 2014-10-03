@@ -157,7 +157,7 @@ def getDisabled_Returning
   end
 end
 
-  def undo_link(engineorder)
+  def engineorders_undo_link(engineorder)
     case engineorder.status.id
     when Businessstatus::ID_INQUIRY  # 引合
       # TODO: 未実装
