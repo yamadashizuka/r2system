@@ -460,6 +460,9 @@ class RepairsController < ApplicationController
       }
 
       format.csv {
+puts "*****************************"
+puts @repairs.count
+puts "*****************************"
         col_names = [Repair.human_attribute_name(:order_no),
                      Repair.human_attribute_name(:purachase_date),
                      Engine.human_attribute_name(:engine_model_name),
