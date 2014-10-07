@@ -83,7 +83,7 @@
     </div>
     <div class="field">
       <%= Repair.human_attribute_name('purachase_price') %>：
-      <%= @repair.purachase_price %> 円
+      <%= number_with_delimiter(@repair.purachase_price) %> 円
     </div>
     <div class="field">
       <%= Repair.human_attribute_name('purachase_comment') %>：
