@@ -2,22 +2,105 @@ class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
   after_action :anchor!, only: [:index]
-  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning,
+                                     :undo_allocation, :undo_ordered, :undo_shipping]
 
   # GET /engineorders
   # GET /engineorders.json
   def index
-  	  
-  	if current_user.yesOffice? || current_user.systemAdmin?
-    @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    adjust_page(@engineorders)
-    
+
+    if params[:page].nil?
+      # ページ繰り以外
+      @searched = Hash.new
+      session[:searched] = @searched
+
+
+      if params[:commit].nil?
+        # 初期表示時：全件表示（条件なし）
+      else
+        # 検索ボタン押下時：画面入力された条件のセッションへの保存
+        # 検索条件を取り込むときに、あらかじめ blank? なものは設定されていないと見なす。(engineの検索と同じ)
+        params[:search].each do |key, val|
+          @searched[key.intern] = val unless val.blank?
+        end
+      end
     else
-    
-    @engineorders = Engineorder.where(:branch_id => current_user.company_id).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    adjust_page(@engineorders)
-    
+      # ページ繰り時：検索条件のセッションからの取り出し
+      @searched = session[:searched]
     end
+  	
+      # Rails 標準の Arel 機能を使って、WHERE 条件をオブジェクトとして扱うように
+      # 変更しました。
+      # cond 配列に WHERE 条件を溜め込んでいきます。
+      # Arel は SQL を組み立てるための DSL のようなもので、文字列として SQL 文の
+      # 断片を埋め込む必要も無くなり、DBMS を取り替えやすくなります。
+    arel = Engineorder.arel_table
+    arel_engine = Engine.arel_table
+    arel_engine_old_engine_id = Engine.arel_table
+    #検索条件統一化のため一旦コメントアウト
+    #arel_place = Place.arel_table
+    
+    arel_engine = Engine.arel_table
+
+    cond = []
+
+    #拠点：管轄
+     if company_id = @searched[:company_id]
+      cond.push(arel[:branch_id].eq company_id)
+    end
+
+    # 返却エンジン型式（エンジン型式）
+    if modelcode = @searched[:modelcode]
+      old_engine_id = Engine.where(arel_engine_old_engine_id[:engine_model_name].matches "%#{modelcode}%").pluck(:id)
+      cond.push(arel[:old_engine_id].in old_engine_id)
+    end
+
+   #エンジンNo
+    if serialno = @searched[:serialno]
+       engineid = Engine.where(arel_engine[:serialno].matches "%#{serialno}%").pluck(:id)
+      cond.push(arel[:old_engine_id].in engineid)
+    end
+
+   # ビジネスステータス（ステータス）
+    if businessstatus_id = @searched[:businessstatus_id]
+      cond.push(arel[:businessstatus_id].eq businessstatus_id)
+    end
+
+
+ #検索条件統一化のため一旦コメントアウト
+    #物件名
+      #if title = @searched[:title]
+        #cond.push(arel[:title].matches "%#{title}%")
+      #end
+
+    #物件名
+      #if name = @searched[:name]
+        #place = Place.where(arel_place[:name].matches "%#{name}%").pluck(:id)
+        #cond.push(arel[:install_place_id].in place)
+      #end
+
+    #Yes本社の場合全件表示、それ以外の場合は拠点管轄の引合のみ対象とする。→全件表示とするため一旦コメントアウト
+    #unless (current_user.yesOffice? || current_user.systemAdmin? )
+      #cond.push(arel[:branch_id].eq current_user.company_id)
+    #end
+
+    #変更前ロジック
+    
+  	#if current_user.yesOffice? || current_user.systemAdmin?
+    #@engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    #adjust_page(@engineorders)
+    
+    #else
+  
+    #@engineorders = Engineorder.where(:branch_id => current_user.company_id).where(:businessstatus_id => @searched[:businessstatus_id] ).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    #adjust_page(@engineorders)
+
+    #end 
+  
+    @engineorders = Engineorder.where(cond.reduce(&:and)).order(:updated_at).paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
+
+
   end
 
   # GET /engineorders/1
@@ -130,11 +213,8 @@ class EngineordersController < ApplicationController
     #   * 返却予定 (返却エンジンが画面で修正されなかった場合)
     # となる。
     engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
-                            serialno: @engineorder.old_engine.serialno,
-                            status: Enginestatus.of_after_shipping)
-    if engine
-      @engineorder.old_engine = engine
-    else
+                            serialno: @engineorder.old_engine.serialno)
+    unless engine && @engineorder.old_engine == engine
       @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
                                            serialno: @engineorder.old_engine.serialno,
                                            status: Enginestatus.of_after_shipping,
@@ -262,8 +342,32 @@ class EngineordersController < ApplicationController
     raise
   end
 
+  def undo_shipping
+    set_engineorder
 
+    # エンジンオーダ、新エンジン、新エンジンに関する修理の状態に不整合が生じな
+    # いよう、更新をひとつのトランザクションにまとめる
+    ActiveRecord::Base.transaction do
+      respond_to do |format|
+        if @engineorder.undo_shipping
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクトと同時に、振替を削除する。
+          Charge.delete_all(repair_id: @engineorder.new_engine.current_repair.id)
 
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_shipping_undone") }
+          format.json { head :no_content }
+        else
+          # 出荷の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_shipping_not_undoable") }
+          format.json { head :no_content }
+        end
+      end
+    end
+  rescue
+    # 引当の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
+  end
 
   def editByStatus
     # 今の状態では、引当を複数実施する（引当のやり直し）は出来ないかもしれない
@@ -274,6 +378,11 @@ class EngineordersController < ApplicationController
 
     # ここの if 文の並びも排他的な条件なので、case 文に変更しました。
     case
+    when params[:commit] == t('views.buttun_ordered')
+      # 受注登録からの更新の場合
+      #旧エンジンのステータスを返却予定に変更する。
+      @engineorder.old_engine.status = Enginestatus.of_about_to_return
+      @engineorder.old_engine.save
     when params[:commit] == t('views.buttun_allocated')
       # 引当画面からの更新の場合
       # 新エンジンのステータスを出荷準備中に変更する。
@@ -287,6 +396,13 @@ class EngineordersController < ApplicationController
       # 新エンジンの会社を拠点に変更し、DBに反映する
       @engineorder.new_engine.company = @engineorder.branch
       @engineorder.new_engine.save
+      #振替を新規で登録する
+      charge = Charge.new
+      charge.engine_id = @engineorder.new_engine.id
+      charge.repair_id = @engineorder.new_engine.current_repair.id
+      charge.charge_flg = false
+      charge.save
+
       # 出荷しようとしている新エンジンに関わる整備オブジェクトを取得する
       if repair = @engineorder.repair_for_new_engine
         repair.shipped_date = @engineorder.shipped_date
@@ -334,6 +450,8 @@ class EngineordersController < ApplicationController
       # 受注登録の場合
       # 流通ステータスを、「受注」にセットする。
       @engineorder.status = Businessstatus.of_ordered
+      # エンジンに変更があれば、セットする。
+      setOldEngine
     when params[:commit] == t('views.buttun_allocated')
       # 引当登録の場合
       # 流通ステータスを、「出荷準備中」にセットする。
@@ -409,7 +527,7 @@ class EngineordersController < ApplicationController
       :new_engine_id, :old_engine_id,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date,
+      :returning_place_id, :allocated_date, :sales_amount,
       :install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
       :sending_place_attributes => [:id,:sending_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
       :old_engine_attributes => [:id, :engine_model_name, :serialno],

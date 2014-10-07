@@ -31,7 +31,11 @@
     <%= f.label :order_date %><br>
     <%= f.date_select :order_date, :use_month_numbers => true, :start_year => 2005 %>
   </div>
-
+  <div class="field">
+    <%= f.label :sales_amount %><br>
+    <%= f.text_field :sales_amount, :value=>number_with_delimiter(@engineorder.sales_amount), :autocomplete=>'off', :style=>"text-align:right" %> 円
+  </div>
+<br>
 <!-- のちほど別erbに切り出す。-->
   <div class="field">
     <%= f.label :install_place_id %>
@@ -50,7 +54,7 @@
           <td><%= p.text_field :phone_no , :size => 15, :disabled=> false %></td>
         </tr>
         <tr>
-          <td>宛先</td>
+          <td>設置先名</td>
           <td><%= p.text_field :name , :size => 20 , :disabled=> false %></td>
         </tr>
         <tr>

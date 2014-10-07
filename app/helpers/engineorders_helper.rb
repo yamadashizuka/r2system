@@ -129,7 +129,8 @@ def getDisabled_Returning
       :invoice_no_new => false,
       :new_engine_id => false,
       :shipped_date => false,
-      :shipped_comment => false
+      :shipped_comment => false,
+      :returning_place => false
       }
   else
       return  {
@@ -150,25 +151,29 @@ def getDisabled_Returning
       :invoice_no_new => true,
       :new_engine_id => true,
       :shipped_date => true,
-      :shipped_comment => true
+      :shipped_comment => true,
+      :returning_place => true
       }
   end
 end
 
-  def undo_link(engineorder)
+  def engineorders_undo_link(engineorder)
     case engineorder.status.id
     when Businessstatus::ID_INQUIRY  # 引合
       # TODO: 未実装
       link_to t("views.link_inquiry") + "の取り消し(未実装)", "#", :style=>"color:red;"
     when Businessstatus::ID_ORDERED  # 受注
-      link_to t("views.link_ordered") + "の取り消し", undo_ordered_path(engineorder), :style=>"color:red;"
+      link_to t("views.link_ordered") + "の取り消し", undo_ordered_path(engineorder),
+              :style=>"color:red;",
+              confirm: t("controller_msg.engineorder_ordered_undoing?")
     when Businessstatus::ID_SHIPPING_PREPARATION  # 出荷準備中
       link_to t("views.link_allocated") + "の取り消し", undo_allocation_path(engineorder),
               :style=>"color:red;",
               confirm: t("controller_msg.engineorder_allocation_undoing?")
     when Businessstatus::ID_SHIPPED  # 出荷済
-      # TODO: 未実装
-      link_to t("views.link_shipped") + "の取り消し(未実装)", "#", :style=>"color:red;"
+      link_to t("views.link_shipped") + "の取り消し", undo_shipping_path(engineorder),
+              :style=>"color:red;",
+              confirm: t("controller_msg.engineorder_shipping_undoing?")
     when Businessstatus::ID_RETURNED  # 返却済
       # TODO: 未実装
       link_to t("views.link_returning") + "の取り消し(未実装)", "#", :style=>"color:red;"

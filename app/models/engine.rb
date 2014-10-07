@@ -17,6 +17,8 @@ class Engine < ActiveRecord::Base
   belongs_to :company
 
   has_many :repairs
+  has_many :charge
+
   # 古いハッシュリテラルの書き方「:key => val」ではなく、Ruby 1.9 からの新記法
   # 「key: val」に統一しました。タイプ数も少ないですし。
   has_many :engineorders_as_new, class_name: 'Engineorder', foreign_key: 'new_engine_id'
@@ -67,6 +69,11 @@ class Engine < ActiveRecord::Base
     # くなるので、性能も上がるはずです。
 
     repairs.opened.first
+  end
+
+  # このエンジンに関する直近の完了済み整備を取得
+  def last_repair
+    repairs.completed.order(finish_date: :desc).limit(1).first
   end
 
   # Get unclosed order (this engine is old engine for it and it is not unclosed)
@@ -180,10 +187,19 @@ class Engine < ActiveRecord::Base
 #エンジンのCSVをインポートする
 def self.import(file)
   CSV.foreach(file.path, headers: true) do |row|
+    #もし、エンジンモデルクラスの型式に、同じ型式が存在しなかったら、そのデータは登録しない。
+    import_row = row.to_hash
+
+    if Enginemodel.where(name: import_row["engine_model_name"]).empty?
+      return false
+    end
+  end
+  #全て正しい型式が存在した場合のみ、データを登録する。
+  CSV.foreach(file.path, headers: true) do |row|
     Engine.create! row.to_hash
   end
+  return true
 end
-
 
 
 end

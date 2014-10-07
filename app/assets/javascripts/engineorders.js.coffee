@@ -7,12 +7,14 @@ $(document).on 'ready page:load', ->
 
 @updateSerialnoOptions = () ->
   $.ajax(
-    url: '/engines/serialno_list',
-    type: 'GET',
+    url: '/engines/serialno_list'
+    type: 'GET'
     dataType: 'json'
-    data:
-      engine_model_name: $('#engineorder_new_engine_attributes_engine_model_name').val(),
-    success: (response) -> setSerialnoOptions(response),
+    data: {engine_model_name: $('#engineorder_new_engine_attributes_engine_model_name').val()}
+    beforeSend: -> $('#engineorder_new_engine_attributes_serialno').attr('disabled', 'disabled')
+    success: (response) ->
+      setSerialnoOptions(response)
+      $('#engineorder_new_engine_attributes_serialno').removeAttr('disabled')
     error: (response) -> alert('シリアルNo.情報が取得できません'))
 
 @setSerialnoOptions = (response) ->

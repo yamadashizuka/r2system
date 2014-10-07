@@ -2,6 +2,7 @@ class Engineorder < ActiveRecord::Base
   #Association
   # engine.status と同様に、DB スキーマを変更せずに order.status で
   # Businessstatus を取得できるように変更しました。
+  
   belongs_to :status, class_name: 'Businessstatus', foreign_key: 'businessstatus_id'
 
   belongs_to :old_engine, :class_name => 'Engine' 
@@ -25,7 +26,7 @@ class Engineorder < ActiveRecord::Base
   belongs_to :updated_user, :class_name => 'User' 
   belongs_to :salesman, :class_name => 'User' 
   belongs_to :company
-  
+  belongs_to :enginestatus
 
   # 仕掛中の受注のみを抽出するスコープ (返却日が設定済みなら完了と見なす)
   # ActiveRecord のスコープ機能を使って、よく使う「仕掛かり中？」条件に名前を付
@@ -203,10 +204,10 @@ class Engineorder < ActiveRecord::Base
     if self.ordered? &&
         old_engine = self.old_engine and old_engine.about_to_return?
       # 旧エンジンの状態を "出荷済" に戻す
-      old_engine.status = Enginestatus.of_before_shipping
+      old_engine.status = Enginestatus.of_after_shipping
       old_engine.save!
-      # 自分のステータスを引合に戻す
-      self.businessstatus_id = Businessstatus.of_inquiry
+      #自分自身のステータスを、引合にする。
+      self.status = Businessstatus.of_inquiry
       # 受注時に新規入力した項目をクリア(受注日、送付先、送付コメント)
       self.order_date = nil
       self.sending_place_id = nil
@@ -216,6 +217,51 @@ class Engineorder < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def undo_shipping
+    # 出荷の取り消しは、
+    #   1. エンジンオーダの状態 == 出荷済み
+    #   2. 新エンジンの状態 == 出荷済み
+    #   3. 新エンジンの管轄 == 拠点
+    # が前提条件。
+    # 出荷を取り消すと、以下の状態になる。
+    #   1. エンジンオーダの状態 == 出荷準備中
+    #   2. 新エンジンの状態 == 出荷準備中
+    #   3. 新エンジンの管轄 == 整備会社 (新エンジンを修理した会社)
+    #   4. 新エンジンに関する(直近の)修理の出荷日がブランク
+    if self.shipped? and
+        new_engine = self.new_engine and new_engine.after_shipped? and
+        new_engine_owner = new_engine.company and new_engine_owner.base?
+      # 新エンジンの状態を "出荷準備中" に戻す
+      new_engine.status = Enginestatus.of_before_shipping
+      # 新エンジンの管轄を "整備会社" に戻す
+      # 戻し先の整備会社は、新エンジンに関する直近の修理を担当した会社
+      if repair = new_engine.last_repair
+        new_engine.company = repair.company
+      end
+      new_engine.save!
+      # 新エンジンに関する直近の修理の出荷日をブランクに戻す
+      if repair = new_engine.current_repair
+        repair.shipped_date = nil
+        repair.save!
+      end
+      # エンジンオーダの状態を "出荷準備中" に戻す
+      self.status = Businessstatus.of_shipping_preparation
+      # 出荷時に新規入力した項目をクリア(送り状No.、出荷日、出荷コメント)
+      self.invoice_no_new = nil
+      self.shipped_date = nil
+      self.shipped_comment = nil
+      self.save!
+      true
+    else
+      false
+    end
+  end
+
+  #sales_amountの値を'カンマ'をとった状態でオーバーライトする
+  def sales_amount=(value)
+    self[:sales_amount] = value.gsub(/,/, '')
   end
 
   def old_engine_attributes=(attrs)
