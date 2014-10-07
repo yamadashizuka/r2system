@@ -21,7 +21,9 @@ class ApplicationController < ActionController::Base
 
   private
   def anchor!
-    flash[:anchor_path] = request.original_fullpath
+    unless request.format.csv?
+      flash[:anchor_path] = request.original_fullpath
+    end
   end
 
   def keep_anchor!

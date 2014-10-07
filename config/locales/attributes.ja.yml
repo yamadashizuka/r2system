@@ -39,9 +39,9 @@ ja:
         change_comment: コメント(交換理由)
         requestpaper: 整備依頼書
         checkpaper: 組立チェックシート
-        purchase_date: 仕入日
-        purchase_comment: コメント（仕入）
-        purchase_price: 仕入価格（税抜）
+        purachase_date: 仕入日
+        purachase_comment: コメント（仕入）
+        purachase_price: 仕入価格（税抜）
         competitor_code: 他社品コード（仮）
       user:
         userid: ログインＩＤ
@@ -91,6 +91,7 @@ ja:
         new_serialno: '新規エンジンS/#'
         old_engine_model_name: 返却エンジン型式
         old_serialno: '返却エンジンS/#'
+        sales_amount: 売上金額（見込）
       place:
         name: 会社名
         category: 分類
@@ -104,3 +105,6 @@ ja:
       engineorder/new_engine:
         engine_model_name: 新規エンジンのエンジン型式
         serialno: 新規エンジンのエンジンNo.
+      charge:
+        charge_date: 振替日
+        charge_comment: 振替コメント

@@ -17,6 +17,8 @@ class Engine < ActiveRecord::Base
   belongs_to :company
 
   has_many :repairs
+  has_many :charge
+
   # 古いハッシュリテラルの書き方「:key => val」ではなく、Ruby 1.9 からの新記法
   # 「key: val」に統一しました。タイプ数も少ないですし。
   has_many :engineorders_as_new, class_name: 'Engineorder', foreign_key: 'new_engine_id'

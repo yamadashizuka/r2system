@@ -72,12 +72,39 @@
     <% end %>
   </div>
 
+  <% if current_user.yesOffice?  # 仕入に関する情報は、本社ユーザのみ閲覧可能 %>
+    <div class="field">
+      <%= Repair.human_attribute_name('purachase_date') %>：
+      <%= @repair.purachase_date %>
+    </div>
+    <div class="field">
+      <%= Repair.human_attribute_name('competitor_code') %>：
+      <%= @repair.competitor_code %>
+    </div>
+    <div class="field">
+      <%= Repair.human_attribute_name('purachase_price') %>：
+      <%= @repair.purachase_price %> 円
+    </div>
+    <div class="field">
+      <%= Repair.human_attribute_name('purachase_comment') %>：
+      <%= @repair.purachase_comment %>
+    </div>
+  <% end %>
+
 <br><br>
 <% if current_user.yesOffice? || current_user.systemAdmin? %>
-  <%= link_to t('views.link_edit'), edit_repair_path(@repair) %> |
+  <% unless anchor_path =~ /#{unbilled_repairs_path}/ # ヤンマー未検収一覧から遷移した場合は編集不可 %>
+    <% if @repair.paid? && @repair.purachase_date >= previous_cutoff_date # 当月に仕入登録したものに限って修正可能 %>
+      <%= link_to t('views.link_edit'), edit_repair_path(@repair) %> |
+    <% end %>
+  <% end %>
 <% end %>
 <% if notice == t("controller_msg.repair_created") %>
   <%= link_to t('views.link_back'), anchor_path %>
 <% else %>
   <%= link_to t('views.link_back'), anchor_path %>
 <% end %> 
+
+<% if current_user.yesOffice? || current_user.systemAdmin? # 仕入登録の取り消しは本社ユーザのみ可能 %>
+  <%= render "statusrollback" if @repair.paid? %>
+<% end %>

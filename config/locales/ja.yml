@@ -227,4 +227,6 @@ ja:
     engineorder_shipping_not_undoable: 出荷を取り消せません
     engine_deleted: エンジン情報を削除しました
     engine_not_deleted: エンジン情報は削除できません
-   
+    repair_purchase_undoing?: 仕入登録を取り消してもよろしいですか？
+    repair_purchase_undone: 仕入登録を取り消しました
+    repair_purchase_not_undoable: 仕入登録を取り消せません

@@ -4,25 +4,28 @@
 <%= form_tag(engineorders_index_path, :method => :get) do %>
 <div class="well">
   <tr>
-    <td width="80">ステータス</td>
-    <td with="120"><%= collection_select(:search, :businessstatus_id, Businessstatus.all, :id, :name, :include_blank => true, :selected => @searched[:businessstatus_id]) %></td>
-    <td width="80" >拠　　　点</td>
+    <td width="80" > 拠点 ： 管轄 </td>
     <td width="120"><%= collection_select(:search, :company_id, Company.all, :id, :name, :include_blank => true, :selected => @searched[:company_id]) %></td>
-　　</tr>
-  <br>
-  <br>
   <tr>
-      <td width="80" >物 件 名</td>
-      <td width="120"><%= text_field :search, :title, :value => @searched[:title] %></td>
-      <td width="80" >設置先名</td>
-      <td width="120"><%= text_field :search, :name, :value => @searched[:name] %></td>
-  </tr>
+　 <br>
+    <br>
+  <tr>
+    <td width="80">エンジン型式</td>
+    <td with="120"><%= collection_select(:search, :modelcode, Enginemodel.all, :modelcode, :modelcode, :include_blank => true, :selected => @searched[:modelcode]) %></td>
+    <td width="80" >エンジンNo</td>
+    <td width="120"><%= text_field :search, :serialno, :value => @searched[:serialno] %></td>
+  <tr>
+    <br>
+    <br>
+  <tr>
+    <td width="80"> ステータス </td>
+    <td with="120"><%= collection_select(:search, :businessstatus_id, Businessstatus.all, :id, :name, :include_blank => true, :selected => @searched[:businessstatus_id]) %></td>
+ </tr>
   <br>
   <br>
-<%= submit_tag "検索" %>
+  <%= submit_tag "検索" %>
 <% end %>
 </div>
-
 <table class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>
@@ -37,11 +40,8 @@
       <th><%= Engineorder.human_attribute_name('allocated_date') %></th>
       <th><%= Engineorder.human_attribute_name('shipped_date') %></th>
       <th><%= Engineorder.human_attribute_name('returning_date') %></th>
-      <% if current_user.yesOffice? || current_user.systemAdmin? %>
-        <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
-      <% elsif current_user.yesBranch? %>
-        <th colspan=7 rowspan=2>作業登録</th> <!-- YES拠点の人の作業数だけ列を繋げる -->
-      <% end %>
+      
+      <th colspan=8 rowspan=2>作業登録</th>
 </tr>
 <tr>
       <th><%= Engineorder.human_attribute_name('old_engine_id') %></th>

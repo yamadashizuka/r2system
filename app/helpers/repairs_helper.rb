@@ -25,7 +25,11 @@ module RepairsHelper
   def purchase_path(repair)
     return '/repairs/purchase/' +  repair.id.to_s
   end
-
+  
+# 整備一覧画面からエンジン到着登録のためのパスを生成する  
+  def repair_arrived_path(repair)
+    return '/repairs/engineArrived/' + repair.engine_id.to_s
+  end
 
 #画面上の編集可否を返す（受領画面）
 def getDisabled_EngineArrived
@@ -126,10 +130,21 @@ def getDisabled_RepairFinished
   end
 end
 
+def cutoff_date
+  # TODO: 締め日を常数定義すること
+  if Date.today.day > 25
+    Date.new(Date.today.next_month.year, Date.today.next_month.month, 25)
+  else
+    Date.new(Date.today.year, Date.today.month, 25)
+  end
+end
+
+def previous_cutoff_date
+  cutoff_date.advance(months: -1)
+end
+
 def carried_over?(repair)
-  cutoff_date = Date.new(Date.today.year, Date.today.month, 25) # TODO: 締め日を常数定義すること
-  prev_cutoff_date = cutoff_date.advance(months: -1)
-  repair.finish_date <= prev_cutoff_date
+  repair.finish_date <= previous_cutoff_date
 end
 
 def carry_over_mark(repair)
@@ -137,6 +152,16 @@ def carry_over_mark(repair)
     "※"
   else
     ""
+  end
+end
+
+def repairs_undo_link(repair)
+  if repair.paid?
+    link_to t("views.link_purchase") + "の取り消し", undo_purchase_path(repair), 
+            :style=>"color:red;",
+            confirm: t("controller_msg.repair_purchase_undoing?")
+  else
+    raise "整備に関する逆向きユースケースは、仕入戻しのみ"
   end
 end
 

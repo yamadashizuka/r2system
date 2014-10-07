@@ -5,7 +5,7 @@
 <% end %>
 <h3>業務</h3>
 
-<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin? || current_user.yes? %>
   <p><%= link_to 'エンジン一覧', engines_path %></p>
 <% end %>
 
@@ -20,14 +20,16 @@
 
 <br>
 
-<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
   <h3>会計</h3>
-  <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
-  <% if current_user.yesOffice? || current_user.systemAdmin? %>
-    <p><%= link_to '仕入済一覧', purchase_repairs_path %></p>
-    <br>
+  <% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+    <p><%= link_to t('views.title_repairs_index_unbilled'), unbilled_repairs_path %></p>
   <% end %>
-<% end %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
+    <p><%= link_to t('views.title_repairs_index_purchase'), purchase_repairs_path %></p>
+  <% end %>
+  <% if current_user.yes? || current_user.systemAdmin?%>
+    <p><%= link_to '振替一覧', charge_repairs_path %></p>
+  <% end %>
 
 <br>
 

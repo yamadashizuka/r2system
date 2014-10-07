@@ -1,4 +1,19 @@
+<h1>流通情報詳細</h1>
 
+<%= render "statusrollback" %>
+<br>
+<% if current_user.yes? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
+    <%= link_to t('views.link_edit'), edit_engineorder_path(@engineorder) %> |
+  <% end %>
+  <%= link_to t('views.link_back'), anchor_path %>
+<% else %>
+  <%= link_to t('views.link_back'), anchor_path %>
+<% end %>
+<br>
+<hr>
+
+<br>
  <div class="field">
    <%= Engineorder.human_attribute_name('issue_no') %>：
     <%= @engineorder.issue_no %>
@@ -138,6 +153,9 @@
 </div>
 <% end %>
 
+<br>
+<br>
+<hr>
 <br>
 <% if current_user.yes? %>
   <% if current_user.yesOffice? || current_user.systemAdmin? %>
