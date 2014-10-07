@@ -25,11 +25,11 @@
   <thead>
     <tr>
       <th><%= Repair.human_attribute_name(:order_no) %></th>
+      <th><%= Repair.human_attribute_name(:competitor_code) %></th>
       <th><%= Repair.human_attribute_name(:purachase_date) %></th>
       <th><%= Engine.human_attribute_name(:engine_model_name) %></th>
       <th><%= Engine.human_attribute_name(:serialno) %></th>
       <th><%= Repair.human_attribute_name(:purachase_price) %></th>
-      <th class="workregist">詳細情報</th>
     </tr>
   </thead>
 
@@ -37,11 +37,11 @@
     <% @repairs.each do |repair| %>
       <tr>
         <td><%= repair.order_no %></td>
+        <td><%= repair.competitor_code %></td>
         <td><%= repair.purachase_date %></td>
         <td><%= repair.engine.engine_model_name %></td>
         <td><%= repair.engine.serialno %></td>
-        <td><%= repair.purachase_price %></td>
-        <td class="workregist"><%= link_to t('views.link_show'), repair, class: 'workregist_show' %></td>
+        <td><%= number_with_delimiter(repair.purachase_price) %></td>
       </tr>
     <% end %>
   </tbody>

@@ -389,9 +389,9 @@ class RepairsController < ApplicationController
           @repairs.each do |repair|
             csv << [repair.order_no, repair.purachase_date,
                     repair.engine.engine_model_name, repair.engine.serialno,
-                    repair.purachase_price]
+                    repair.purachase_price.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')]
           end
-          csv << ["合計仕入価格", @total_price]
+          csv << ["合計仕入価格", @total_price.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')]
         }
         send_data(csv_str.encode(Encoding::SJIS),
                   type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
