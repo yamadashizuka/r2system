@@ -12,6 +12,13 @@
                                                    default: {year: @searched[:"purchase_month(1i)"], month: @searched[:"purchase_month(2i)"]}  %>
         </td>
       </tr>
+      <tr>
+        <td width="80">整備会社</td>
+        <td width="120">
+          <%= collection_select(:search, :company_id, Company.all.tender, :id, :name,
+                                include_blank: true, selected: @searched[:company_id]) %>
+        </td>
+      </tr>
     </table>
     <br>
     <%= submit_tag "検索" %>
