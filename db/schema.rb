@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141007001126) do
+ActiveRecord::Schema.define(version: 20141009044636) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
@@ -21,13 +21,13 @@ ActiveRecord::Schema.define(version: 20141007001126) do
 
   create_table "charges", force: true do |t|
     t.boolean  "charge_flg"
-    t.integer  "charge_price"
     t.string   "charge_comment"
     t.integer  "repair_id"
     t.integer  "engine_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "charge_date"
+    t.integer  "branch_id"
   end
 
   add_index "charges", ["engine_id"], name: "index_charges_on_engine_id"
@@ -173,9 +173,9 @@ ActiveRecord::Schema.define(version: 20141007001126) do
     t.string   "userid"
     t.string   "name"
     t.string   "category"
+    t.integer  "company_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "company_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

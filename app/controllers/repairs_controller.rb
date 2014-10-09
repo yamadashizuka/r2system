@@ -434,25 +434,20 @@ class RepairsController < ApplicationController
     end
 
 
-   #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
-    arel_engine = Engine.arel_table
-    cond_engine = []
-
-
-    
-    if (current_user.yesOffice? || current_user.systemAdmin? )
-     # company_idがあれば、条件に追加、
-      cond_engine.push(arel_engine[:company_id].eq @searched["company_id"]) if @searched["company_id"].present?
-    #拠点の場合は、拠点管轄のエンジンを対象とする。
-    else
-      cond_engine.push(arel_engine[:company_id].eq current_user.company_id)
-    end
-
 
 
    #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
     arel_charge = Charge.arel_table
     cond_charge = []
+
+    if (current_user.yesOffice? || current_user.systemAdmin? )
+     # company_idがあれば、条件に追加、
+      cond_charge.push(arel_charge[:branch_id].eq @searched["company_id"]) if @searched["company_id"].present?
+    #拠点の場合は、拠点管轄のエンジンを対象とする。
+    else
+      cond_charge.push(arel_charge[:branch_id].eq current_user.company_id)
+    end
+
 
     if @searched["charge_flg"] == "after"
          cond_charge.push(arel_charge[:charge_flg].eq true)
@@ -460,11 +455,10 @@ class RepairsController < ApplicationController
          cond_charge.push(arel_charge[:charge_flg].eq false)
     end
 
-
     respond_to do |format|
 
-      @repairs = Repair.includes(:engine).includes(:charge)
-      .where(cond_engine.reduce(&:and)).where(cond_charge.reduce(&:and))
+      @repairs = Repair.includes(:charge)
+      .where(cond_charge.reduce(&:and))
       .order(:purachase_date)
 
       format.html {
@@ -473,9 +467,7 @@ class RepairsController < ApplicationController
       }
 
       format.csv {
-puts "*****************************"
-puts @repairs.count
-puts "*****************************"
+
         col_names = [Repair.human_attribute_name(:order_no),
                      Repair.human_attribute_name(:purachase_date),
                      Engine.human_attribute_name(:engine_model_name),
@@ -504,7 +496,7 @@ puts "*****************************"
     set_repair
   end
 
-  # 仕入の取り消し
+  # 検収済の取り消し
   def undo_purchase
     set_repair
     respond_to do |format|

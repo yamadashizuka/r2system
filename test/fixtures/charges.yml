@@ -2,14 +2,14 @@
 
 #one:
 #  charge_flg: false
-#  charge_price: 1
+#  charge_date: 
 #  charge_comment: MyString
 #  repair_id: 
 #  engine_id: 
 
 #two:
 #  charge_flg: false
-#  charge_price: 1
+#  charge_date: 
 #  charge_comment: MyString
 #  repair_id: 
 #  engine_id: 
