@@ -34,16 +34,22 @@
 <br>
 
 <% if current_user.yesOffice? || current_user.systemAdmin? %>
- <h3>マスター管理</h3>
- <p><%= link_to '法人', companies_path %></p>
- <p><%= link_to 'ビジネスステータス', businessstatuses_path %></p>
- <p><%= link_to 'エンジンステータス', enginestatuses_path %></p>
- <p><%= link_to 'エンジン型式', enginemodels_path %></p>
- <p><%= link_to '問合せ先', edit_contactinfo_path(1) %></p>
- <br>
- <p><%= link_to '削除候補エンジン一覧', delengine_path %></p>
-　<br>
+  <h3>マスター管理</h3>
+  <p><%= link_to '法人', companies_path %></p>
+  <p><%= link_to 'ビジネスステータス', businessstatuses_path %></p>
+  <p><%= link_to 'エンジンステータス', enginestatuses_path %></p>
+  <p><%= link_to 'エンジン型式', enginemodels_path %></p>
+  <% contactInfo = Contactinfo.all.first %>
+  <% if contactInfo.nil? %>
+    <p><%= link_to '問合せ先', new_contactinfo_path %></p>
+  <% else %>
+    <p><%= link_to '問合せ先', edit_contactinfo_path(contactInfo.id) %></p>
+  <% end %>
+  <br>
+  <p><%= link_to '削除候補エンジン一覧', delengine_path %></p>
+  <br>
 <% end %>
+
 <h3>その他</h3>
 <p><%= link_to 'プロファイル', edit_user_registration_path %></p>
 <br>
