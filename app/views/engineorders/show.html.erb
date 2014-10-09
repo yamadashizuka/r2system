@@ -80,6 +80,11 @@
   <%= @engineorder.order_date %>
 </div>
 
+<div class="field">
+   <%= Engineorder.human_attribute_name('sales_amount') %>：
+  <%= number_with_delimiter(@engineorder.sales_amount) %>
+</div>
+
 
  <div class="field">
    <%= Engineorder.human_attribute_name('sending_place_id') %>：
