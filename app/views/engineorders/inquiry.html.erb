@@ -41,7 +41,8 @@
     <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false, :selected => current_user.id ) %>
     <% else %>
-      <%= f.collection_select( :salesman_id, User.all, :id, :name, options = {:include_blank => true, :selected => current_user.id}, html_options = {:disabled => :disabled} ) %>
+      <%= f.collection_select(:salesman_id, User.where(company: current_user.company).order(:name), :id, :name,
+                              include_blank: true, selected: current_user.id) %>
     <% end %>
   </div>
 

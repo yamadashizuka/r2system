@@ -57,7 +57,8 @@
   
   <div class="field">
     <%= f.label :salesman_id %><br>
-   <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
+    <%= f.collection_select(:salesman_id, User.where(company: current_user.company).order(:name), :id, :name,
+                            include_blank: false, selected: current_user.id) %>
   </div>
 
 <!-- のちほど別erbに切り出す。-->
