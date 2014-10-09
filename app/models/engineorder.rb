@@ -39,7 +39,7 @@ class Engineorder < ActiveRecord::Base
 
   # View でも数値以外入力できないように制限しているが、ブラウザ以外のクライアン
   # トなども考慮して、Model でもバリデーションを設定しておく。
-  validates_numericality_of :time_of_running
+  validates_numericality_of :time_of_running, allow_nil: true
 
   accepts_nested_attributes_for :old_engine
   accepts_nested_attributes_for :new_engine
