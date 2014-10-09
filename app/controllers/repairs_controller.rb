@@ -345,6 +345,14 @@ class RepairsController < ApplicationController
     end
   end
 
+  # NOTE: #number_with_delimiter を使いたいので、ActionView のモジュールをイン
+  #       クルードしている。
+  #       本来、ビューの役割であるデータ表示のための整形をコントローラでやるべ
+  #       きではない。
+  #       が、CSV 出力時のデータ作成をコントローラ内で処理しているので、特例と
+  #       して ActionView の便利メソッドを include することにした。
+  include ActionView::Helpers::NumberHelper
+
    # 仕入済の一覧を表示する
   def index_purchase
     case
@@ -357,7 +365,6 @@ class RepairsController < ApplicationController
     else
       # 初期表示時は、当月を検索条件として設定
       @searched = {:"purchase_month(1i)" => Date.today.year, :"purchase_month(2i)" => Date.today.month}
-      session[:searched] = @searched
     end
     session[:searched] = @searched
 
@@ -367,11 +374,13 @@ class RepairsController < ApplicationController
     end_date = start_date.end_of_month  # TODO: 仕入月度締めは当月末
 
     respond_to do |format|
-      @repairs = Repair.joins(:engine).where(
-        purachase_date: start_date..end_date,
-        paymentstatus_id: Paymentstatus.of_paid,
-        engines: {enginestatus_id: Enginestatus.of_finished_repair}
-       ).order(:purachase_date)
+      title = "#{start_date.year}年#{start_date.month}月仕入分"
+
+      @repairs = Repair.joins(:engine)
+                       .where(purachase_date: start_date..end_date,
+                              paymentstatus_id: Paymentstatus.of_paid,
+                              engines: {enginestatus_id: Enginestatus.of_finished_repair})
+                       .order(:purachase_date)
       @total_price = @repairs.sum(:purachase_price)
 
       format.html {
@@ -379,22 +388,26 @@ class RepairsController < ApplicationController
         adjust_page(@repairs)
       }
       format.csv {
-        col_names = [Repair.human_attribute_name(:order_no),
-                     Repair.human_attribute_name(:purachase_date),
-                     Engine.human_attribute_name(:engine_model_name),
-                     Engine.human_attribute_name(:serialno),
-                     Repair.human_attribute_name(:purachase_price)
-                     ]
-        csv_str = CSV.generate(headers: col_names, write_headers: true) { |csv|
+        csv_str = CSV.generate { |csv|
+          csv << [title]
+          csv << []
+          csv << [Repair.human_attribute_name(:order_no),
+                  Repair.human_attribute_name(:purachase_date),
+                  Engine.human_attribute_name(:engine_model_name),
+                  Engine.human_attribute_name(:serialno),
+                  Repair.human_attribute_name(:purachase_price)]
           @repairs.each do |repair|
-            csv << [repair.order_no, repair.purachase_date,
-                    repair.engine.engine_model_name, repair.engine.serialno,
-                    repair.purachase_price.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')]
+            csv << [repair.order_no,
+                    repair.purachase_date,
+                    repair.engine.engine_model_name,
+                    repair.engine.serialno,
+                    number_with_delimiter(repair.purachase_price)]  # NOTE: RoR が提供する３桁区切りができる便利メソッド
           end
-          csv << ["合計仕入価格", @total_price.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')]
+          csv << ["合計仕入価格", number_with_delimiter(@total_price)]
         }
+
         send_data(csv_str.encode(Encoding::SJIS),
-                  type: "text/csv; charset=shift_jis", filename: "purchase_date.csv")
+                  type: "text/csv; charset=shift_jis", filename: "#{title}.csv")
       }
     end
   end
