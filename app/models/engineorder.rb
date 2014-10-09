@@ -212,6 +212,7 @@ class Engineorder < ActiveRecord::Base
       self.order_date = nil
       self.sending_place_id = nil
       self.sending_comment = nil
+      self.sales_amount = nil
       self.save!
       true
     else
@@ -261,7 +262,12 @@ class Engineorder < ActiveRecord::Base
 
   #sales_amountの値を'カンマ'をとった状態でオーバーライトする
   def sales_amount=(value)
-    self[:sales_amount] = value.gsub(/,/, '')
+    #self[:sales_amount] = value.gsub(/,/, '')
+    if value
+      self[:sales_amount] = value.gsub(/,/, '')
+    else
+      self[:sales_amount] = nil
+    end
   end
 
   def old_engine_attributes=(attrs)
