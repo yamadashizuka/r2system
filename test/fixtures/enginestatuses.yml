@@ -1,48 +1,48 @@
 enginestatus1:
   id: 1
   name: 受領前
-  created_at: 2013-11-20 11:29:05.991470
-  updated_at: 2013-11-20 11:29:05.991470
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus2:
   id: 2
   name: 整備前
-  created_at: 2013-11-20 11:29:22.569127
-  updated_at: 2013-11-20 11:29:22.569127
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus3:
   id: 3
   name: 整備中
-  created_at: 2013-11-20 11:29:34.981368
-  updated_at: 2013-11-20 11:29:34.981368
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus4:
   id: 4
   name: 完成品
-  created_at: 2013-11-20 11:29:52.556126
-  updated_at: 2013-11-20 11:29:52.556126
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus5:
   id: 5
   name: 出荷準備中
-  created_at: 2013-11-20 11:30:07.178588
-  updated_at: 2013-11-20 11:30:07.178588
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus6:
   id: 6
   name: 出荷済
-  created_at: 2013-11-20 11:30:24.732343
-  updated_at: 2013-11-20 11:30:24.732343
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus7:
   id: 7
   name: 返却予定
-  created_at: 2013-12-10 12:13:58.347085
-  updated_at: 2013-12-10 12:13:58.347085
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
 enginestatus9:
   id: 9
   name: 廃却済
-  created_at: 2013-12-10 12:13:58.347085
-  updated_at: 2013-12-10 12:13:58.347085
+  created_at: <%= Date.parse("2013-11-20") %>
+  updated_at: <%= Date.parse("2013-11-20") %>
 
