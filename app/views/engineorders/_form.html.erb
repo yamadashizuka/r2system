@@ -151,7 +151,8 @@
 -->
   <div class="field">
     <%= f.label :time_of_running %><br>
-    <%= f.number_field :time_of_running %>
+    <%= f.text_field :time_of_running, style: "ime-mode:disabled;",
+                     onkeyup: raw("if (/\\D/g.test(this.value)) this.value = this.value.replace(/\\D/g, '')") %>
   </div>
   <div class="field">
     <%= f.label :day_of_test %><br>

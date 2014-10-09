@@ -37,6 +37,10 @@ class Engineorder < ActiveRecord::Base
   #旧エンジンは必ず流通登録に必要なので、必須項目とする。
   validates :old_engine, presence: true
 
+  # View でも数値以外入力できないように制限しているが、ブラウザ以外のクライアン
+  # トなども考慮して、Model でもバリデーションを設定しておく。
+  validates_numericality_of :time_of_running
+
   accepts_nested_attributes_for :old_engine
   accepts_nested_attributes_for :new_engine
 
