@@ -8,7 +8,6 @@
       <th>郵便番号</th>
       <th>住所</th>
       <th>電話番号</th>
-      <th>宛先</th>
       <th>更新日</th>
       <th></th>
       <th></th>
@@ -23,7 +22,6 @@
         <td><%= company.postcode %></td>
         <td><%= company.address %></td>
         <td><%= company.phone_no %></td>
-        <td><%= company.destination_name %></td>
         <td><%= company.updated_at %></td>        
         <td><%= link_to '詳細', company, class: "workregist_show"  %></td>
         <td><%= link_to '修正', edit_company_path(company) , class: "workregist_edit" %></td>
