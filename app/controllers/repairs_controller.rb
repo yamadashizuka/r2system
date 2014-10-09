@@ -363,8 +363,10 @@ class RepairsController < ApplicationController
       # ページ繰り時、ファイルエクスポート時は、保存済みの検索条件を使用
       @searched = session[:searched]
     else
-      # 初期表示時は、当月を検索条件として設定
-      @searched = {:"purchase_month(1i)" => Date.today.year, :"purchase_month(2i)" => Date.today.month}
+      # 初期表示時は、仕入月度は当月、整備会社を空白とする
+      @searched = {:"purchase_month(1i)" => Date.today.year,
+                   :"purchase_month(2i)" => Date.today.month,
+                   :company_id => nil}
     end
     session[:searched] = @searched
 
@@ -376,7 +378,16 @@ class RepairsController < ApplicationController
     respond_to do |format|
       title = "#{start_date.year}年#{start_date.month}月仕入分"
 
+      if @searched[:company_id].blank?
+        company_cond = {}  # 整備会社欄が空白の場合は、company_id 条件無し
+        title += "（ALL）"
+      else
+        company_cond = {company_id: @searched[:company_id]}
+        title += "（#{Company.find(@searched[:company_id]).name}）"
+      end
+
       @repairs = Repair.joins(:engine)
+                       .where(company_cond)
                        .where(purachase_date: start_date..end_date,
                               paymentstatus_id: Paymentstatus.of_paid,
                               engines: {enginestatus_id: Enginestatus.of_finished_repair})
