@@ -18,7 +18,7 @@ class ChargesControllerTest < ActionController::TestCase
 
   test "should create charge" do
     assert_difference('Charge.count') do
-      post :create, charge: { charge_comment: @charge.charge_comment, charge_flg: @charge.charge_flg, charge_price: @charge.charge_price, engine_id: @charge.engine_id, repair_id: @charge.repair_id }
+      post :create, charge: { charge_comment: @charge.charge_comment, charge_flg: @charge.charge_flg, charge_date: @charge.charge_date, engine_id: @charge.engine_id, repair_id: @charge.repair_id }
     end
 
     assert_redirected_to charge_path(assigns(:charge))
@@ -35,7 +35,7 @@ class ChargesControllerTest < ActionController::TestCase
   end
 
   test "should update charge" do
-    patch :update, id: @charge, charge: { charge_comment: @charge.charge_comment, charge_flg: @charge.charge_flg, charge_price: @charge.charge_price, engine_id: @charge.engine_id, repair_id: @charge.repair_id }
+    patch :update, id: @charge, charge: { charge_comment: @charge.charge_comment, charge_flg: @charge.charge_flg, charge_date: @charge.charge_date, engine_id: @charge.engine_id, repair_id: @charge.repair_id }
     assert_redirected_to charge_path(assigns(:charge))
   end
 
