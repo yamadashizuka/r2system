@@ -393,6 +393,7 @@ class EngineordersController < ApplicationController
       # 出荷画面からの更新の場合
       # 新エンジンのステータスを出荷済みにセットする。
       @engineorder.new_engine.status = Enginestatus.of_after_shipping
+
       # 新エンジンの会社を拠点に変更し、DBに反映する
       @engineorder.new_engine.company = @engineorder.branch
       @engineorder.new_engine.save
@@ -400,6 +401,7 @@ class EngineordersController < ApplicationController
       charge = Charge.new
       charge.engine_id = @engineorder.new_engine.id
       charge.repair_id = @engineorder.new_engine.current_repair.id
+      charge.branch = @engineorder.branch
       charge.charge_flg = false
       charge.save
 

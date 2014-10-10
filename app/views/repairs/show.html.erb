@@ -1,3 +1,8 @@
+<% if current_user.yesOffice? || current_user.systemAdmin? # 仕入登録の取り消しは本社ユーザのみ可能 %>
+  <%= render "statusrollback" if @repair.paid? %>
+<% end %>
+
+
 <div class="field">
   <%= Engine.human_attribute_name('engine_model_name') %>：
     <%= @repair.engine.engine_model_name %>
