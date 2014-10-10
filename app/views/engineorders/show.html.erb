@@ -1,7 +1,6 @@
 <h1>流通情報詳細</h1>
 
-
-<%= render "statusrollback"  unless @engineorder.inquiry? %>
+<%= render "statusrollback"   unless @engineorder.inquiry?  %>
 
 <br>
 <% if current_user.yes? %>
