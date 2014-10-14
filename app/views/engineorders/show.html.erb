@@ -65,7 +65,7 @@
 
  <div class="field">
    <%= Engineorder.human_attribute_name('time_of_running') %>：
-  <%= @engineorder.time_of_running %>
+  <%= number_with_delimiter(@engineorder.time_of_running) %>
 </div>
 
 
