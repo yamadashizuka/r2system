@@ -23,8 +23,14 @@
             <% unless request.path_info=="/" %>
               <li><%= link_to 'メインメニュー', root_path %></li>
             <% end %>
-            <% contactInfo = Contactinfo.find(1) %></li>
-            <li><%= mail_to contactInfo.mailaddr, "問合せ", :subject => contactInfo.title, :body => contactInfo.content.encode("Shift_JIS") %></li>              
+            <% contact_info = Contactinfo.all.first %>
+            <% unless contact_info.nil? %>
+              <% if request.env["HTTP_USER_AGENT"].include?('Firefox') %>
+                <li><%= mail_to contact_info.mailaddr, "問合せ" , :subject => contact_info.title, :body => contact_info.content %></li>              
+              <% else %>
+                <li><%= mail_to contact_info.mailaddr, "問合せ" , :subject => contact_info.title, :body => contact_info.content.encode("Shift_JIS") %></li>              
+              <% end %>
+            <% end %>
             <li><%= link_to "ログアウト", destroy_user_session_path, :method => :delete %></li>
             <li><a href="/users/edit"><b>ログイン：<%= current_user.name %></b></a></li>
           </ul>

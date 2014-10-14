@@ -50,3 +50,27 @@ SG000001:
   userid: SG000001
   name: SG の人
   company: company2
+
+KT000002:
+  email: kt000002@test.org
+  encrypted_password: $2a$10$YcMcZgyg3MD5oYOV5vkTv.peJ2wPkCyR3Ot5kMMSMelcli97ji0yO
+  sign_in_count: 1
+  current_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  last_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1
+  userid: KT000002
+  name: KT の人（その２）
+  company: company8
+
+KT000003:
+  email: kt000003@test.org
+  encrypted_password: $2a$10$YcMcZgyg3MD5oYOV5vkTv.peJ2wPkCyR3Ot5kMMSMelcli97ji0yO
+  sign_in_count: 1
+  current_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  last_sign_in_at: <%= 1.days.ago.to_s(:db) %>
+  current_sign_in_ip: 127.0.0.1
+  last_sign_in_ip: 127.0.0.1
+  userid: KT000003
+  name: KT の人（その３）
+  company: company8

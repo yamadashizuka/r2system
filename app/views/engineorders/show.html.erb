@@ -1,6 +1,7 @@
 <h1>流通情報詳細</h1>
 
-<%= render "statusrollback" %>
+<%= render "statusrollback"   unless @engineorder.inquiry?  %>
+
 <br>
 <% if current_user.yes? %>
   <% if current_user.yesOffice? || current_user.systemAdmin? %>
@@ -171,5 +172,4 @@
   <%= link_to t('views.link_back'), anchor_path %>
 <% end %>
 
-
-<%= render "statusrollback" %>
+<%= render "statusrollback"  unless @engineorder.inquiry? %>

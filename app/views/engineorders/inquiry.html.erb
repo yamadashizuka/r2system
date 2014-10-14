@@ -45,7 +45,8 @@
     <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false, :selected => current_user.id ) %>
     <% else %>
-      <%= f.collection_select( :salesman_id, User.all, :id, :name, options = {:include_blank => true, :selected => current_user.id}, html_options = {:disabled => :disabled} ) %>
+      <%= f.collection_select(:salesman_id, User.where(company: current_user.company).order(:name), :id, :name,
+                              include_blank: true, selected: current_user.id) %>
     <% end %>
   </div>
 
@@ -104,7 +105,8 @@
 
   <div class="field">
     <%= f.label :time_of_running %><br>
-    <%= f.number_field :time_of_running %>
+    <%= f.text_field :time_of_running, style: "ime-mode:disabled;",
+                     onkeyup: raw("if (/\\D/g.test(this.value)) this.value = this.value.replace(/\\D/g, '')") %>
   </div>
 
   <div class="field">
