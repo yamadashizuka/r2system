@@ -14,6 +14,11 @@
     <%= f.hidden_field :registered_user_id %>
   </div>
 
+  <div class="actions">
+    <%= f.submit :value => t('views.buttun_inquiry'), data: {confirm: t('views.buttun_inquiry')+t('views.confirm_msg')} %>
+  </div>
+  <br>
+
   <div class="field">
     <%= f.label :title %><br>
     <%= f.text_field :title %>
@@ -101,7 +106,7 @@
 
   <div class="field">
     <%= f.label :time_of_running %><br>
-    <%= f.text_field :time_of_running, style: "ime-mode:disabled;",
+    <%= f.text_field :time_of_running, :value=>number_with_delimiter(@engineorder.time_of_running), style: "ime-mode:disabled;",
                      onkeyup: raw("if (/\\D/g.test(this.value)) this.value = this.value.replace(/\\D/g, '')") %>
   </div>
 

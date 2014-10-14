@@ -19,6 +19,10 @@
     <%= f.hidden_field :registered_user_id %>
   </div>
 
+  <div class="actions">
+    <%= f.submit :value => t('views.buttun_allocated'), :confirm => t('views.buttun_allocated')+t('views.confirm_msg') %>
+  </div>
+  <br>
   <div class="field">
     <%= f.label :issue_no %>：
     <%=  @engineorder.issue_no %>
