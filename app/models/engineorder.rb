@@ -312,6 +312,17 @@ class Engineorder < ActiveRecord::Base
       self[:sales_amount] = nil
     end
   end
+  def time_of_running=(value)
+    if value
+      self[:time_of_running] = value.gsub(/,/, '')
+    else
+      self[:time_of_running] = nil
+    end
+  end
+
+
+
+
 
   def old_engine_attributes=(attrs)
     self.old_engine = Engine.find_or_initialize_by(id: attrs.delete(:id))
@@ -321,4 +332,5 @@ class Engineorder < ActiveRecord::Base
   def new_engine_attributes=(attrs)
     self.new_engine = Engine.find_or_initialize_by(attrs)
   end
+
 end
